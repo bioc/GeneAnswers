@@ -1,0 +1,43 @@
+\name{geneAnswersBuilder}
+\alias{geneAnswersBuilder}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{ Build an object of a GeneAnswers class }
+\description{
+  A function to build an object of a GeneAnswers class based on given information.
+}
+\usage{
+geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("hyperG", "none"), geneExpressionProfile = NULL, categorySubsetIDs = NULL, pvalueT = 0.01, FDR.correction = FALSE, verbose=TRUE, ...)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{geneInput}{ a dataframe containing gene IDs and possible values associated with given gene IDs. }
+  \item{annotationLib}{ name of given annotation library file or user provided annotation list. }
+  \item{categoryType}{ name of given annotation category or NULL for user provided annotation list. }
+  \item{testType}{ name of enrichment test. }
+  \item{geneExpressionProfile}{ data frame containing gene expression file or NULL. }
+  \item{categorySubsetIDs}{ a character vector of user-specified subset of categories to be tested. }
+  \item{pvalueT}{ p-value threshold of the enrichment test. }
+  \item{FDR.correction}{ logical indicating if FDR correction of the enrichment test p-value is performed or not. }
+  \item{verbose}{ logical, display current building stage. }
+  \item{\dots}{ additional arguments passed on to the corresponding enrichment test. }
+}
+\details{
+  annlib could be Disease Ontology library, Entrez annotation libraries for a specie, such as 'org.Hs.eg.db'. User can also use own annotation library. User's annotation library should be a list. Each element in this list is a vector of genes for a user-specified category. Names of this annotation list are categories' names.
+
+categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
+}
+\value{
+  A GeneAnswers class containing geneInput, entrichmentInfo, etc.
+}
+\references{ ~put references to the literature/web site here ~ }
+\author{ Gang Feng,  Pan Du and Simon Lin }
+\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\examples{
+data('humanExpr')
+data('humanGeneInput') 
+x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='h', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
+class(x)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ methods }

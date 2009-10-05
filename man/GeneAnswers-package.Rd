@@ -1,0 +1,39 @@
+\name{GeneAnswers-package}
+\alias{GeneAnswers-package}
+\alias{GeneAnswers}
+\docType{package}
+\title{
+Integrated Interpretation of Genes
+}
+\description{
+GeneAnswers provide an integrated tool for given genes biological or medical interpretation. It includes statistical test of given genes and specified categories. 
+}
+\details{
+\tabular{ll}{
+Package: \tab GeneAnswers\cr
+Type: \tab Package\cr
+Version: \tab 1.0\cr
+Date: \tab 2009-07-16\cr
+License: \tab LGPL version 2 or newer \cr
+}
+}
+\author{
+Gang Feng, Pan Du and Simon Lin
+
+
+Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.edu>
+}
+\references{
+1.	Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., BioConductor Methods to Visualize Genelist Annotations (Submitted)
+
+2. Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
+
+3. Osborne, J.D., Flatow, J., Holko, M., Lin, S.M., Kibbe, W.A., Zhu, L.J., Danila, M.I., Feng, G. and Chisholm, R.L., Annotating the human genome with Disease Ontology. BMC Genomics. 2009 Jul 7;10 Suppl 1:S6.
+}
+\examples{
+data('humanExpr')
+data('humanGeneInput')
+x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
+class(x)
+}
+\keyword{ package }
