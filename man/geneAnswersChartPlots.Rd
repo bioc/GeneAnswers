@@ -1,7 +1,7 @@
 \name{geneAnswersChartPlots}
 \alias{geneAnswersChartPlots}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Make pie chart and bar plot }
 \description{
   Make pie chart and bar plot for given GeneAnswers instance
 }

@@ -6,7 +6,7 @@
   A function to generate specified Concept-Gene Tablulates
 }
 \usage{
-geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, ...)
+geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, catID=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,6 +14,7 @@ geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, ..
   \item{showCats}{ a numeric or string vector specified categories  }
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
   \item{geneSymbol}{ a logic value to specify whether mapping gene IDs to gene symbols }
+  \item{catID}{ a logic value to specify whether show category IDs when catTerm is set to TRUE }
   \item{\dots}{ other parameters used by geneAnnotationHeatmap }
 }
 \details{

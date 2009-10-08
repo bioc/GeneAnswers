@@ -7,7 +7,7 @@
 }
 \usage{data(mouseGeneInput)}
 \format{
-  A data frame with 71 observations. Column names are "Symbol", "foldChange" and "pValue". Row names are gene Entrez IDs. 
+  A data frame with 71 observations. Column names are "Symbol", "foldChange" and "pValue". Row names are gene Entrez IDs. For general usage, row names of geneInput could be anything. 
 }
 \details{
   Fold change could be negative, which means the ratio of treatment to control is less than 1 and the value is reciprocal of general fold change.

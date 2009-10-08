@@ -6,7 +6,7 @@
   A function to generate a concept-gene network by given gene information
 }
 \usage{
-geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive"), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE)
+geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive"), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "p
   \item{showCats}{ a numeric or string vector specified categories  }
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
   \item{geneSymbol}{ a logic value to specify whether mapping gene IDs to gene symbols }
+  \item{catID}{ a logic value to specify whether show category IDs when catTerm is set to TRUE }
 }
 \details{
   colorValueColumn specifies which column of the geneInput of the GeneAnswers instance is used for color of nodes.

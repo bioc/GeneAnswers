@@ -32,6 +32,11 @@
 \alias{setCategoryType,GeneAnswers-method}
 \alias{setCategoryType}
 
+\alias{summary,GeneAnswers-method}
+\alias{summary}
+\alias{show,GeneAnswers-method}
+\alias{show}
+
 
 
 
@@ -72,6 +77,8 @@
      \item{\code{setGeneExprProfile(GeneAnswers, geneExprProfile)}:}{Assign the geneExprProfile slot of \code{GeneAnswers} object.}
      \item{\code{setAnnLib(GeneAnswers, annLib)}:}{Assign the annLib slot of \code{GeneAnswers} object.}
      \item{\code{setCategoryType(GeneAnswers, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend'))}:}{Assign the categoryType slot of \code{GeneAnswers} object.}
+     \item{\code{summary(GeneAnswers)}:}{Briefly summarize the information of \code{GeneAnswers} object and show contents of \code{GeneAnswers} object.}
+     \item{\code{show(GeneAnswers)}:}{Briefly show contents of \code{GeneAnswers} object.}
   }
 }
 
@@ -82,7 +89,7 @@
 \examples{
 data('humanExpr')
 data('humanGeneInput')
-x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
+x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.01, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
 class(x)
 }
 

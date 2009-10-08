@@ -6,7 +6,7 @@
   A function to generate a concept-gene network by given gene information
 }
 \usage{
-geneAnswersConcepts(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE)
+geneAnswersConcepts(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), showCats=c(1:5), catTerm=FALSE, catID=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,7 +15,7 @@ geneAnswersConcepts(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRa
   \item{output}{ output type of final output. }
   \item{showCats}{ a numeric or string vector specified categories  }
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
-  \item{geneSymbol}{ a logic value to specify whether mapping gene IDs to gene symbols }
+  \item{catID}{ a logic value to specify whether show category IDs when catTerm is set to TRUE }
 }
 \details{
   centroidSize could be one of "geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue". Each one defines to which the size of cencept dot is proportional

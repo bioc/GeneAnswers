@@ -33,7 +33,7 @@ Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.e
 \examples{
 data('humanExpr')
 data('humanGeneInput')
-x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
+x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.01, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
 class(x)
 }
 \keyword{ package }
