@@ -10,11 +10,12 @@ function(inputList, inputValue=NULL, centroidSize='geneNum', output=c('fixed','i
 	g <- graph.edgelist(temp[[1]], directed=FALSE)
 	E(g)$color <- "#8888ff"
 	V(g)$size <- 8
-	V(g)$color <- "#ff0000"
+	V(g)$color <- "#dddddd"
 	V(g)$label <- vertexLabels
 	if (!is.null(inputValue)) {
-		if(is.numeric(inputValue) & (!(FALSE %in% (unique(unlist(inputList)) %in% names(inputValue))))) {
+		if(is.numeric(inputValue) & (all(unique(unlist(inputList)) %in% names(inputValue)))) {
 			V(g)[nodes[names(nodes) %in% names(inputValue[inputValue < 0])]]$color <- "#00ff00"
+			V(g)[nodes[names(nodes) %in% names(inputValue[inputValue > 0])]]$color <- "#ff0000"
 		} else {
 			stop('input value does not match input list!!!')
 		}

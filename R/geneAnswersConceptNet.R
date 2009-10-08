@@ -1,5 +1,5 @@
 `geneAnswersConceptNet` <-
-function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE) {
+function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE) {
 	centroidSize <- match.arg(centroidSize)
 	if ((centroidSize == 'correctedPvalue') & !('fdr p value' %in% colnames(x@enrichmentInfo))) stop('input geneAnswer class does not contain fdr p value!!!')
 	#x <- geneAnswersReadable(x, catTerm=catTerm, geneSymbol=geneSymbol)
@@ -27,11 +27,16 @@ function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChan
 			}
 		}
 	}
-	if (is.numeric(showCats)) showCats <- intersect(showCats, c(1:dim(x@enrichmentInfo)[1]))
-    else {
-		if (is.character(showCats)) showCats <- intersect(showCats, rownames(x@enrichmentInfo))
-		else stop('specified categories can not be recognized!')
+	if (is.numeric(showCats)) {
+		if (!(all(showCats %in% c(1:dim(x@enrichmentInfo)[1])))) print('Some specified categories might not be statistical significant! Only show significant categories.')
+		showCats <- intersect(showCats, c(1:dim(x@enrichmentInfo)[1])) 
+	} else {
+		if (is.character(showCats)) {
+			showCats <- intersect(showCats, rownames(x@enrichmentInfo))
+			if (length(showCats) < 1) stop('specified categories can not be recognized!')
+		} else stop('specified categories can not be recognized!')
 	}
+	
     inputList <- x@genesInCategory[names(x@genesInCategory) %in% names(centroidSize[showCats])]
 #	newInput <- lapply(inputList, getSYMBOL, x@annLib)
 
@@ -50,16 +55,21 @@ function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChan
 		'-Log10'= -log10(temp))
 	if (catTerm) {
 		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
-			names(inputList) <- getCategoryTerms(names(inputList), x@categoryType)
-			names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType)
+			if (catID) {
+				names(inputList) <- paste(getCategoryTerms(names(inputList), x@categoryType, missing='name'), '::', names(inputList), sep='')
+				names(scaledTemp) <- paste(getCategoryTerms(names(scaledTemp), x@categoryType, missing='name'), '::', names(scaledTemp), sep='')
+			} else {
+				names(inputList) <- getCategoryTerms(names(inputList), x@categoryType, missing='name')
+				names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType, missing='name')
+			}
 		} else {
 			print('Slot categoryType is not recognized! No mapping ...')
 		}
 	} 
 	
 	if (geneSymbol) {
-		if (!is.null(inputXValue)) names(inputXValue) <- lookUp(names(inputXValue), x@annLib, 'SYMBOL')
-		inputList <- lapply(inputList, lookUp, x@annLib, 'SYMBOL')
+		if (!is.null(inputXValue)) names(inputXValue) <- getSymbols(names(inputXValue), x@annLib, missing='name')
+		inputList <- lapply(inputList, getSymbols, x@annLib, missing='name')
 	}
 	geneConceptNet(inputList, inputValue = inputXValue, centroidSize=scaledTemp, output=output)
 	return(invisible(x))

@@ -47,6 +47,8 @@ if (is.null(getGeneric("setGeneExprProfile"))) setGeneric("setGeneExprProfile", 
 if (is.null(getGeneric("setAnnLib"))) setGeneric("setAnnLib", function(object, annLib) standardGeneric("setAnnLib")) 
 if (is.null(getGeneric("setCategoryType"))) setGeneric("setCategoryType", function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend')) standardGeneric("setCategoryType")) 
 
+if (is.null(getGeneric("summary"))) setGeneric("summary", function(object) standardGeneric("summary"))
+if (is.null(getGeneric("show"))) setGeneric("show", function(object) standardGeneric("show"))
 
 setMethod("getGeneInput",signature(object="GeneAnswers"), function(object) object@geneInput)
 
@@ -131,3 +133,38 @@ setMethod("setCategoryType", signature(object="GeneAnswers"), function(object, t
 	return(object)
 })
 
+setMethod("summary",signature(object="GeneAnswers"), function(object)
+{
+	cat(paste('This GeneAnswers instance was build from', object@categoryType, 'based on', object@testType, 'test.\n'))
+	cat(paste('Statistical information of', dim(object@enrichmentInfo)[1], 'categories with p value less than', object@pvalueT, 'are reported. Other categories are considered as nonsignificant.\n'))
+	cat(paste('There are', length(object@genesInCategory), 'categories related to the given', dim(object@geneInput)[1], 'genes\n'))
+	cat('\n')
+	show(object)
+})
+
+setMethod("show",signature(object="GeneAnswers"), function(object)
+{
+	cat('Summary of GeneAnswers instance information:\n')
+	cat('\nSlot: geneInput\n')
+	print(head(object@geneInput))
+	if (dim(object@geneInput)[1] > 6) cat('......\n')
+	cat('\nSlot: testType\n')
+	print(object@testType)
+	cat('\nSlot: pvalueT\n')
+	print(object@pvalueT)
+	cat('\nSlot: genesInCategory\n')
+	print(head(object@genesInCategory))
+	if (length(object@genesInCategory) > 6) cat('......\n')
+	cat('\nSlot: geneExprProfile\n')
+	print(head(object@geneExprProfile))
+	if (!is.null(object@geneExprProfile)) {
+		if (dim(object@geneExprProfile)[1] > 6) cat('......\n')
+	}
+	cat('\nSlot: annLib\n')
+	print(object@annLib)
+	cat('\nSlot: categoryType\n')
+	print(object@categoryType)
+	cat('\nSlot: enrichmentInfo\n')
+	print(head(object@enrichmentInfo))
+	if (dim(object@enrichmentInfo)[1] > 6) cat('......\n')
+})

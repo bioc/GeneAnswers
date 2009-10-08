@@ -13,7 +13,7 @@ function(geneVector, lib, GOCat = c('ALL', 'BP', 'CC', 'MF'), level = 1) {
 						if ((GOCat == 'ALL') | (GOCat == 'CC'))	allGOIDs <- c(allGOIDs, unique(unlist(lookUp(goIDs, "GO", "CCANCESTOR"))))
 						if ((GOCat == 'ALL') | (GOCat == 'MF')) allGOIDs <- c(allGOIDs, unique(unlist(lookUp(goIDs, "GO", "MFANCESTOR"))))
 						allGOIDs <- unique(allGOIDs[!(allGOIDs %in% NA)])
-						naGOIDs <- unlist(lapply(lookUp(allGOIDs, lib, "GO2EG"), is.na))
+						naGOIDs <- unlist(lapply(lookUp(allGOIDs, lib, "GO2ALLEGS"), is.na))
 						allGOIDs <- allGOIDs[!(allGOIDs %in% names(naGOIDs[naGOIDs %in% TRUE]))]
 						allGOIDs <- allGOIDs[!(allGOIDs %in% .filterGOIDs(GOCategory=GOCat, level=level))]
 						if (!is.null(allGOIDs)) {

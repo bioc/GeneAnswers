@@ -10,7 +10,7 @@ function(x, sortBy = c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correcte
 		'correctedPvalue' = c('fdr p value', 'FALSE'))
 	y <- x
 	y@enrichmentInfo <-	x@enrichmentInfo[order(x@enrichmentInfo[, orderby[1]], decreasing=as.logical(orderby[2])), ]
-	y@genesInCategory <- x@genesInCategory[rownames(y@enrichmentInfo)]
+	y@genesInCategory <- x@genesInCategory[c(rownames(y@enrichmentInfo), names(x@genesInCategory)[!(names(x@genesInCategory) %in% rownames(x@enrichmentInfo))])]
 	return(y)
 }
 

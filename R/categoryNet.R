@@ -5,15 +5,17 @@ function(catGenesList, centroidSize=NULL, output=c('fixed','interactive')) {
 	names(nodes) <- names(catGenesList)
 	edgeMatrix <- c()
 	edgeWidth <- c()
+	monoNodes <- c(1:length(nodes)) - 1
 	for (i in 1:(length(catGenesList) - 1)) {
 		for (j in (i+1):length(catGenesList)) {
 			if (length(intersect(catGenesList[[i]], catGenesList[[j]])) > 0) {
 				edgeMatrix <- c(edgeMatrix, c((i-1), (j-1)))
 				edgeWidth <- c(edgeWidth, length(intersect(catGenesList[[i]], catGenesList[[j]])))
-			}
+			} 
 		}
 	}
-	g <- graph.edgelist(t(matrix(edgeMatrix, nrow=2)), directed=FALSE)
+	
+	g <- graph(edgeMatrix, n = length(nodes), direct = FALSE)
 	E(g)$color <- "#6666ff"
 	E(g)$width <- as.integer(edgeWidth/sum(edgeWidth) * 100) + 1
 	V(g)$color <- "#ffd900"

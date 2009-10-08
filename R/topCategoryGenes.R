@@ -17,7 +17,7 @@ function(inputX, orderby=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'corr
 	inputX@enrichmentInfo <- inputX@enrichmentInfo[order(inputX@enrichmentInfo[, orderby[1]], decreasing=as.logical(orderby[2])), ]
 	if (is.character(topGenes) & toupper(topGenes) != 'ALL') stop('topGenes can not be recognized!')
 	sortGenes <- TRUE
-	if (file) writeLines(paste(paste(top, ' categories genes table', sep=''), '', paste(c('Category', orderby[1], names(inputX@geneInput)), collapse='\t'), sep='\n'), con=fileName)
+	if (file) writeLines(paste(paste(top, ' categories genes table', sep=''), '', paste(c('Category', orderby[1], colnames(inputX@geneInput)), collapse='\t'), sep='\n'), con=fileName)
 	for (i in 1:top) {
 		tempTopGenes <- topGenes 
 		print(paste('******** ', rownames(inputX@enrichmentInfo)[i], '   ', orderby[1], ' : ', inputX@enrichmentInfo[i, orderby[1]], ' ********', sep=''))

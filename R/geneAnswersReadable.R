@@ -15,7 +15,8 @@ function(x, catTerm=TRUE, geneSymbol=TRUE, strict=FALSE, verbose=TRUE, missing=c
 	}
 	if (!is.null(y@geneExprProfile) & geneSymbol) {
 		if (verbose) print('Converting geneExprProfile rownames ...')
-		rownames(y@geneExprProfile) <- getSymbols(rownames(x@geneExprProfile), x@annLib, strict=strict, missing=missing)
+		y@geneExprProfile <- cbind(getSymbols(as.character(x@geneExprProfile[,1]), x@annLib, strict=strict, missing=missing), x@geneExprProfile[,2:dim(x@geneExprProfile)[2]])
+		colnames(y@geneExprProfile)  <- colnames(x@geneExprProfile)
 	}
 	return(y)
 }

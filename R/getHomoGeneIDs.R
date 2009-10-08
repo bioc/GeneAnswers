@@ -21,7 +21,7 @@ function (oriGeneIDs, species=c('human', 'rat', 'mouse', 'yeast', 'fly'), specie
  			'mouse'='org.Mm.eg.db')	
 		require(lib, character.only=TRUE)
 		require(libL, character.only=TRUE)
-		geneSymbols <-unlist(getSymbols(oriGeneIDs, lib))
+		geneSymbols <-unlist(getSymbols(oriGeneIDs, lib, missing='name'))
 		if (speciesL == 'human') newGeneSymbols <- toupper(geneSymbols)
 		else newGeneSymbols <- paste(toupper(substring(geneSymbols,1,1)), {tolower(substring(geneSymbols,2))}, sep = "")
 		names(newGeneSymbols) <- names(geneSymbols)

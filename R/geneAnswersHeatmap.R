@@ -1,23 +1,33 @@
 `geneAnswersHeatmap` <-
-function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, ...) {
+function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, ...) {
 	if (is.null(x@genesInCategory[showCats])) stop('specified categories can not be found in x@genesInCategory!')
 	if (is.null(x@geneExprProfile)) stop('Gene expression file is NULL!')
-	if (is.numeric(showCats)) newList <- x@genesInCategory[intersect(showCats, c(1:length(x@genesInCategory)))]
-    else {
-		if (is.character(showCats)) newList <- x@genesInCategory[names(x@genesInCategory) %in% showCats]
-		else stop('specified categories can not be recognized!')
+	if (is.numeric(showCats)) {
+		if (!(all(showCats %in% c(1:dim(x@enrichmentInfo)[1])))) print('Some specified categories might not be statistical significant! Only show significant categories.')
+		showCats <- intersect(showCats, c(1:dim(x@enrichmentInfo)[1]))
+	}else {
+		if (is.character(showCats)) {
+			showCats <- intersect(showCats, rownames(x@enrichmentInfo))
+			if (length(showCats) < 1) stop('specified categories can not be recognized!')
+		} else stop('specified categories can not be recognized!')
 	}
-	newDataMatrix <- as.matrix(x@geneExprProfile) 
+	newList <- x@genesInCategory[showCats]
+	newDataMatrix <- matrix(as.numeric(as.matrix(x@geneExprProfile[,2:(dim(x@geneExprProfile)[2])])), ncol=(dim(x@geneExprProfile)[2]-1))
+	colnames(newDataMatrix) <- colnames(x@geneExprProfile)[2:dim(x@geneExprProfile)[2]]
+	rownames(newDataMatrix) <- x@geneExprProfile[,1]
+	
 	if (geneSymbol) {
-		newList <- lapply(x@genesInCategory[showCats], getSymbols, x@annLib)
-		rownames(newDataMatrix) <- getSymbols(rownames(x@geneExprProfile), x@annLib)
+		newList <- lapply(newList, getSymbols, x@annLib, missing='name')
+		rownames(newDataMatrix) <- getSymbols(rownames(newDataMatrix), x@annLib, missing='name')
 	}
-	if (is.numeric(showCats)) showCats <- intersect(showCats, c(1:dim(x@enrichmentInfo)[1]))
-	else {
-		if (is.character(showCats)) showCats <- intersect(showCats, rownames(x@enrichmentInfo))
-		else stop('specified categories can not be recognized!')
+	if (catTerm) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
+			if (catID) names(newList) <- paste(getCategoryTerms(names(newList), x@categoryType, missing='name'), '::', names(newList), sep='')
+			else names(newList) <- getCategoryTerms(names(newList), x@categoryType, missing='name')
+		}else {
+		 	print('Slot categoryType is not recognized! No mapping ...')
+		}
 	}
-	if (catTerm) names(newList) <- getCategoryTerms(names(x@genesInCategory[showCats]), x@categoryType)
 	geneAnnotationHeatmap(newList, dataMatrix = newDataMatrix, ...) 		  
 }
 

@@ -4,13 +4,13 @@
         addVigs2WinMenu("GeneAnswers")
     }
 
-    if (.Platform$OS.type == "unix" && (.Platform$GUI %in% c("X11", "Tk", "GNOME"))) {
-		quartz <- function(...) X11(...)
-	}
-	
-	if (.Platform$OS.type == "windows" && (.Platform$GUI %in% c("Rgui", "Rterm"))) {
-		quartz <- function(...) windows(...)
-	}
+    #if (.Platform$OS.type == "unix" && (.Platform$GUI %in% c("X11", "Tk", "GNOME"))) {
+	#	quartz <- function(...) X11(...)
+	#}
+	#
+	#if (.Platform$OS.type == "windows" && (.Platform$GUI %in% c("Rgui", "Rterm"))) {
+	#	quartz <- function(...) windows(...)
+	#}
 	 
 	data('DOLite', package='GeneAnswers')
 	data('DOLiteTerm', package='GeneAnswers')
@@ -96,7 +96,7 @@
 # colorBar: determine whether plot the color bar in the separated window (In the current implementation, users have to the adjust the window to get a better view)
 # colorBarLabel: labels of color bar
 .heatmap.mds <- function(dataMatrix, sortBy=c('row', 'column', 'both', 'none'), rotate=FALSE, standardize=TRUE, colorMap='RdYlBu', mar=c(1,1,5,8),  
-	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, addRowLabel=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), colorBar=F, colorBarLabel=NULL, mapType=mapType,  ...)
+	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap'),  ...)
 {
 	if (colorMap[1] == 'GBR') {
 		library(Heatplus)
@@ -110,6 +110,10 @@
 	sort <- TRUE
 	if (sortBy == 'none') sort <- FALSE
 	dataRange <- range(dataMatrix)
+	if (symmetry) {
+		temp <- max(abs(dataRange))
+		dataRange <- c(-temp, temp)
+	} 
 	
 	if (!is.null(maxQuantile)) {
 		if (length(maxQuantile) == 1) maxQuantile <- c(1-maxQuantile, maxQuantile)
@@ -132,7 +136,8 @@
 		maxVal <- round(maxVal, 2)
 		dataMatrix[dataMatrix < maxVal[1]] <- maxVal[1]
 		dataMatrix[dataMatrix > maxVal[2]] <- maxVal[2]
-	}
+	}	
+	
 	ind.order <- list(row=1:nrow(dataMatrix), column=1:ncol(dataMatrix))
 	## get the gene symbol
 	rowLabels <- rownames(dataMatrix)
@@ -141,21 +146,6 @@
 		return(NULL)
 	}
 
-#	if (!is.null(lib)) {
-#		symbol <- probe2gene(rownames(dataMatrix), lib=lib)
-#		if (rm.unannotate) {
-#			rmInd <- which(is.na(symbol) | (symbol == ''))
-#			if (length(rmInd) > 0) {
-#				dataMatrix <- dataMatrix[-rmInd,]
-#				rowLabels <- symbol[-rmInd]
-#				if (sortBy == 'row') ind.order$row <- ind.order$row[-rmInd]
-#			} else {
-#				rowLabels <- symbol
-#			}
-#		} else {
-#			rowLabels[!(is.na(symbol) | (symbol == ''))] <- symbol[!(is.na(symbol) | (symbol == ''))]
-#		}
-#	}
 	if (rotate) {
 		colLabels <- rowLabels
 		rowLabels <- colnames(dataMatrix)
@@ -170,7 +160,6 @@
 		if (any(is.na(dataMatrix))) {
 			mm <- mean(dataMatrix, na.rm=T)
 			dataMatrix[is.na(dataMatrix)] <- mm
-			print('test')
 		}
 	} else {
 		relative <- FALSE
@@ -229,8 +218,12 @@
 	
 	else {
 		oldsetting <- par('mar'=mar)
-
-		image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='',  ...)  
+		if (symmetry) {
+			maxV <- max(abs(range(dataMatrix)))
+			maxVal <- c(-maxV, maxV)
+			image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', zlim=maxVal, ...)
+		}
+		else image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', ...)  
 		#image(x=1:ncol(inputM), y=1:nrow(inputM), -t(inputM), ylim=c((nrow(inputM)+1),0), col=c('white','white'), axes=F, xlab='', ylab='', )
 		axis(3, at=1:ncol(dataMatrix), labels=colLabels, tick=F, las=2, cex.axis=cex.axis[1])
 		if (addRowLabel) {
@@ -240,7 +233,8 @@
 		}
 		box()
 		
-		if (colorBar) {	
+		if (colorBar) {
+			deviceNo <- dev.cur()	
 			x11()
 			par(mar=c(2,2,3,5))
 			color <- seq(maxVal[1], maxVal[2], length=length(colorMap))
@@ -258,26 +252,27 @@
 				if (is.numeric(colorBarLabel)) 
 					colorBarLabel <- round(colorBarLabel,2)
 				if (!is.null(maxVal)) {
-					if (colorBarLabel[1] == - round(maxVal, 2)) {
+					if (colorBarLabel[1] == -round(maxVal[1], 2)) {
 						colorBarLabel[1] <- paste('-', round(maxVal, 2), '<')
-					} 
-					if (colorBarLabel[length(colorBarLabel)] == round(maxVal, 2)) {
+					}
+					if (colorBarLabel[length(colorBarLabel)] == round(maxVal[1], 2)) {
 						colorBarLabel[length(colorBarLabel)] <- paste('>', round(maxVal, 2))
-					}  
+					}
 				}
 				axis(4, at = seq(1, length(colorMap), length=length(colorBarLabel)), labels=colorBarLabel)		
 			}
 			box()
+			dev.set(deviceNo)
 		}
 
 		par(oldsetting)
-	} 
+	}
 	return(invisible(ind.order))
 }
- 
-.hyperGTest <- function(inputVector, categoryList) {
+
+.hyperGTest <- function(inputVector, categoryList, ...) {
 	if (is.vector(inputVector) & is.character(inputVector)) {
-		testResult <- lapply(categoryList, .overReprsTest, inputVector)
+		testResult <- lapply(categoryList, .overReprsTest, inputVector, ...)
 		hyperGTest <- as.data.frame(t(matrix(unlist(testResult), ncol=length(testResult), nrow=length(testResult[[1]]))))
 		rownames(hyperGTest) <- names(testResult)
 		colnames(hyperGTest) <- names(testResult[[1]])
@@ -300,9 +295,8 @@
 		output <- c(length(inCategoryIDs), perInObserved, perInGenome, foldOverRepresents, odds_ratio, 
 						phyper(length(inCategoryIDs) - 1L, length(categoryIDs), totalNGenes-length(categoryIDs), length(observedIDs), lower.tail = FALSE))
 	} else {
-		output <- c(0, NA, NA, NA, NA)
+		output <- c(0, NA, NA, NA, NA, 1)
 	}
-
 	names(output) <- c('genes in Category', 'percent in the observed List', 'percent in the genome', 'fold of overrepresents', 'odds ratio', 'p value')
 	return(output)
 }
@@ -319,9 +313,10 @@
   		'rat'='Rattus norvegicus',
   		'mouse'='Mus musculus',
   		'fly'='Drosophila melanogaster')
-	checkHttpSyntax <- function(x) {
+	checkHttpSyntax <- function(x, type=c('quote', 'plus')) {
 		if (length(grep(pattern=" ", x)) != 0) {
-		   x <- gsub(pattern=" ", replacement="+", x=x)
+		   if (type == 'quote') x <- paste('"', x, '"', sep='')
+		   else x <- gsub(' ', '+', x)
 		}
 		return(x)
 	}
@@ -332,15 +327,15 @@
 	
 	if (length(term) > 0) {
 		# replace space for Http syntax 
-		term <- checkHttpSyntax(term)
-		species <- checkHttpSyntax(species)
+		term <- checkHttpSyntax(term, type='quote')
+		species <- checkHttpSyntax(species, type='plus')
 	  	# Get the query string ready. This string should be in the Pubmed 
 	  	# syntax. The Pubmed syntax is documented at
 	  	# http://eutils.ncbi.nlm.nih.gov/entrez/query/static/esearch_help.html
 	    query <- URLencode(paste(baseUrl, "esearch.fcgi?", "db=gene&term=", term, "+AND+",
 					   species, "[organism]&retmode=xml&retmax=500000", sep=""))
 	} else {
-		species <- checkHttpSyntax(species)
+		species <- checkHttpSyntax(species, type='plus')
 	  	# Get the query string ready. This string should be in the Pubmed 
 	  	# syntax. The Pubmed syntax is documented at
 	  	# http://eutils.ncbi.nlm.nih.gov/entrez/query/static/esearch_help.html
@@ -361,3 +356,6 @@
 	names(temp) <- NULL
 	return(unlist(temp)[GOIDs])
 }
+ 
+
+
