@@ -109,7 +109,7 @@ We have four GeneAnswers objects, x, y, z and w, containing the statistical test
 <<build customized GeneAnswers,  echo=T, eval=T>>=  
 keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
 entrezIDList <- searchEntrez(keywordsList) 
-q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 class(q)
 getAnnLib(q)
 getCategoryType(q)
@@ -345,9 +345,9 @@ dim(mouseGeneInput)
 dim(newGeneInput)
 newGeneInput[,1] <- homoLL[newGeneInput[,1]]
 ## mapping geneExpr to homo entrez IDs.
-homoLLExpr <- getHomoGeneIDs(rownames(mouseExpr), species='mouse', speciesL='human', mappingMethod='direct')
-newExpr <- mouseExpr[rownames(mouseExpr) %in% unlist(lapply(unique(homoLLExpr) , pickHomo, homoLLExpr)),]
-rownames(newExpr) <- homoLLExpr[rownames(newExpr)]
+homoLLExpr <- getHomoGeneIDs(as.character(mouseExpr[,1]), species='mouse', speciesL='human', mappingMethod='direct')
+newExpr <- mouseExpr[as.character(mouseExpr[,1]) %in% unlist(lapply(unique(homoLLExpr) , pickHomo, homoLLExpr)),]
+newExpr[,1] <- homoLLExpr[as.character(newExpr[,1])]
 dim(mouseExpr)
 dim(newExpr)
 ## build a GeneAnswers instance based on mapped data
