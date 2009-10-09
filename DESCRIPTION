@@ -8,7 +8,7 @@ Suggests: GO.db, KEGG.db, biomaRt, AnnotationDbi, org.Hs.eg.db, org.Rn.eg.db, or
 Author: Gang Feng, Pan Du, Warren Kibbe and Simon Lin
 Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.edu>
 Description: GeneAnswers provide an integrated tool for given genes biological or medical interpretation. It includes statistical test of given genes and specified categories.
-License: LGPL version 2 or newer
+License: LGPL (>= 2)
 biocViews: Infrastructure, DataRepresentation, Visualization 
 LazyLoad: yes
 
