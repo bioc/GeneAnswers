@@ -8,9 +8,9 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	require(annotate)
 	if (is.vector(geneInput) | is.data.frame(geneInput) | is.matrix(geneInput)) {
 		if (is.vector(geneInput)) {
-			geneIDs <- geneInput
+			geneIDs <- as.character(geneInput)
 		} else { 
-			geneIDs <- geneInput[,1]
+			geneIDs <- as.character(geneInput[,1])
 		}
 		x@geneInput <- as.data.frame(geneInput)
 		#rownames(x@geneInput) <- geneIDs
