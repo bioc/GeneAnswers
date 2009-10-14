@@ -19,7 +19,7 @@ geneAnswersHomoMapping(x, species = c("human", "rat", "mouse", "fly"), speciesL 
 }
 \details{
   There are two mapping methods supported by current version. "direct" only works between human and mouse because most of human gene symbols are capitalized and only the first letter is uppercase for those homogenes in mouse. Another way is by means of package "biomaRt" ,which contains more information while the network connection is necessary to access biomaRt online server.
-  Since two methods are based on different mechanisms, it is highly recommended to employ same method between conversion.
+  Since two methods are based on different mechanisms, it is highly recommended to employ same method during mapping.
   Each method might introduce more homogenes, so users can remove ones that do not belong to original genes by optional "filterGeneList". 
 }
 \value{
