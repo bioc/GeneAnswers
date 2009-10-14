@@ -28,7 +28,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 
   categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
   
-  totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be assigned an integer, or geneAnswersBuilder will abort.  
+  totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
 
   sortBy could be one of "geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue" and "none". Default value is 'pvalue'.
 }

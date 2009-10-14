@@ -3,7 +3,9 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 								verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...) {
 	testType <- match.arg(testType)
 	sortBy <- match.arg(sortBy)
-	if(!(is.null(totalGeneNumber)) & !(is.numeric(totalGeneNumber))) stop('TotalGeneNumber should be NULL or numeric! Abort GeneAnswers Building ...')
+	if(!(is.null(totalGeneNumber))) {
+		if (!(is.numeric(totalGeneNumber)) & !(tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly'))) stop('TotalGeneNumber should be NULL or numeric or one of "human", "mouse", "rat" and "fly"! Abort GeneAnswers Building ...')
+	}
 	x <- new("GeneAnswers")
 	require(annotate)
 	if (is.vector(geneInput) | is.data.frame(geneInput) | is.matrix(geneInput)) {
@@ -81,6 +83,14 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'org.Rn.eg.db'=37536,
 					'org.Dm.eg.db'=22606)
 			} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
+		} else {
+			if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
+				totalGeneNumber <- switch(totalGeneNumber,
+					'human'=45384,
+					'mouse'=61498,
+					'rat'=37536,
+					'fly'=22606)
+			}
 		}
 		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber)
 	}
