@@ -14,6 +14,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 		} else { 
 			geneIDs <- as.character(geneInput[,1])
 		}
+		if (NA %in% geneIDs) stop('Given gene IDs contain NA, please check!!! Aborting ...')
 		x@geneInput <- as.data.frame(geneInput)
 		#rownames(x@geneInput) <- geneIDs
 	} else {
