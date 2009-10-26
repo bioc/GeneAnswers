@@ -54,10 +54,12 @@ Thanks for your help!
 In order to install the \Rpackage{GeneAnswers} package, the user needs to first install R, some related Bioconductor packages. You can easily install them by the following codes.
 
 \begin{Sinput} 
-source("http://bioconductor.org/biocLite.R")biocLite("GeneAnswers")
+source("http://bioconductor.org/biocLite.R")
+biocLite("GeneAnswers")
 \end{Sinput}
 
-For the users want to install the latest developing version of \Rpackage{GeneAnswers}, which can be downloaded from the developing section of Bioconductor website. Some additional packages might be required to be installed because of the update the Bioconductor. These packages can also be found from the developing section of Bioconductor website. You can also directly install the source packages from the Bioconductor website by specify the developing version number, which can be found at the Bioconductor website. Suppose the developing version is 2.5, toinstall the latest \Rpackage{GeneAnswers} pakcage in the Bioconductor developing version, you can use the following command:
+For the users want to install the latest developing version of \Rpackage{GeneAnswers}, which can be downloaded from the developing section of Bioconductor website. Some additional packages might be required to be installed because of the update the Bioconductor. These packages can also be found from the developing section of Bioconductor website. You can also directly install the source packages from the Bioconductor website by specify the developing version number, which can be found at the Bioconductor website. Suppose the developing version is 2.5, to
+install the latest \Rpackage{GeneAnswers} pakcage in the Bioconductor developing version, you can use the following command:
 
 \begin{Sinput}
 install.packages("GeneAnswers",repos="http://www.bioconductor.org/packages/2.5/bioc",type="source")
@@ -101,7 +103,7 @@ library(GeneAnswers)
 @
 
 \subsection{Build a GeneAnswers instance}
-The key point of \Rpackage{GeneAnswers} package is to build a GeneAnswers instance. We use two internal datasets, one is from human and another is from mouse, as examples to show how to implement \Rpackage{GeneAnswers} package. The human and mouse datasets coming with the \Rpackage{GeneAnswers} package are  from human and mouse Illumina beadarray experiments. Each dataset contains two dataframes. For example, humanGeneInput is a dataframe  containing Entrez gene IDs with fold changes and p values, while the data frame, humanExpr, includes two types, control and treatment, of gene expression profile of the genes in humanGeneInput.
+The key point of \Rpackage{GeneAnswers} package is to build a GeneAnswers instance. The essential input for \Rpackage{GeneAnswers} is an Entrez gene IDs vector (a character vector). However, if users have any interested values associated with genes, these values can also be as optional inputs. In this case,  the input, geneInput, could be a matrix or a dataframe. The first column is always for Entrez gene IDs. Other columns are used to store those interested values. Rownames for the matrix or dataframe are not necessary, but colnames are recommended for further usage. We use two internal datasets, one is from human and another is from mouse, as examples to show how to implement \Rpackage{GeneAnswers} package. The human and mouse datasets coming with the \Rpackage{GeneAnswers} package are  from human and mouse Illumina beadarray experiments. Each dataset contains two dataframes. For example, humanGeneInput is a dataframe  containing Entrez gene IDs with fold changes and p values, while the data frame, humanExpr, includes two types, control and treatment, of gene expression profile of the genes in humanGeneInput.
 
 <<build GeneAnswers,  echo=T, eval=T>>=  
 data('humanGeneInput')

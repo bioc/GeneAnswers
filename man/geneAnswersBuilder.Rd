@@ -24,6 +24,8 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
   \item{\dots}{ additional arguments passed on to the corresponding enrichment test. }
 }
 \details{
+  As the input of geneAnswersBuilder, geneInput could be a character vector (Gene Entrez ID vector), a matrix or a dataframe. For the matrix and dataframe, the first column is for Gene Entrez IDs, while other columns could be any interested values that could be used to represent gene expression direction for generating concepts-genes network. Rownames are not necessary. 
+  
   annotationLib could be Disease Ontology library, Entrez annotation libraries for a specie, such as 'org.Hs.eg.db'. Current version supports 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db' and 'org.Dm.eg.db'. User can also use own annotation library. User's annotation library should be a list. Each element in this list is a vector of genes for a user-specified category. Names of this annotation list are categories' names.
 
   categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
@@ -37,7 +39,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng,  Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{geneAnswersSort}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{geneAnswersSort}}, \code{\link{geneAnswersConceptNet}}, ~~~ } 
 \examples{
 data('humanExpr')
 data('humanGeneInput') 
