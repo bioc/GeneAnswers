@@ -1,5 +1,6 @@
 `getCategoryTerms` <-
 function(catIDs, catType, strict=FALSE, missing=c('name', 'keep', 'remove')) {
+	missing=match.arg()
 	if (toupper(catType) %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG')) {
 		catTerms = switch(toupper(catType), 
 		'GO'=.getGOTerms(catIDs),
