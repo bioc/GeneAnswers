@@ -168,6 +168,7 @@ geneAnswersChartPlots(xx, chartType='all')
 \label{barplot of top categories}
 \end{figure}   
 
+The nodes could be represented by different colors for different specified values, like fold change. In this case, overexpressed genes are represented as red nodes while green dots stand for underexpressed genes. If the node is more red, which means its fold change is larger. It's same for green nodes, but different direction. 
 <<plot interactive  concept-gene network,  echo=T, eval=F>>= 
 ## plot interactive concept-gene network
 geneAnswersConceptNet(xx, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')
@@ -176,15 +177,45 @@ geneAnswersConceptNet(xx, colorValueColumn='foldChange', centroidSize='pvalue', 
 \begin{figure}
 \centering
 \centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet01.jpg}}
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet01a.jpg}}
 \caption{Screen shot of concept-gene network}
 \label{conceptgeneNetwork}
 \end{figure}
+
+The top 5 categories might not be very specific. Users might get a  tree view to see relative category terms by calling function geneAnswersConceptRelationif the category has an ontology structure. The size of nodes is proportional to number of genes in these GO categories. The color of nodes stand for how relative the given genes are to the GO categories. More red, more relative. The given GO categories are yellow framed dots with dark purple edges connetions.
+<<plot interactive  go structure network,  echo=T, eval=F>>= 
+## plot interactive go structure network
+geneAnswersConceptRelation(x, direction='both', netMode='connection', catTerm=TRUE, catID=TRUE, nameLength=15) 
+@
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{gostrt.jpg}}
+\caption{Screen shot of go structure network}
+\label{conceptgeneNetwork}
+\end{figure}
+
+Also the new version GeneAnswers integrates gene interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
+<<plot interactive  concept-gene network with gene interaction,  echo=T, eval=F>>= 
+## plot interactive concept-gene network
+geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', showCats=c("GO:0009611", "GO:0043933", "GO:0045622"), catTerm=TRUE, geneSymbol=TRUE, catID=TRUE)
+@
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet07.jpg}}
+\caption{Screen shot of concept-gene network}
+\label{conceptgeneNetwork}
+\end{figure}
+
 
 <<plot Go-concept network for 2 level nodes removal,  echo=T, eval=F>>= 
 ## plot Go-concept network for 2 level nodes removal
 geneAnswersConceptNet(ww, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
 @
+
 
 \begin{figure}
 \centering
