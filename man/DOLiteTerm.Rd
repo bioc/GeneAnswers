@@ -6,9 +6,6 @@
   Disease Ontology Annotation Vector
 }
 \usage{data(DOLiteTerm)}
-\format{
-  
-}
 \details{
   a character vector, where names are DOLite IDs and elements are Terms
 }

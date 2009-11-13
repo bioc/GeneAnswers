@@ -6,7 +6,7 @@
   A function to generate a concept-gene network by given gene information
 }
 \usage{
-geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive"), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE)
+geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "geneNum", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive"), showCats=c(1:5), geneLayer=1, edgeM=NULL, catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,9 +15,13 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "p
   \item{centroidSize}{ type to represent the size of concepts. }
   \item{output}{ output type of final output. }
   \item{showCats}{ a numeric or string vector specified categories  }
+  \item{geneLayer}{ an integer, specify how many layers of genes connecting to concepts}
+  \item{edgeM}{ a 2-column Matrix representing a network  }
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
   \item{geneSymbol}{ a logic value to specify whether mapping gene IDs to gene symbols }
   \item{catID}{ a logic value to specify whether show category IDs when catTerm is set to TRUE }
+  \item{nameLength}{ show how many first letters for long term names, 'all' for full name} 
+  \item{\dots}{ other parameters used by 'geneConceptNet' }
 }
 \details{
   colorValueColumn specifies which column of the geneInput of the GeneAnswers instance is used for color of nodes.
@@ -34,7 +38,7 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("geneNum", "p
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{getMultiLayerGraphIDs}}, ~~~ }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')}

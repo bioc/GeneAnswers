@@ -6,7 +6,7 @@
   Function to convert category IDs to category terms.
 }
 \usage{
-getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'remove'))
+getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'remove'), nameLength='all', addID=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,6 +14,8 @@ getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'rem
   \item{catType}{ type of category }
   \item{strict}{ logic value to stop conversion if NA is introduced. }
   \item{missing}{ type of handling NA mapping. }
+  \item{nameLength}{ show how many first letters for long term names, 'all' for full name }
+  \item{addID}{ logic, add term IDs following term names or not}
 }
 \details{
   The current version only supports 'GO', 'DOLite' and 'KEGG'.

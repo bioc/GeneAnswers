@@ -6,8 +6,6 @@
   Disease Ontology Annotation List
 }
 \usage{data(DOLite)}
-\format{
-}
 \details{
   a standard list, whose names are DOLite IDs and each element contains the gene Entrez IDs belonging to the corresponding DOLite IDs.
 }
