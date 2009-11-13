@@ -126,7 +126,12 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	selfClosure <- inputList[[1]]
 	inputList <- inputList[2:length(inputList)] 
 	returnResult <- inputList[2:length(inputList)]
-
+    
+	if (is.null(unlist(inputList[2:length(inputList)]))) {
+		print('All nodes are not connected! Aborting ...')
+		return(NULL)
+	}
+	
 	temp <- inputList[[1]]
 	if (readable) {
 		if (idType %in% c('GeneInteraction')) {
@@ -151,10 +156,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 	} 
 	
-	if (is.null(unlist(inputList[2:length(inputList)]))) {
-		print('All nodes are not connected! Aborting ...')
-		return(NULL)
-	}
+	
 	tempG <- .list2graph(inputList[2:length(inputList)], directed=directed, verbose=verbose, reverse=UP)
 	g <- tempG[[1]]
 	if (verbose) {
