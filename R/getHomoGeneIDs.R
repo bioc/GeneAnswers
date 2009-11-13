@@ -50,7 +50,7 @@ function (oriGeneIDs, species=c('human', 'rat', 'mouse', 'yeast', 'fly'), specie
 	  		'fly'='dmelanogaster_gene_ensembl')
 		from = useMart("ensembl", dataset = lib)
 		to = useMart("ensembl", dataset = libL)
-		print('Converting ...') 
+		print('Mapping ...') 
 		homogenesM <- as.matrix(getLDS(attributes = c("entrezgene"), filters = "entrezgene", values = oriGeneIDs, mart = from,  attributesL = c("entrezgene"), martL = to))
 		homogenes <- as.character(homogenesM[,2])
 		names(homogenes) <- homogenesM[,1]

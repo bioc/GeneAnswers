@@ -1,5 +1,5 @@
 `geneAnswersHeatmap` <-
-function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, ...) {
+function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...) {
 	if (is.null(x@genesInCategory[showCats])) stop('specified categories can not be found in x@genesInCategory!')
 	if (is.null(x@geneExprProfile)) stop('Gene expression file is NULL!')
 	if (is.numeric(showCats)) {
@@ -22,8 +22,7 @@ function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, ...)
 	}
 	if (catTerm) {
 		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
-			if (catID) names(newList) <- paste(getCategoryTerms(names(newList), x@categoryType, missing='name'), '::', names(newList), sep='')
-			else names(newList) <- getCategoryTerms(names(newList), x@categoryType, missing='name')
+	  		names(newList) <- getCategoryTerms(names(newList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		}else {
 		 	print('Slot categoryType is not recognized! No mapping ...')
 		}

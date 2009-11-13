@@ -14,6 +14,11 @@
 	 
 	data('DOLite', package='GeneAnswers')
 	data('DOLiteTerm', package='GeneAnswers')
+	data('HsIALite', package='GeneAnswers')
+	data('MmIALite', package='GeneAnswers')
+	data('RnIALite', package='GeneAnswers')
+	data('DmIALite', package='GeneAnswers')
+	
 }
 
 .filterGOIDs <- function(GOCategory=c('ALL', 'BP', 'CC', 'MF'), level=level) {
@@ -36,30 +41,72 @@
 	return(filterGOIDs)
 }
 
-.makeGraph <- function (edgesMatrix=NULL, openFile=FALSE, fileName=NULL, saveFile = FALSE) {
-	if (openFile) edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
-	originalNodes <- unique(as.list(edgesMatrix))
-	nodes <- rep(0:(length(originalNodes)-1))
-	names(nodes) <- originalNodes
-	newEdges <- matrix(nodes[as.character(edgesMatrix[,1])])
-	newEdges <- cbind(newEdges, nodes[as.character(edgesMatrix[,2])]) 
-	if (saveFile) {
-		write.table(newEdges, file='graph.txt', sep=' ', row.names=F, col.names=F)
-		return(nodes)
-	} else {
-		return(c(list(newEdges), list(nodes)))
+#.makeGraph <- function (edgesMatrix=NULL, openFile=FALSE, fileName=NULL, saveFile = FALSE) {
+#	if (openFile) edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
+#	originalNodes <- unique(as.list(edgesMatrix))
+#	nodes <- rep(0:(length(originalNodes)-1))
+#	names(nodes) <- originalNodes
+#	newEdges <- matrix(nodes[as.character(edgesMatrix[,1])])
+#	newEdges <- cbind(newEdges, nodes[as.character(edgesMatrix[,2])]) 
+#	if (saveFile) {
+#		write.table(newEdges, file='graph.txt', sep=' ', row.names=F, col.names=F)
+#		return(nodes)
+#	} else {
+#		return(c(list(newEdges), list(nodes)))
+#	}
+#}
+#
+#.list2graph <- function (inputList, ...) {
+#	column1 <- c()
+#	if (length(inputList) >0) {
+#		for (i in 1:length(inputList)) {
+#			column1 <- c(column1, rep(-i, length(inputList[[i]])))
+#		}
+#		edgeMatrix <- matrix(column1)
+#		edgeMatrix <- cbind(edgeMatrix, unlist(inputList))
+#		return(.makeGraph(edgesMatrix=edgeMatrix, ...))
+#	} else {
+#		stop('list is empty!')
+#	}
+#}
+
+.makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE) {
+	require(igraph)
+	if (openFile) {
+		edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
+		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
 	}
+	originalNodes <- unique(as.vector(edgesMatrix))
+	nodes <- rep(0:(length(originalNodes)-1))
+	names(nodes) <- as.character(originalNodes)
+	newEdges <- matrix(nodes[as.character(edgesMatrix[,1])])
+	newEdges <- cbind(newEdges, nodes[as.character(edgesMatrix[,2])])
+	if (reverse) {
+		newEdges <- cbind(newEdges[,2], newEdges[,1])
+	}
+	g <- graph.edgelist(newEdges, directed=directed) 
+	return(c(list(g), list(nodes)))
 }
 
-.list2graph <- function (inputList, ...) {
+
+.list2graph <- function (inputList, verbose=TRUE, directed=FALSE, ...) {
+	if (!(all(!(is.null(names(inputList)))))) stop('Names of inputlist shoule not contain NULL!')
+	if (verbose) print('Removing element containing NULL')
+	inputList <- inputList[which(sapply(inputList, length) != 0)]
 	column1 <- c()
-	if (length(inputList) >0) {
-		for (i in 1:length(inputList)) {
-			column1 <- c(column1, rep(-i, length(inputList[[i]])))
+	if (verbose) print('Removing NA')
+	removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
+	tempList <- lapply(inputList, removeNA) 
+	tempList <- tempList[which(sapply(tempList, length) != 0)]
+	if (length(tempList) > 0) {
+		for (i in 1:length(tempList)) {
+			column1 <- c(column1, rep(names(tempList)[i], length(tempList[[i]])))
 		}
 		edgeMatrix <- matrix(column1)
-		edgeMatrix <- cbind(edgeMatrix, unlist(inputList))
-		return(.makeGraph(edgesMatrix=edgeMatrix, ...))
+		edgeMatrix <- cbind(edgeMatrix, unlist(tempList))
+		edgeMatrix <- edgeMatrix[!(duplicated(edgeMatrix)),]
+		if (!is.matrix(edgeMatrix)) edgeMatrix <- matrix(edgeMatrix, ncol=2)
+		return(.makeGraph(edgesMatrix=edgeMatrix, directed=directed, ...))
 	} else {
 		stop('list is empty!')
 	}
@@ -96,7 +143,8 @@
 # colorBar: determine whether plot the color bar in the separated window (In the current implementation, users have to the adjust the window to get a better view)
 # colorBarLabel: labels of color bar
 .heatmap.mds <- function(dataMatrix, sortBy=c('row', 'column', 'both', 'none'), rotate=FALSE, standardize=TRUE, colorMap='RdYlBu', mar=c(1,1,5,8),  
-	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap'),  ...)
+	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), 
+	colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap'),  ...)
 {
 	if (colorMap[1] == 'GBR') {
 		library(Heatplus)
@@ -357,5 +405,127 @@
 	return(unlist(temp)[GOIDs])
 }
  
+.colorMatch <- function(values, colorMap=NULL, matchMode=c('absolute', 'relative'), zeroColorIndex=NULL) {
+	matchMode <- match.arg(matchMode)
+	tempColor <- c()
 
+	colorMapping <- function(inputValues, inputColors) {
+		minValue <- min(inputValues)
+		maxValue <- max(inputValues)
+		outputColors <- inputColors[1 + floor((inputValues-minValue) * (length(inputColors))/((maxValue-minValue)*1.001))]
+		names(outputColors) <- as.character(inputValues)
+		return(outputColors)
+	}
+
+	if (matchMode == 'absolute') {
+		if (is.numeric(zeroColorIndex) & (length(zeroColorIndex) == 1)) {
+			if ((zeroColorIndex < length(colorMap)) & (zeroColorIndex > 1)) {
+				tempColor <- c(tempColor, colorMapping(c(0, values[values >= 0]), colorMap[zeroColorIndex:length(colorMap)])[-1])
+				tempColor <- c(tempColor, colorMapping(c(0, values[values < 0]), colorMap[1:(zeroColorIndex-1)])[-1])
+				outColor <- tempColor[as.character(values)]
+			} else stop('zeroColorIndex is out of colorMap index! Aborting ...')
+		} else stop('zeroColorIndex is not ONE NUMBER! Aborting ...')
+	} else {
+		outColor <- colorMapping(values, colorMap)
+	}
+	return(outColor) 
+}
+
+.getSingleGraphIDs <- function(graphID, edgeM, filterGraphIDs=NULL, UP=TRUE) {
+	if (!is.character(graphID)) graphID <- as.character(graphID)
+	options(warn=-1)
+	if (!is.na(as.character(graphID))) {
+		if (UP) temp <- as.character(edgeM[as.character(edgeM[,1]) %in% graphID,2])
+		else temp <- as.character(edgeM[as.character(edgeM[,2]) %in% graphID,1])
+		if (!is.null(filterGraphIDs)) temp <- intersect(temp, as.character(filterGraphIDs))
+		options(warn=0)
+		if (length(temp) > 0) return(unique(temp[!(temp %in% NA)]))
+		else return(NULL)
+	} else {
+		options(warn=0)
+		stop('Only Entrez Gene or DOLite IDs are supported!')
+	}
+}
+
+.treeMerge <- function(treeList) {
+	if (!is.list(treeList)) stop('Input should be a list! Aborting ...')
+	lengthOfCurrentList <- length(treeList) 
+	if (lengthOfCurrentList < 2) return(treeList)
+	else {
+		currentList <- treeList
+		while (TRUE) {
+			startElmnt <- currentList[[1]]
+			remainingElmnt <- lapply(currentList[-1], intersect, startElmnt)
+			tempIndex <- which(sapply(remainingElmnt, length) > 0)
+			if (length(tempIndex) > 0) {
+				tempList <- list(unique(unlist(currentList[c(1,1+tempIndex)])))
+				names(tempList) <- paste(names(currentList[c(1,1+tempIndex)]), collapse='***')
+				noMerging <- which(sapply(remainingElmnt, length) == 0)
+				if (length(noMerging) == 0) {
+					currentList <- tempList
+					break
+				} else {
+					currentList <- c(currentList[1+noMerging], tempList)
+					lengthOfCurrentList <- length(currentList)
+				}
+			} else {
+				currentList <- c(currentList[-1],currentList[1])
+				lengthOfCurrentList <- lengthOfCurrentList - 1
+				if (lengthOfCurrentList == 0) break 
+			}
+		}
+		return(currentList)
+	}
+}
+
+.list2matrix <- function(inputList, verbose=TRUE, removeNA=TRUE) {
+	if (!(all(!(is.null(names(inputList)))))) stop('Names of inputlist shoule not contain NULL!')
+	if (verbose) print('Removing element containing NULL')
+	inputList <- inputList[which(sapply(inputList, length) != 0)]
+	column1 <- c()
+	if (verbose & removeNA) {
+		print('Removing NA')
+		removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
+		tempList <- lapply(inputList, removeNA) 
+		tempList <- tempList[which(sapply(tempList, length) != 0)]
+	}
+	if (length(tempList) > 0) {
+		for (i in 1:length(tempList)) {
+			column1 <- c(column1, rep(names(tempList)[i], length(tempList[[i]])))
+		}
+		edgeMatrix <- matrix(column1)
+		edgeMatrix <- cbind(edgeMatrix, unlist(tempList))
+		edgeMatrix <- edgeMatrix[!(duplicated(edgeMatrix)),]
+		if (!is.matrix(edgeMatrix)) edgeMatrix <- matrix(edgeMatrix, ncol=2)
+		rownames(edgeMatrix) <- NULL
+		return(edgeMatrix)
+	} else {
+		print('list is empty!')
+		return(NULL)
+	}
+}
+
+
+.matrix2list <- function(inputMatrix, verbose=TRUE, removeNA=TRUE) {
+	if (is.null(inputMatrix)) stop('matrix is NULL!')
+	if (verbose & removeNA) {
+		print('Removing NA')
+		inputMatrix <- inputMatrix[!(is.na(inputMatrix[,1]) | is.na(inputMatrix[,2])) ,]
+	}
+	if (dim(inputMatrix)[1] > 0) {
+		if (!is.matrix(inputMatrix)) {
+			inputMatrix <- matrix(inputMatrix, ncol=2)
+		}
+		newTempList <- as.list(inputMatrix[,2])
+		names(newTempList) <- inputMatrix[,1]
+		tempNames <- unique(inputMatrix[,1])
+		names(tempNames) <- tempNames
+		outputList <- lapply(tempNames, function(x, y) {return(unique(c(unlist(y[names(y) %in% x]))))}, newTempList)
+		return(outputList)
+	} else {
+		print('matrix is empty!')
+		return(NULL) 
+	}
+
+}
 

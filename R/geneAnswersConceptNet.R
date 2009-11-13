@@ -1,5 +1,6 @@
 `geneAnswersConceptNet` <-
-function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE) {
+function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), 
+			showCats=c(1:5), geneLayer=1, edgeM=NULL, catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...) {
 	centroidSize <- match.arg(centroidSize)
 	if ((centroidSize == 'correctedPvalue') & !('fdr p value' %in% colnames(x@enrichmentInfo))) stop('input geneAnswer class does not contain fdr p value!!!')
 	#x <- geneAnswersReadable(x, catTerm=catTerm, geneSymbol=geneSymbol)
@@ -53,25 +54,57 @@ function(x, colorValueColumn=NULL, centroidSize=c('geneNum', 'pvalue', 'foldChan
 		'Normal'=temp,
 		'-Log'=-log(temp),
 		'-Log10'= -log10(temp))
+	
 	if (catTerm) {
 		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
-			if (catID) {
-				names(inputList) <- paste(getCategoryTerms(names(inputList), x@categoryType, missing='name'), '::', names(inputList), sep='')
-				names(scaledTemp) <- paste(getCategoryTerms(names(scaledTemp), x@categoryType, missing='name'), '::', names(scaledTemp), sep='')
-			} else {
-				names(inputList) <- getCategoryTerms(names(inputList), x@categoryType, missing='name')
-				names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType, missing='name')
-			}
+  			names(inputList) <- getCategoryTerms(names(inputList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
+  			names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		} else {
 			print('Slot categoryType is not recognized! No mapping ...')
 		}
 	} 
 	
+	extendIA <- function(IA) {
+		if (dim(IA)[2] > 2) tempM <- cbind(IA[,2], IA[,1], IA[,3:dim(IA)[2]])
+		else tempM <- cbind(IA[,2], IA[,1])
+		colnames(tempM) <- colnames(IA)
+		tempM <- rbind(IA, tempM)[,1:2]
+		return(tempM[!(duplicated(tempM)),])
+	}
+	
+	if (geneLayer > 1) {
+		if (is.null(x@annLib)) {
+			if (is.null(edgeM)) stop("Customized database is not available!")
+		} else {
+			switch(x@annLib,
+				'org.Hs.eg.db'=data('HsIALite', package='GeneAnswers'),
+				'org.Mm.eg.db'=data('MmIALite', package='GeneAnswers'),
+				'org.Rn.eg.db'=data('RnIALite', package='GeneAnswers'),
+				'org.Dm.eg.db'=data('DmIALite', package='GeneAnswers'))
+			edgeM <- switch(x@annLib,
+				'org.Hs.eg.db'=extendIA(HsIALite),
+		   		'org.Mm.eg.db'=extendIA(MmIALite),
+				'org.Rn.eg.db'=extendIA(RnIALite),
+				'org.Dm.eg.db'=extendIA(DmIALite))
+		}
+		IAgenes <- getMultiLayerGraphIDs(unique(unlist(inputList)), idType='GeneInteraction', edgeM=edgeM, layers=(geneLayer-1), filterGraphIDs=x@geneInput[,1], filterLayer=1)
+		IAgenes <- IAgenes[-1:-2]
+		if (geneSymbol & (length(IAgenes) > 1)) {
+			IAgenes <- lapply(IAgenes, getSymbols, x@annLib, missing='name')
+			names(IAgenes) <- getSymbols(names(IAgenes), x@annLib, missing='name')
+		}
+	}
+	
 	if (geneSymbol) {
 		if (!is.null(inputXValue)) names(inputXValue) <- getSymbols(names(inputXValue), x@annLib, missing='name')
 		inputList <- lapply(inputList, getSymbols, x@annLib, missing='name')
 	}
-	geneConceptNet(inputList, inputValue = inputXValue, centroidSize=scaledTemp, output=output)
+	
+	if (geneLayer > 1) {
+		if (length(IAgenes) > 1) inputList <- c(inputList, IAgenes)
+	} 
+	
+	geneConceptNet(inputList, lengthOfRoots=length(scaledTemp), inputValue = inputXValue[unique(c(unlist(inputList),names(inputList)[-(1:length(scaledTemp))]))], centroidSize=scaledTemp, output=output, ...)
 	return(invisible(x))
 }
 

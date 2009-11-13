@@ -1,5 +1,6 @@
 `geneAnnotationHeatmap` <-
-function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000', '#FFFFFF'), sortBy='both', standardize.data=TRUE, colorMap.data='GBR', sortBy.data='row', mar=c(1,1,8,6), cex.axis=c(0.8, 0.8), mapType=c('table', 'heatmap'), displayAll=FALSE, ... ) {
+function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000', '#FFFFFF'), sortBy='both', standardize.data=TRUE, colorMap.data='GBR', 
+			sortBy.data='row', mar=c(1,1,8,6), cex.axis=c(0.8, 0.8), mapType=c('table', 'heatmap'), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL) {
 	mapType <- match.arg(mapType) 
 	if (colorMap.data[1] == 'GBR') {
 		require(Heatplus)
@@ -27,7 +28,8 @@ function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000
 		newMar <- mar
 		newMar[3] <- 2 + ceiling((max(nchar(names(annotationList)))) / 3) 
 		newMar[4] <- 1 + ceiling(log2(max(nchar(temp))))
-		ord <- .heatmap.mds(dataMatrix, rotate=F, sortBy=sortBy.data, standardize=standardize.data, colorMap=colorMap.data, mar=newMar, cex.axis=cex.axis, addRowLabel=addGeneLabel, mapType='heatmap', ...)
+		ord <- .heatmap.mds(dataMatrix, rotate=F, sortBy=sortBy.data, standardize=standardize.data, colorMap=colorMap.data, mar=newMar, cex.axis=cex.axis, 
+							addRowLabel=addGeneLabel, mapType='heatmap', symmetry=symmetry, colorBar=colorBar, colorBarLabel=colorBarLabel)
 		ord <- ord$row
 		if (sortBy != 'none') sortBy <- 'column'
 	} else {
@@ -45,7 +47,8 @@ function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000
 	
 
 	newMar[4] <- 1
-	.heatmap.mds(gene2Annotation[ord,], rotate=F, sortBy=sortBy, standardize=F, colorMap=colorMap, mar=newMar, cex.axis=cex.axis, addRowLabel=FALSE, mapType = mapType, ...)
+	.heatmap.mds(gene2Annotation[ord,], rotate=F, sortBy=sortBy, standardize=F, colorMap=colorMap, mar=newMar, cex.axis=cex.axis, addRowLabel=FALSE, 
+				mapType = mapType)
    
 	if (!is.null(dataMatrix)) layout(matrix(1))
 }
