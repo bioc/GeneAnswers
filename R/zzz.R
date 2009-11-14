@@ -511,6 +511,7 @@
 	if (verbose & removeNA) {
 		print('Removing NA')
 		inputMatrix <- inputMatrix[!(is.na(inputMatrix[,1]) | is.na(inputMatrix[,2])) ,]
+		if (!is.matrix(inputMatrix)) inputMatrix <- matrix(inputMatrix, ncol=2)
 	}
 	if (dim(inputMatrix)[1] > 0) {
 		if (!is.matrix(inputMatrix)) {

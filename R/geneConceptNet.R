@@ -16,24 +16,31 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 	V(g)$color <- "#dddddd"
 	V(g)$label <- vertexLabels
 	if (!is.null(inputValue)) {
-		if(is.numeric(inputValue) & (all(unique(unlist(inputList)) %in% names(inputValue)))) {
+		if(all(!is.na(as.numeric(inputValue))) & (all(unique(unlist(inputList)) %in% names(inputValue)))) {
 			if (is.null(colorMap)) {
 				colorLevel <- 256
-				zeroColorIndex <- ceiling(colorLevel/2)
-				conceptCol <- colorRampPalette(c('#00ff00','#888888'))                  
-				colorMap <- conceptCol(colorLevel/2)
-				conceptCol <- colorRampPalette(c('#888888','#ff0000'))
-				colorMap <- c(colorMap, conceptCol(colorLevel/2))
+				if ((min(as.numeric(inputValue)) > 0) | (max(as.numeric(inputValue)) < 0)) {
+					if (min(as.numeric(inputValue)) > 0) {
+						zeroColorIndex <- 1
+						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+					} else {
+						zeroColorIndex <- colorLevel
+						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+					}
+					colorMap <- conceptCol(colorLevel)
+				} else {
+					zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
+					conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
+					colorMap <- conceptCol(zeroColorIndex)
+					conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+					colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
+				}
 			}
 			colorValues <- .colorMatch(as.numeric(inputValue), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
 			names(colorValues) <- names(inputValue)
 			V(g)[nodes[intersect(names(nodes), names(colorValues))]]$color <- colorValues[intersect(names(nodes), names(colorValues))]
-#			print(V(g)$color)
-#			print(nodes)
-			#V(g)[nodes[names(nodes) %in% names(inputValue[inputValue < 0])]]$color <- "#00ff00"
-			#V(g)[nodes[names(nodes) %in% names(inputValue[inputValue > 0])]]$color <- "#ff0000"
-		} else {
-			stop('input value does not match input list!!!')
+   	} else {
+			stop('input values do not match input list or input values are not numeric!!!')
 		}
 	}
 	if (is.character(centroidSize) & length(centroidSize) == 1) {

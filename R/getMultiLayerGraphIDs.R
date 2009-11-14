@@ -1,6 +1,6 @@
 `getMultiLayerGraphIDs` <- 
 function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, 
-								filterGraphIDs=NULL, filterLayer=0, UP=TRUE, directed=FALSE) {
+								filterGraphIDs=NULL, filterLayer=0, UP=TRUE, directed=FALSE, verbose=TRUE) {
 	if (!is.numeric(layers)) stop('Layers should be an integer!')
 	if ((filterLayer > layers) | (!(is.null(filterGraphIDs)) & (filterLayer < 1))) stop('filter layer should not be more than the maximal layers or less than 1!')
 	if (is.null(filterGraphIDs) & (filterLayer > 0)) stop('No filter graphIDs! Can not set filter layer ...')
@@ -31,12 +31,12 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		if ((length(layersLength) > 0) & !directed & (i <=  filterLayer)) {
 			l <- layersLength[length(layersLength)]
 			tempL <- multiLayerGraphIDs[(length(multiLayerGraphIDs)-l+1):length(multiLayerGraphIDs)]
-			tempLM <- .list2matrix(tempL)
-			tempCM <- .list2matrix(temp)
+			tempLM <- .list2matrix(tempL, verbose=verbose)
+			tempCM <- .list2matrix(temp, verbose=verbose)
 			tempDLM <- rbind(tempLM, cbind(tempCM[,2], tempCM[,1]))
 			tempCM <- tempCM[!duplicated(tempDLM)[-(1:dim(tempLM)[1])], ]
 			if (!is.matrix(tempCM)) tempCM <- matrix(tempCM, ncol=2)
-			temp <- .matrix2list(tempCM)
+			temp <- .matrix2list(tempCM, verbose=verbose)
 		}
 		
 		if ((i == filterLayer) & (length(tempGraphIDs) > length(temp))) {

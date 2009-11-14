@@ -46,7 +46,7 @@ getConnectedGraph(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInter
 require(GeneAnswers)
 example(GeneAnswers)
 filterM <- cbind(rownames(getEnrichmentInfo(x)), -log2(getEnrichmentInfo(x)[,7]), getEnrichmentInfo(x)[,1])
-\dontrun{getConnectedGraph(rownames(getEnrichmentInfo(x))[6:9],  filterGraphIDs=filterM, UP=FALSE,  output='fixed', directed=TRUE)}
+\dontrun{getConnectedGraph(rownames(getEnrichmentInfo(x))[c(1:5)],  filterGraphIDs=filterM,  output='fixed', directed=TRUE, direction='up', showAllNodes=T, searchAll=T)}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

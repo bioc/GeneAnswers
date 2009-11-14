@@ -2,7 +2,7 @@
 function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0,
  					annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), output=c('interactive', 'fixed'), netMode=c('layer', 'connection'),
 					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE, steric=FALSE, 
-					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('relative', 'absolute'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...) {
+					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...) {
 	netMode <- match.arg(netMode)
 	annLib <- match.arg(annLib)
 	idType <- match.arg(idType)
@@ -106,10 +106,10 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	
 	if (directed) {
 		if (direction %in% c('down', 'both')) {
-			inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=FALSE, directed=directed)
+			inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=FALSE, directed=directed, verbose=verbose)
 		}
 		if (direction %in% c('up', 'both')) {
-			upInputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=TRUE, directed=directed)
+			upInputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=TRUE, directed=directed, verbose=verbose)
 			if (is.null(inputList[[2]])) {
 				inputList <- upInputList
 				UP=TRUE
@@ -124,7 +124,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			}
 		}
 	} else {
-		inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterGraphIDs, filterLayer=filterLayer, UP=TRUE, directed=directed)
+		inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterGraphIDs, filterLayer=filterLayer, UP=TRUE, directed=directed, verbose=verbose)
 	}
 	
 
@@ -179,7 +179,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	
 	
 	if (filter){
-		if (showModeForNodes == 'relative') {
+		if (showModeForNodes == 'nodes') {
 			numberOfCol = dim(filterGraphIDs)[2]
 			filterGraphIDs <- matrix(filterGraphIDs[filterGraphIDs[,1] %in% unique(c(names(tempG[[2]]), graphIDs)),], ncol=numberOfCol)
 	        tempFGraphIDs <- fGraphIDs[rownames(fGraphIDs) %in% unique(c(names(tempG[[2]]), graphIDs)),]
@@ -188,12 +188,24 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 		if (dim(filterGraphIDs)[2] >= 2) {
 			if (is.null(colorMap)) {
-				colorLevel <- 64
-				zeroColorIndex <- ceiling(colorLevel/2)
-				conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
-				colorMap <- conceptCol(colorLevel/2)
-				conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
-				colorMap <- c(colorMap, conceptCol(colorLevel/2))
+				colorLevel <- 256
+				#zeroColorIndex <- ceiling(colorLevel/2)
+				if ((min(as.numeric(filterGraphIDs[,2])) > 0) | (max(as.numeric(filterGraphIDs[,2])) < 0)) {
+					if (min(as.numeric(filterGraphIDs[,2])) > 0) {
+						zeroColorIndex <- 1
+						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+					} else {
+						zeroColorIndex <- colorLevel
+						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+					}
+					colorMap <- conceptCol(colorLevel)
+				} else {
+					zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(filterGraphIDs[,2]))) * (colorLevel-1) / (max(as.numeric(filterGraphIDs[,2]))-min(as.numeric(filterGraphIDs[,2]))))
+					conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
+					colorMap <- conceptCol(zeroColorIndex)
+					conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+					colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
+				}
 			}
 			fGraphIDs[,1] <- .colorMatch(as.numeric(filterGraphIDs[,2]), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
 		}

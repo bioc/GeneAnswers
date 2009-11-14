@@ -6,7 +6,7 @@
   A function to retrieve multilayer interacted nodes for given IDs and interaction Matrix with specified filtered IDs.
 }
 \usage{
-getMultiLayerGraphIDs(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0, UP=TRUE, directed=FALSE)
+getMultiLayerGraphIDs(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0, UP=TRUE, directed=FALSE, verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,7 @@ getMultiLayerGraphIDs(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneI
   \item{filterLayer}{ an integer, specify where filterGraphIDs are applied. }
   \item{UP}{ logic, determine search Parents or Children. Only valid for directed relation.}
   \item{directed}{ logic, the network is a directed or not}
+  \item{verbose}{ logic, specify to show information or not.}
 }
 \details{
   Currently, if idType is 'GO', 'GO.BP', 'GO.CC' or 'GO.MF', edgeM will be ignore.
