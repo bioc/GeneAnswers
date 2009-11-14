@@ -28,15 +28,27 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			else stop('The given idType is not supported!')
 		}
 		
-		if ((length(layersLength) > 0) & !directed & (i <=  filterLayer)) {
-			l <- layersLength[length(layersLength)]
-			tempL <- multiLayerGraphIDs[(length(multiLayerGraphIDs)-l+1):length(multiLayerGraphIDs)]
-			tempLM <- .list2matrix(tempL, verbose=verbose)
-			tempCM <- .list2matrix(temp, verbose=verbose)
-			tempDLM <- rbind(tempLM, cbind(tempCM[,2], tempCM[,1]))
-			tempCM <- tempCM[!duplicated(tempDLM)[-(1:dim(tempLM)[1])], ]
-			if (!is.matrix(tempCM)) tempCM <- matrix(tempCM, ncol=2)
-			temp <- .matrix2list(tempCM, verbose=verbose)
+		if ((length(layersLength) > 0) & !directed) {
+			if (i <= filterLayer) {
+				l <- layersLength[length(layersLength)]
+				tempL <- multiLayerGraphIDs[(length(multiLayerGraphIDs)-l+1):length(multiLayerGraphIDs)]
+				tempLM <- .list2matrix(tempL, verbose=FALSE)
+				tempCM <- .list2matrix(temp, verbose=FALSE)
+				tempDLM <- rbind(tempLM, cbind(tempCM[,2], tempCM[,1]))
+				tempCM <- tempCM[!duplicated(tempDLM)[-(1:dim(tempLM)[1])], ]
+				if (!is.matrix(tempCM)) tempCM <- matrix(tempCM, ncol=2)
+				temp <- .matrix2list(tempCM, verbose=FALSE)
+			}
+		}
+		
+		if (!is.null(filterGraphIDs) & !is.null(temp)) {
+			tempCM <- .list2matrix(temp, verbose=FALSE)
+			tempSCNodes <- as.character(tempCM[tempCM[,1] == tempCM[,2], 1])
+			tempNCNodes <- as.character(tempCM[!(tempCM[,1] == tempCM[,2]), ])
+			tempSCNodes <- tempSCNodes[!(tempSCNodes %in% c(filterGraphIDs, tempNCNodes))]
+			if (length(tempSCNodes) > 0) {
+				temp <- temp[!(names(temp) %in% tempSCNodes)]
+			}
 		}
 		
 		if ((i == filterLayer) & (length(tempGraphIDs) > length(temp))) {

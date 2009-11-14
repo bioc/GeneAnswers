@@ -118,8 +118,8 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 					downInputList <- inputList
 					inputList[[1]] <- TRUE
 					inputList[[2]] <- c(upInputList[[2]], downInputList[[2]])
-					tempUpM <- .list2matrix(upInputList[-1:-2])
-					inputList <- c(inputList[1:2], .matrix2list(cbind(tempUpM[,2], tempUpM[,1])), downInputList[-1:-2])
+					tempUpM <- .list2matrix(upInputList[-1:-2], verbose=FALSE)
+					inputList <- c(inputList[1:2], .matrix2list(cbind(tempUpM[,2], tempUpM[,1]),  verbose=FALSE), downInputList[-1:-2])
 				}
 			}
 		}
@@ -192,12 +192,11 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 				#zeroColorIndex <- ceiling(colorLevel/2)
 				if ((min(as.numeric(filterGraphIDs[,2])) > 0) | (max(as.numeric(filterGraphIDs[,2])) < 0)) {
 					if (min(as.numeric(filterGraphIDs[,2])) > 0) {
-						zeroColorIndex <- 1
 						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
 					} else {
-						zeroColorIndex <- colorLevel
 						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
 					}
+					matchMode <- 'relative'
 					colorMap <- conceptCol(colorLevel)
 				} else {
 					zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(filterGraphIDs[,2]))) * (colorLevel-1) / (max(as.numeric(filterGraphIDs[,2]))-min(as.numeric(filterGraphIDs[,2]))))

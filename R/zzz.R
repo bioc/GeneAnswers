@@ -483,6 +483,7 @@
 	if (verbose) print('Removing element containing NULL')
 	inputList <- inputList[which(sapply(inputList, length) != 0)]
 	column1 <- c()
+	tempList <- inputList
 	if (verbose & removeNA) {
 		print('Removing NA')
 		removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
