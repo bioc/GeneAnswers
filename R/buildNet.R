@@ -99,23 +99,28 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	if (filter) {
 		filterIDs=filterGraphIDs[,1]
 		filterLayer=filterLayer
+	} else {
+		filterIDs=NULL
+		filterLayer=0
 	}
 	
 	if (directed) {
 		if (direction %in% c('down', 'both')) {
-			inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=UP, directed=directed)
+			inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=FALSE, directed=directed)
 		}
 		if (direction %in% c('up', 'both')) {
-			UP=TRUE
-			upInputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=UP, directed=directed)
-			if (length(inputList) == 0) inputList <- upInputList
-			else {
-				downInputList <- inputList
-				inputList[[1]] <- TRUE
-				inputList[[2]] <- c(upInputList[[2]], downInputList[[2]])
-				tempUpM <- .list2matrix(upInputList[-1:-2])
-				inputList <- c(inputList[1:2], .matrix2list(cbind(tempUpM[,2], tempUpM[,1])), downInputList[-1:-2])
-				UP = FALSE
+			upInputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterIDs, filterLayer=filterLayer, UP=TRUE, directed=directed)
+			if (is.null(inputList[[2]])) {
+				inputList <- upInputList
+				UP=TRUE
+			} else {
+				if (!is.null(upInputList[[2]])) {
+					downInputList <- inputList
+					inputList[[1]] <- TRUE
+					inputList[[2]] <- c(upInputList[[2]], downInputList[[2]])
+					tempUpM <- .list2matrix(upInputList[-1:-2])
+					inputList <- c(inputList[1:2], .matrix2list(cbind(tempUpM[,2], tempUpM[,1])), downInputList[-1:-2])
+				}
 			}
 		}
 	} else {
