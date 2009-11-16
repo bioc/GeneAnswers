@@ -187,29 +187,39 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			rownames(fGraphIDs) <- names(tempFGraphIDs)
 		}
 		if (dim(filterGraphIDs)[2] >= 2) {
-			if (is.null(colorMap)) {
-				colorLevel <- 256
-				#zeroColorIndex <- ceiling(colorLevel/2)
-				if ((min(as.numeric(filterGraphIDs[,2])) > 0) | (max(as.numeric(filterGraphIDs[,2])) < 0)) {
-					if (min(as.numeric(filterGraphIDs[,2])) > 0) {
-						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
-					} else {
-						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+			if (all(!is.na(as.numeric(filterGraphIDs[,2])))) {
+				if (length(unique(as.numeric(filterGraphIDs[,2]))) > 1) {
+					if (is.null(colorMap))  {
+						colorLevel <- 256
+						#zeroColorIndex <- ceiling(colorLevel/2)
+						if ((min(as.numeric(filterGraphIDs[,2])) > 0) | (max(as.numeric(filterGraphIDs[,2])) < 0)) {
+							if (min(as.numeric(filterGraphIDs[,2])) > 0) {
+								conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+							} else {
+								conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+							}
+							matchMode <- 'relative'
+							colorMap <- conceptCol(colorLevel)
+						} else {
+							zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(filterGraphIDs[,2]))) * (colorLevel-1) / (max(as.numeric(filterGraphIDs[,2]))-min(as.numeric(filterGraphIDs[,2]))))
+							conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
+							colorMap <- conceptCol(zeroColorIndex)
+							conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+							colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
+						}
 					}
-					matchMode <- 'relative'
-					colorMap <- conceptCol(colorLevel)
+					fGraphIDs[,1] <- .colorMatch(as.numeric(filterGraphIDs[,2]), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
 				} else {
-					zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(filterGraphIDs[,2]))) * (colorLevel-1) / (max(as.numeric(filterGraphIDs[,2]))-min(as.numeric(filterGraphIDs[,2]))))
-					conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
-					colorMap <- conceptCol(zeroColorIndex)
-					conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
-					colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
+					if (is.null(colorMap)) fGraphIDs[,1] <- '#000000'
+					else fGraphIDs[,1] <- colorMap[1]
 				}
+			} else {
+				stop('The 2nd column can not be recognized!')
 			}
-			fGraphIDs[,1] <- .colorMatch(as.numeric(filterGraphIDs[,2]), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
-		}
-		if (dim(filterGraphIDs)[2] == 3) {
-			fGraphIDs <- cbind(fGraphIDs, filterGraphIDs[,3])
+			if (dim(filterGraphIDs)[2] == 3) {
+				if (all(!is.na(as.numeric(filterGraphIDs[,3])))) fGraphIDs <- cbind(fGraphIDs, as.numeric(filterGraphIDs[,3]))
+				else stop('The 3nd column can not be recognized!')
+			}
 		}
 	}
 
