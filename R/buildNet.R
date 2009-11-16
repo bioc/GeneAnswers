@@ -194,9 +194,9 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 						#zeroColorIndex <- ceiling(colorLevel/2)
 						if ((min(as.numeric(filterGraphIDs[,2])) > 0) | (max(as.numeric(filterGraphIDs[,2])) < 0)) {
 							if (min(as.numeric(filterGraphIDs[,2])) > 0) {
-								conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+								conceptCol <- colorRampPalette(c('#ffb7b7','#ff0000'))
 							} else {
-								conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+								conceptCol <- colorRampPalette(c('#00ff00','#b7ffb7'))
 							}
 							matchMode <- 'relative'
 							colorMap <- conceptCol(colorLevel)
