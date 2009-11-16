@@ -196,7 +196,7 @@ geneAnswersConceptRelation(x, direction='both', netMode='connection', catTerm=TR
 \label{conceptgeneNetwork}
 \end{figure}
 
-Also the new version GeneAnswers integrates gene interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
+Also the new version GeneAnswers integrates gene or protein interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
 <<plot interactive  concept-gene network with gene interaction,  echo=T, eval=F>>= 
 ## plot interactive concept-gene network
 geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', showCats=c("GO:0009611", "GO:0043933", "GO:0045622"), catTerm=TRUE, geneSymbol=TRUE, catID=TRUE)
@@ -211,6 +211,68 @@ geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', 
 \end{figure}
 
 
+This function can also be used to show how the given genes interact with each other. For example, for the given genes in the GeneAnswers instance, x, users can use the following command to show gene '444','3638', '5087' and '55835' interact with each other and other genes in the given geneInput of x.
+<<plot Gene interaction,  echo=T, eval=F>>= 
+## plot the given gene interaction
+buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1], filterLayer=2, netMode='connection')
+@
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction01.jpg}}
+\caption{Screen shot of the given gene interaction network}
+\label{geneInteractionNetwork}
+\end{figure}
+
+In this case, large black dots with yellow frame stand for the 4 given genes. They also connect to other genes by dark-blue-purple edges. Small black dots represent the other genes from getGeneInput(x). Small white dots are genes that are not in the genes from getGeneInput(x), but interact with these genes. 
+
+If there are some certain values associate with genes in geneInput of x, like the example data, you can represent any one column by colors. For example, if users want to show how genes interaction with gene expression information, the following command can show this:
+<<plot Gene interaction with expression information,  echo=T, eval=F>>= 
+## plot the given gene interaction
+buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+@  
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction02.jpg}}
+\caption{Screen shot of the given gene interaction network with expression information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+The following one is based on expression p-values, we often use -log2 to transform p-values.
+<<plot Gene interaction with pvalues,  echo=T, eval=F>>= 
+## plot the given gene interaction
+buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=cbind(getGeneInput(x)[,1], -log2(getGeneInput(x)[,3])), filterLayer=2, netMode='connection')
+@
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction03.jpg}}
+\caption{Screen shot of the given gene interaction network with p-value information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+Users can also define customized color scheme and transfer it into 'buildNet' function by parameter 'colorMap'. Details are available in 'buildNet' manual page. If users want to have a overview for the interaction of all of the given genes from getGeneInput(x), the following command could be used:
+<<plot Gene interaction for all of given genes,  echo=T, eval=F>>= 
+## plot the given gene interaction
+buildNet(getGeneInput(x)[,1], idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+@
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction04.jpg}}
+\caption{Screen shot of all of the given gene interaction network with expression information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+
+If there are a lot of genes, the network could be very complicated. We strongly recommend to use 'interactive' mode to show the network since it's easy to manually change layout. The default setting is 'interactive', but users can change it to 'fixed' for a small or simple network.
+
+
+The following example is to show top 5 GO-gene network for the first 2 level GO nodes removal.
 <<plot Go-concept network for 2 level nodes removal,  echo=T, eval=F>>= 
 ## plot Go-concept network for 2 level nodes removal
 geneAnswersConceptNet(ww, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')

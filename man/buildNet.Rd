@@ -6,10 +6,10 @@
   A function to build and display a network for given IDs and interaction Matrix with specified filtered IDs.
 }
 \usage{
-buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0, 
-			netMode=c('layer', 'connection'), vertexSize = NULL, edgeColor = NULL, pickedNodes=NULL, layerOfPickedNodes=NULL, colorMap=NULL, zeroColorIndex=NULL,  
-			matchMode=c('absolute', 'relative'), annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), label=TRUE, steric=FALSE,
-			verbose=TRUE, readable=TRUE, directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), labelSize=1, labelColor='#666666', output=c('interactive', 'fixed'), ...)
+buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0,
+ 					annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), output=c('interactive', 'fixed'), netMode=c('layer', 'connection'),
+					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE, steric=FALSE, 
+					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,25 +19,23 @@ buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
   \item{layers}{ an integer, specify how many layers will be retrieved. }
   \item{filterGraphIDs}{ a chacater vector for filtered IDs or a 2- or 3-column matrix for extra values.}
   \item{filterLayer}{ an integer, specify where filterGraphIDs are applied. }
+  \item{annLib}{ type for annotation library, 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db'and 'customized'. For 'customized', edgeM is necessary}
+  \item{output}{ type to specify output figure types }
   \item{netMode}{ type to show network, see details}
   \item{vertexSize}{ an integer, the size of vertices in the network, default is NULL}
   \item{edgeColor}{ a R compatible color type, the color of edges in the network, default is NULL}
-  \item{pickedNodes}{ an ID list for a subgraph, default is NULL}
-  \item{layerOfPickedNodes}{ an integer to specify how many layers for give subgraph IDs}
   \item{colorMap}{ a R compatible color character vector, or NULL by embedded color scheme. }
-  \item{matchMode}{ the mode of values matching colors, valid only if inputValue is not NULL, see details}
   \item{zeroColorIndex}{ index of color corresponding to zero, see details}
-  \item{annLib}{ type for annotation library, 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db'and 'customized'. For 'customized', edgeM is necessary}
+  \item{matchMode}{ the mode of values matching colors, valid only if inputValue is not NULL, see details}
   \item{label}{ logic, specify whether put labels for non-given nodes in the network. }
   \item{steric}{ logic, specify whether show 3D network. Because of igraph limited support for 3D, this function is just for fun!}
-  \item{verbose}{ logic, specify to show information or not.}
-  \item{readable}{ logic, specify whether show IDs or Terms/Names for nodes}
   \item{directed}{ logic, the network is a directed or not}
   \item{direction}{ search direction, it could be 'up', 'down' and 'both'. Valid for directed network only.}
   \item{showModeForNodes}{ type, the show mode for nodes on the network, only valid if filterGraphIDs is not NULL, see details}
+  \item{verbose}{ logic, specify to show information or not.}
+  \item{readable}{ logic, specify whether show IDs or Terms/Names for nodes}
   \item{labelSize}{ an integer, the size of label for nodes}
   \item{labelColor}{ an R compatible color, default is #666666}
-  \item{output}{ type to specify output figure types }
   \item{\dots}{ other parameters used by 'getCategoryTerms' } 
 }
 \details{
