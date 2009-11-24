@@ -1,6 +1,7 @@
 `getSymbols` <-
 function (geneIDs, data, strict=FALSE, missing=c('name', 'keep', 'remove')) {
 	missing <- match.arg(missing)
+	require(data, character.only=TRUE)
 	temp <- getSYMBOL(geneIDs, data)
 	if (NA %in% temp) {
 		print('Warning: some genes do not have valid symbols!')
