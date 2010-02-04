@@ -421,10 +421,9 @@ We would like to thank the users and researchers around the world contribute to 
 
 \section{References}
 
+Feng, G., Du, P., Krett, N.L., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M.  (2010) A collection of bioconductor methods to visualize gene-list annotations, BMC Research Notes, 3,10
+
 Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
-
-
-Feng, G., Du, P., Krett, N.L., Tessel, M., Rosen, S., Kibbe, W.A., and Lin, S.M., (submitted) 'Bioconductor Methods to Visualize Gene-list Annotations',
 
 %\bibliographystyle{plainnat}
 %\bibliography{GeneAnswers}
