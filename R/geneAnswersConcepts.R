@@ -40,6 +40,9 @@ function(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'corr
 			print('Slot categoryType is not recognized! No mapping ...')
 		}
 	}
+	
+	names(newList) <- paste(names(newList), '::', sapply(newList, length), sep='')
+	
 	categoryNet(newList, centroidSize=scaledTemp, output=output)
 	return(invisible(x)) 
 }

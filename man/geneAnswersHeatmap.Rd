@@ -26,7 +26,7 @@ geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, ca
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{geneAnnotationHeatmap}}, ~~~ }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)}

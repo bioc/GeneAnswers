@@ -410,9 +410,8 @@
 	tempColor <- c()
 
 	colorMapping <- function(inputValues, inputColors) {
-		minValue <- min(inputValues)
-		maxValue <- max(inputValues)
-		outputColors <- inputColors[1 + floor((inputValues-minValue) * (length(inputColors))/((maxValue-minValue)*1.001))]
+		scaledValues <- scale(inputValues, scale=(max(inputValues)-min(inputValues)))
+		outputColors <- inputColors[as.integer((scaledValues - min(scaledValues)) * (length(inputColors) - 1)) + 1]
 		names(outputColors) <- as.character(inputValues)
 		return(outputColors)
 	}
@@ -423,7 +422,16 @@
 				tempColor <- c(tempColor, colorMapping(c(0, values[values >= 0]), colorMap[zeroColorIndex:length(colorMap)])[-1])
 				tempColor <- c(tempColor, colorMapping(c(0, values[values < 0]), colorMap[1:(zeroColorIndex-1)])[-1])
 				outColor <- tempColor[as.character(values)]
-			} else stop('zeroColorIndex is out of colorMap index! Aborting ...')
+			} else {
+				if ((zeroColorIndex == length(colorMap)) | (zeroColorIndex == 1)) {
+					if (values == 0) outColor <- colorMap[zeroColorIndex]
+					else {
+						if (values > 0) outColor <- colorMap[length(colorMap)]
+						else outColor <- colorMap[1]
+					}
+				names(outColor) <- as.character(values) 
+				} else stop('zeroColorIndex is out of colorMap index! Aborting ...')
+			}
 		} else stop('zeroColorIndex is not ONE NUMBER! Aborting ...')
 	} else {
 		outColor <- colorMapping(values, colorMap)
@@ -531,3 +539,167 @@
 
 }
 
+drawHTMLTable <- function(dataMatrix, outFile, tableName='Table', tableLink= NULL, externalLinkOfTable = NULL, tableCenter=TRUE, catType=c('GO', 'KEGG', 'Entrez', 'DOLite', 'Unknown'), 
+						species=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), 
+						lastRowLink=FALSE, highlightLastRow=TRUE, matrixOfHeatmap=NULL, topCat=10,  IDCols=1, heatMap=FALSE, reverseOfCluster=FALSE, displayText=TRUE) {
+								
+	catType <-match.arg(catType)
+	species <- match.arg(species)
+	
+	
+	if (lastRowLink & highlightLastRow) stop('Both lastRowLink and highlightLastRow can not be TRUE at the same time!')
+	
+	if (!(IDCols == 0 | IDCols == 1 | (IDCols == 2 & catType == 'Entrez') | (IDCols == 0 & catType == 'Unknown'))) 
+		stop('IDCols must be 0, 1 and 2 (only for Entrez). When catType is Unknown, IDCols must be 0!')
+		
+	if (is.matrix(dataMatrix) | is.data.frame(dataMatrix) | is.vector(dataMatrix)) {
+		dataMatrix <- as.matrix(dataMatrix)
+		if ((NA %in% rownames(dataMatrix)) | is.null(rownames(dataMatrix))) print('Warning: NA or NULL might be in rownames of dataMatrix!')
+		if ((NA %in% colnames(dataMatrix)) | is.null(colnames(dataMatrix))) print('Warning: NA or NULL might be in colnames of dataMatrix!')
+	} else stop('Input is not a valid matrix!')
+	if (!(is.null(matrixOfHeatmap))) {
+		if (is.matrix(matrixOfHeatmap) | is.data.frame(matrixOfHeatmap)) {
+			originalIndexMatrix <- as.matrix(matrixOfHeatmap)
+			matrixOfHeatmap <- sqrt(-log10(originalIndexMatrix))
+			if ( topCat > 0) matrixOfHeatmap <- apply(matrixOfHeatmap, 2, function(x, top) {if (length(x) > top) x[x < sort(x, decreasing=T)[top]] <- 0; return(x)}, topCat)
+		} else stop('matrixOfHeatmap is not a valid matrix!')
+	}
+	
+	if (heatMap & !is.null(matrixOfHeatmap)) {
+		conceptCol <- colorRampPalette(c('#77ff00','#ffffff'))
+		colorLevel <- 64
+		maxColor <- max(sqrt(-log10(originalIndexMatrix)))
+		minColor <- min(sqrt(-log10(originalIndexMatrix)))
+		contentsOfColorlevel <- conceptCol(colorLevel)
+		if (!reverseOfCluster) contentsOfColorlevel <- rev(contentsOfColorlevel)
+	}
+		 
+	HTwrap <- function(x, tag = "TD", scripts=NULL) {
+        if (is.null(scripts)) return(paste("<", tag, ">", x, "</", tag, ">", sep = ""))
+		else return(paste("<", tag, ' ', scripts, ">", x, "</", tag, ">", sep = ""))
+    }
+    
+    cat(paste('<H2 align=center><font face="courier" size="2">', sep=''), file = outFile, sep = "")
+    if (is.null(tableLink))	{
+		if (is.null(externalLinkOfTable)) cat(paste(tableName, "</font></H2>", sep=''), file = outFile, sep = "\n")
+		else cat(paste('<a href="', externalLinkOfTable, '">',tableName, "</a></font></H2>", sep=''), file = outFile, sep = "\n")
+	} else {
+		if (is.null(externalLinkOfTable)) cat(paste('<a name="', tableLink, '">', tableName, "</a></font></H2>", sep=''), file = outFile, sep = "\n")
+		else cat(paste('<a name="', tableLink, '" href="', externalLinkOfTable, '">', tableName, "</a></font></H2>", sep=''), file = outFile, sep = "\n")
+	}
+	if (tableCenter) cat("<center> \n", file = outFile)
+    cat('<TABLE BORDER=1, style="font-family:courier;text-align:center;font-size:12px">', file = outFile, sep = "\n")
+	
+	if (IDCols == 0) {
+		if (catType == 'Unknown') firstLine <- HTwrap('Customized IDs')
+		else firstLine <- HTwrap(paste(catType, ' Terms/Names', sep=''))
+	} else {
+		if (IDCols == 1) {
+			if (catType == 'Entrez')  firstLine <- paste(HTwrap(paste('Gene Symbols', sep='')), HTwrap(paste(catType, ' IDs', sep='')), sep='')
+			else {
+				if (catType == 'Unknown') firstLine <- HTwrap(paste(catType, ' Terms', sep=''))
+				else firstLine <- paste(HTwrap(paste(catType, ' Terms', sep='')), HTwrap(paste(catType, ' IDs', sep='')),sep='')
+			}
+		}
+		else firstLine <- paste(HTwrap(paste('Gene Symbols', sep='')), HTwrap(paste(catType, ' IDs', sep='')), HTwrap(paste('Gene Names', sep='')),sep='')
+	}
+	
+	
+	if (catType == 'Entrez') {
+		firstLine <- paste(firstLine, paste(HTwrap(colnames(dataMatrix)), collapse=''), sep='')
+		indexM <- NULL
+	} else {
+		firstLine <- paste(firstLine, paste(HTwrap(HTwrap(colnames(dataMatrix), tag='A', scripts=paste('HREF="#h-', 1+c(1:dim(dataMatrix)[2]), '"', sep=''))), sep='', collapse=''), sep='')
+		indexM <- which(dataMatrix > 0, arr.ind=TRUE)
+	}
+	
+	cat(firstLine, '\n', file = outFile, sep="")
+	
+	if (highlightLastRow) {
+		rownames(dataMatrix)[dim(dataMatrix)[1]] <- paste('<b><i>', rownames(dataMatrix)[dim(dataMatrix)[1]], '</i></b>', sep='')
+	}
+	
+	rowIDs <- rownames(dataMatrix)
+	if (lastRowLink) {
+		linkRowIDs <- length(rowIDs)
+	} else {
+		linkRowIDs <- length(rowIDs) - 1
+	}
+	
+	geneMapping <- function(geneIDs, data, info=c('SYMBOL', 'GENENAME')) {
+		info <- match.arg(info)
+        temp <- unlist(lookUp(geneIDs, data, info))
+		temp[temp %in% NA] <- 'Discontinued'
+		return(temp)
+	}
+	if (IDCols == 0) {
+		hyperLinkPrefix <- switch(catType,
+			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'DOLite'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'Entrez'=paste('<a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</a>',sep=''),
+			'Unknown'=rowIDs[1:linkRowIDs])
+	} else {
+		hyperLinkPrefix <- switch(catType,
+			'GO'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>',  rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'KEGG'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'DOLite'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a>', rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'Entrez'=paste(geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</TD><TD><a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'Unknown'=rowIDs[1:linkRowIDs])
+		if (IDCols > 1) hyperLinkPrefix <- paste(hyperLinkPrefix, '</TD><TD>', geneMapping(rowIDs[1:linkRowIDs], species, info='GENENAME'), sep='')
+	}
+	
+   	
+    if (!lastRowLink) {
+		if (IDCols == 0) hyperLinkPrefix <- c(hyperLinkPrefix, rowIDs[length(rowIDs)])
+		else {
+			if (IDCols == 1) { 
+				if (catType == 'Unknown') hyperLinkPrefix <- c(hyperLinkPrefix, paste(rowIDs[length(rowIDs)], sep=''))
+				else hyperLinkPrefix <- c(hyperLinkPrefix, paste(rowIDs[length(rowIDs)], '</TD><TD>',sep=''))
+			}
+			else hyperLinkPrefix <- c(hyperLinkPrefix, paste(rowIDs[length(rowIDs)], '</TD><TD></TD><TD>',sep=''))
+		}
+	}
+    
+	
+
+	if (topCat > 0 & !is.null(matrixOfHeatmap)) {
+		matrixOfHeatmapIndex <- which(matrixOfHeatmap > 0, arr.ind=TRUE)
+	} else matrixOfHeatmapIndex <- NULL
+	
+    if (is.null(matrixOfHeatmap)) sigIndex <- NULL
+	else  sigIndex <- which(originalIndexMatrix < 1, arr.ind=TRUE)
+	
+    if (!displayText) dataMatrix[1:(dim(dataMatrix)[1]-1),] <- '  '
+
+	for (i in 1:length(rowIDs)) {
+		textLine <- HTwrap(hyperLinkPrefix[i])
+		for (j in 1:length(colnames(dataMatrix))) {
+			if (dataMatrix[i,j] == '') dataMatrix[i,j] <- 'NA'
+			if (i == dim(dataMatrix)[1] & highlightLastRow)  dataMatrix[i,j] <- HTwrap(HTwrap(dataMatrix[i,j], tag='b'), tag='i') 
+			if (is.null(indexM)) textLine <- paste(textLine, HTwrap(dataMatrix[i,j]), sep='')
+			else {
+				if ((i %in% indexM[indexM[,2] == j,1])){
+					k <- dim(dataMatrix)[2] + match(i, indexM[indexM[,2] == j,1]) + match(j, indexM[,2])
+					bgColor <- NULL
+					# if heatmap is on, bgcolor <- contentsOfColorlevel[ceiling(colorlevel * sqrt(-log10(originalIndexMatrix)[i,j])/(sqrt(-log10(max)) - sqrt(-log10(min)) + 1))]
+					if (heatMap) {
+						if (!is.null(sigIndex) & (i %in% sigIndex[sigIndex[,2] == j,1])) {
+							dataMatrix[i,j] <- HTwrap(dataMatrix[i,j], tag='b')
+							bgColor <- paste('bgcolor="', contentsOfColorlevel[ceiling((colorLevel-1) * sqrt(-log10(originalIndexMatrix)[i,j])/(maxColor - minColor)) + 1], '"', sep='')
+						}
+					} else {
+						if (!is.null(sigIndex) & (i %in% sigIndex[sigIndex[,2] == j,1])) dataMatrix[i,j] <- HTwrap(dataMatrix[i,j], tag='b')
+						if (!is.null(matrixOfHeatmapIndex) & (i %in% matrixOfHeatmapIndex[matrixOfHeatmapIndex[,2] == j,1])) bgColor <- 'bgcolor="#ccff00"'
+					}
+					
+					textLine <- paste(textLine, HTwrap(HTwrap(dataMatrix[i,j], tag='A', scripts=paste('href="#h-', k, '"', sep='')), scripts=bgColor), sep='')
+				}else textLine <- paste(textLine, HTwrap(dataMatrix[i,j]), sep='')
+			}			
+		}
+		cat(HTwrap(textLine, tag = 'TR'), '\n', file = outFile, sep="")
+	}
+	
+	cat("</TABLE>", sep = "\n", file = outFile)
+    if (tableCenter) cat("</center> \n", file = outFile)
+}

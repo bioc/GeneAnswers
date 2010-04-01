@@ -1,9 +1,9 @@
 \name{getCategoryTerms}
 \alias{getCategoryTerms}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Convert Category IDs to Terms }
+\title{ Mapping Category IDs to Terms }
 \description{
-  Function to convert category IDs to category terms.
+  Function to map category IDs to category terms.
 }
 \usage{
 getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'remove'), nameLength='all', addID=FALSE)

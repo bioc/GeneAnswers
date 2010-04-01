@@ -1,7 +1,10 @@
 `topDOLite` <-
-function(x, catTerm=TRUE, ...) {
+function(x, catTerm=TRUE, keepID=TRUE, ...) {
 	if (length(grep('DOLite', x@categoryType)) < 1) stop(paste('The input geneAnswers categoryType is not DOLite but ', x@categoryType, '. stop function!'))
-	if (catTerm) rownames(x@enrichmentInfo) <- getDOLiteTerms(rownames(x@enrichmentInfo))
+	if (catTerm) {
+		if (keepID) rownames(x@enrichmentInfo) <- paste(getDOLiteTerms(rownames(x@enrichmentInfo)), '::', rownames(x@enrichmentInfo), sep='')
+		else rownames(x@enrichmentInfo) <- getDOLiteTerms(rownames(x@enrichmentInfo))
+	}
 	return(topCategory(x, ...))	
 }
 

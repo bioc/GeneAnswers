@@ -38,7 +38,7 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "ge
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{getMultiLayerGraphIDs}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{getMultiLayerGraphIDs}}, \code{\link{geneConceptNet}},~~~ }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')}

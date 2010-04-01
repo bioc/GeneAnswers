@@ -16,8 +16,11 @@ function(catGenesList, centroidSize=NULL, output=c('fixed','interactive')) {
 	}
 	
 	g <- igraph::graph(edgeMatrix, n = length(nodes), direct = FALSE)
-	E(g)$color <- "#6666ff"
-	E(g)$width <- as.integer(edgeWidth/sum(edgeWidth) * 100) + 1
+	E(g)$color <- "#9999ff"
+	widthValues <- edgeWidth/length(unique(unlist(catGenesList)))
+	scaledWidth <- scale(widthValues, scale=(max(widthValues)-min(widthValues)))
+	E(g)$width <- as.integer((scaledWidth - min(scaledWidth)) * 11) + 1
+	E(g)$label <- as.character(edgeWidth)
 	V(g)$color <- "#ffd900"
 	V(g)$label <- names(nodes)
 	if (is.null(centroidSize)) V(g)$size <- 10
@@ -26,8 +29,10 @@ function(catGenesList, centroidSize=NULL, output=c('fixed','interactive')) {
 		else  stop('Size of junction nodes should be numeric or centroidSize should match inputList!')
 	}
 	if (output == 'fixed') {
-		plot.igraph(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, layout=layout.circle) 
+		plot.igraph(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, edge.label.font=4, 
+				edge.label=E(g)$label, edge.label.color='#ff5500', edge.label.cex=1.5, layout=layout.circle) 
 	} else {
-		tkplot(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, layout=layout.circle) 
+		tkplot(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, edge.label.font=4, 
+				edge.label=E(g)$label, edge.label.color='#ff5500', edge.label.cex=1.5, layout=layout.circle) 
 	}
 }

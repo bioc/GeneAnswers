@@ -31,7 +31,7 @@ geneAnswersConcepts(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRa
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{categoryNet}}, ~~~ }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersConcepts(x, centroidSize='pvalue', output='interactive')}

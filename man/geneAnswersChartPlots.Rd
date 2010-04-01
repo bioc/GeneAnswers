@@ -26,7 +26,7 @@ geneAnswersChartPlots(x, chartType=c('pieChart', 'barPlot', 'all'), sortBy = c('
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ ~~objects to See Also as \code{\link{chartPlots}},, ~~~ }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersChartPlots(x)} 

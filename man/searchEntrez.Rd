@@ -13,9 +13,6 @@ searchEntrez(tagList, species = "human")
   \item{tagList}{ keyword list to search on Entrez. }
   \item{species}{ specie for search on Entrez. }
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
 \value{
   an Entrez ID list containing all of relative genes from Entrez database.
 }
@@ -24,7 +21,7 @@ searchEntrez(tagList, species = "human")
 \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 tagList <- list(FSHR=c('"FSHR"', '"Follicle stimulating hormone receptor"'), apoptosis=c('apoptosis'))
-entrezList <- searchEntrez(tagList, species='mouse')
+\dontrun{entrezList <- searchEntrez(tagList, species='mouse')}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -12,9 +12,6 @@ getPATHTerms(pathIDs)
 \arguments{
   \item{pathIDs}{ a KEGG IDs vector }
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
 \value{
   return a KEGG pathway terms of given KEGG IDs.
 }

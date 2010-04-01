@@ -10,7 +10,7 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 	nodes <- temp[[2]]
 	vertexLabels <- names(nodes)
 	vertexLabels[1:length(inputList)] <- names(inputList) 
-	E(g)$color <- "#8888ff"
+	E(g)$color <- "#9999ff"
 	E(g)$width <- 3
 	V(g)$size <- 8
 	V(g)$color <- "#dddddd"

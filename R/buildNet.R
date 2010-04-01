@@ -1,5 +1,5 @@
 `buildNet` <- 
-function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0,
+function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0, 
  					annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), output=c('interactive', 'fixed'), netMode=c('layer', 'connection'),
 					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE, steric=FALSE, 
 					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...) {
@@ -124,15 +124,15 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			}
 		}
 	} else {
-		inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterGraphIDs, filterLayer=filterLayer, UP=TRUE, directed=directed, verbose=verbose)
+		inputList <- getMultiLayerGraphIDs(graphIDs, idType=idType, edgeM=edgeM, layers=layers, filterGraphIDs=filterGraphIDs, filterLayer=filterLayer, 
+											UP=TRUE, directed=directed, verbose=verbose)
 	}
 	
 
 	selfClosure <- inputList[[1]]
 	inputList <- inputList[2:length(inputList)] 
 	returnResult <- inputList[2:length(inputList)]
-    
-	if (is.null(unlist(inputList[2:length(inputList)]))) {
+    if (is.null(unlist(inputList[2:length(inputList)]))) {
 		print('All nodes are not connected! Aborting ...')
 		return(NULL)
 	}
@@ -311,7 +311,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		require(rgl)
 		bg3d('#555555')
 		coordinateM <- layout.fruchterman.reingold(g, dim=3)
-		rglplot(g, vertex.label.font=2, vertex.size=(V(g)$size)/2, vertex.color=V(g)$color, vertex.label=verticesLabel, vertex.label.color='#aaaaaa', vertex.label.cex=4, vertex.label.dist=0.35, edge.width=1, layout=coordinateM)
+		rglplot(g, vertex.label.font=2, vertex.size=(V(g)$size)/2, vertex.color=V(g)$color, vertex.label=verticesLabel, vertex.label.color='#aaaaaa', vertex.label.cex=4, vertex.label.dist=0.25, edge.width=1, layout=coordinateM)
 	}
-	return(invisible(c(list(g), returnResult)))
+	return(invisible(c('igraph'=list(g), 'verticesLabel'=list(verticesLabel), 'labelColor'=list(labelColor), 'labelSize'=list(labelSize), 'nodeFrameColor'=list(nodeFrameColor), returnResult)))
 }

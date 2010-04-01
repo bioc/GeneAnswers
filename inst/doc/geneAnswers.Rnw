@@ -434,6 +434,33 @@ topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
 topDOLiteGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
 @
 
+
+\subsection{Multigroup Genes Analysis}
+Several groups of genes are used to dynamically study biological processes by different treatment or time points. In this case, \Rpackage{GeneAnswers} provide a solution to integrate enrichment test information of different groups of genes. 
+
+<<multigroup gene analysis,  echo=T, eval=T>>=  
+##load multigroup genes sample data
+data(sampleGroupsData)
+##Build a GeneAnswers List
+gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)
+##Output integrated text table
+output<- getConceptTable(gAKEGGL, items='geneNum')
+@
+
+<<multigroup genes KEGG analysis, echo=F, eval=F>>=
+drawTable(output[[1]], matrixOfHeatmap=output[[2]], mar=c(2,28,3,2), clusterTable=NULL) 
+@
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{multi.jpg}}
+\caption{Screen shot of multigroup genes KEGG analysis}
+\label{Multigroup Genes KEGG analysis}
+\end{figure}
+
+Function groupReport can generate a html file including all information.
+
 \subsection{Homologous Gene Mapping}
 Since DOLite is developed for human, any gene from other species can not take advantage of this novel annotation database. Therefore,  \Rpackage{GeneAnswers} package provides two functions for this type of data interpretation. {\it getHomoGeneIDs} can map other species gene Entrez IDs to human homologous gene Entrez IDs at first. Then users can perform normal GeneAnswers functions. Finally, function {\it geneAnswersHomoMapping} maps back to original species gene Entrez IDs. Current version supports two types of homologous gene mapping. One is called "direct", which is simple and only works between mouse and human. Since all of human gene symbols are capitalized, while only first letter of mouse homologous gene symbols is uppercase, this method simply maps homologous genes by capitalized moues gene symbols. Another method adopts \Rpackage{biomaRt} to do mapping. \Rpackage{biomaRt} contacts its online server to mapping homologous genes. Its database include more accurate information, but it might take longer to do that, while 'direct' method can rapidly do conversation though it is possible to miss some information.
 
