@@ -20,7 +20,7 @@ topGO(x, catTerm = TRUE, keepID = TRUE, ...)
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{  See Also as \code{\link{topCategory}} }
 \examples{
 # x is a GeneAnswers instance with GO test
 \dontrun{topGO(x, top=10)}
