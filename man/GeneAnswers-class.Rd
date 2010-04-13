@@ -25,12 +25,16 @@
 \alias{setTestType}
 \alias{setPValueT,GeneAnswers-method}
 \alias{setPValueT}
+\alias{setGenesInCategory,GeneAnswers-method}
+\alias{setGenesInCategory}
 \alias{setGeneExprProfile,GeneAnswers-method}
 \alias{setGeneExprProfile}
 \alias{setAnnLib,GeneAnswers-method}
 \alias{setAnnLib}
 \alias{setCategoryType,GeneAnswers-method}
 \alias{setCategoryType}
+\alias{setEnrichmentInfo,GeneAnswers-method}
+\alias{setEnrichmentInfo}
 
 \alias{summary,GeneAnswers-method}
 \alias{summary}
@@ -74,9 +78,11 @@
      \item{\code{setGeneInput(GeneAnswers, geneInput)}:}{Assign the geneInput slot of \code{GeneAnswers} object.}
      \item{\code{setTestType(GeneAnswers, type=c('hyperG', 'none'))}:}{Assign the testType slot of \code{GeneAnswers} object.}
      \item{\code{setPValueT(GeneAnswers, pvalueT)}:}{Assign the pvaluteT slot of \code{GeneAnswers} object.}
+     \item{\code{setGenesInCategory(GeneAnswers, genesInCategory)}:}{Assign the genesInCategory slot of \code{GeneAnswers} object.}
      \item{\code{setGeneExprProfile(GeneAnswers, geneExprProfile)}:}{Assign the geneExprProfile slot of \code{GeneAnswers} object.}
      \item{\code{setAnnLib(GeneAnswers, annLib)}:}{Assign the annLib slot of \code{GeneAnswers} object.}
      \item{\code{setCategoryType(GeneAnswers, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend'))}:}{Assign the categoryType slot of \code{GeneAnswers} object.}
+     \item{\code{setEnrichmentInfo(GeneAnswers, enrichmentInfo)}:}{Assign the enrichmentInfo slot of \code{GeneAnswers} object.}
      \item{\code{summary(GeneAnswers)}:}{Briefly summarize the information of \code{GeneAnswers} object and show contents of \code{GeneAnswers} object.}
      \item{\code{show(GeneAnswers)}:}{Briefly show contents of \code{GeneAnswers} object.}
   }
