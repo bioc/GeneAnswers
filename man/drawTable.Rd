@@ -38,7 +38,7 @@
 data(sampleGroupsData)
 gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)
 output<- getConceptTable(gAKEGGL, items='geneNum')
-drawTable(output[[1]], matrixOfHeatmap=output[[2]], mar=c(2,15,3,2), clusterTable=NULL) 
+\dontrun{drawTable(output[[1]], matrixOfHeatmap=output[[2]], mar=c(2,15,3,2), clusterTable=NULL)} 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
