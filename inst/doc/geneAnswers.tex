@@ -160,3 +160,470 @@ We have four GeneAnswers objects, x, y, z and w, containing the statistical test
 \begin{Sinput}
 > keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
 > entrezIDList <- searchEntrez(keywordsList) 
+\end{Sinput}
+\begin{Soutput}
+[1] "search link: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=apoptosis+AND+Homo+sapiens%5borganism%5d&retmode=xml&retmax=500000"
+[1] "search link: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=%22cell%20adhesion%22+AND+Homo+sapiens%5borganism%5d&retmode=xml&retmax=500000"
+\end{Soutput}
+\begin{Sinput}
+> q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+\end{Sinput}
+\begin{Soutput}
+[1] "GeneAnswers instance has been successfully generated!"
+\end{Soutput}
+\begin{Sinput}
+> class(q)
+\end{Sinput}
+\begin{Soutput}
+[1] "GeneAnswers"
+attr(,"package")
+[1] "GeneAnswers"
+\end{Soutput}
+\begin{Sinput}
+> getAnnLib(q)
+\end{Sinput}
+\begin{Soutput}
+NULL
+\end{Soutput}
+\begin{Sinput}
+> getCategoryType(q)
+\end{Sinput}
+\begin{Soutput}
+[1] "User defined"
+\end{Soutput}
+\end{Schunk}
+
+Customized GeneAnswers instances have NULL at annLib slot and "User defiend" in categoryType slot.
+ 
+\subsection{Visulization}
+Besides barplot and pie chart, \Rpackage{GeneAnswers} package can generate a network (concept-gene network)  show how genes are connected to specified categories as well as general barplot and piechart. Function {\it GeneAnswersConceptNet} can generate a common R canvas or tcl/tk interactive canvas to draw the network by calling  \Rpackage{igraph}. Genes are presented as red nodes, if specified values are positive, and the gene nodes are green with negative values. The category nodes are yellow nodes, the sizes are relative to user-specified values. Currently, if function {\t GeneAnswersBuilder} successfully returns a GeneAnswers instance, the genes are represented as entrez IDs and categories are also category IDs. User can map them to gene symbols and categories terms by function {\it GeneAnswersReadable}. Function {\it GeneAnswersReadable} reads slot {\it annLib} to map Entrez IDs to gene symbols, so make sure slot {\it annLib} is correct before mapping.
+
+\begin{Schunk}
+\begin{Sinput}
+> ## mapping gene IDs and category IDs to gene symbols and category terms
+> xx <- geneAnswersReadable(x)
+\end{Sinput}
+\begin{Soutput}
+[1] "Mapping geneInput ..."
+[1] "Mapping genesInCategory ..."
+[1] "Mapping enrichmentInfo rownames ..."
+[1] "Mapping geneExprProfile rownames ..."
+\end{Soutput}
+\begin{Sinput}
+> yy <- geneAnswersReadable(y, verbose=FALSE)
+> zz <- geneAnswersReadable(z, verbose=FALSE)
+> ww <- geneAnswersReadable(w, verbose=FALSE)
+> q <- setAnnLib(q, 'org.Hs.eg.db')
+> qq <- geneAnswersReadable(q, catTerm=FALSE) 
+\end{Sinput}
+\begin{Soutput}
+[1] "Mapping geneInput ..."
+[1] "Mapping genesInCategory ..."
+[1] "Mapping geneExprProfile rownames ..."
+\end{Soutput}
+\end{Schunk}
+
+Since function {\it geneAnswersReadable} implements mapping based on annotation database  in slot annLib, we assign 'org.Hs.eg.db' to customized GeneAnswers instance annLib slot at first for make it readable.
+
+\begin{Schunk}
+\begin{Sinput}
+> ## plot barplot and / or piechart
+> geneAnswersChartPlots(xx, chartType='all')
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{piechart01.jpg}}
+\caption{Screen shot of pie chart of top categories}
+\label{pie chart of top categories}
+\end{figure}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{barplot01.jpg}}
+\caption{Screen shot of barplot of top categories}
+\label{barplot of top categories}
+\end{figure}   
+
+The nodes could be represented by different colors for different specified values, like fold change. In this case, overexpressed genes are represented as red nodes while green dots stand for underexpressed genes. If the node is more red, which means its fold change is larger. It's same for green nodes, but different direction. 
+\begin{Schunk}
+\begin{Sinput}
+> ## plot interactive concept-gene network
+> geneAnswersConceptNet(xx, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet01a.jpg}}
+\caption{Screen shot of concept-gene network}
+\label{conceptgeneNetwork}
+\end{figure}
+
+The top 5 categories might not be very specific. Users might get a  tree view to see relative category terms by calling function geneAnswersConceptRelationif the category has an ontology structure. The size of nodes is proportional to number of genes in these GO categories. The color of nodes stand for how relative the given genes are to the GO categories. More red, more relative. The given GO categories are yellow framed dots with dark purple edges connetions.
+\begin{Schunk}
+\begin{Sinput}
+> ## plot interactive go structure network
+> geneAnswersConceptRelation(x, direction='both', netMode='connection', catTerm=TRUE, catID=TRUE, nameLength=15) 
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{gostrt.jpg}}
+\caption{Screen shot of go structure network}
+\label{conceptgeneNetwork}
+\end{figure}
+
+Also the new version GeneAnswers integrates gene or protein interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
+\begin{Schunk}
+\begin{Sinput}
+> ## plot interactive concept-gene network
+> geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', showCats=c("GO:0009611", "GO:0043933", "GO:0045622"), catTerm=TRUE, geneSymbol=TRUE, catID=TRUE)
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet07.jpg}}
+\caption{Screen shot of concept-gene network}
+\label{conceptgeneNetwork}
+\end{figure}
+
+
+This function can also be used to show how the given genes interact with each other. For example, for the given genes in the GeneAnswers instance, x, users can use the following command to show gene '444','3638', '5087' and '55835' interact with each other and other genes in the given geneInput of x.
+\begin{Schunk}
+\begin{Sinput}
+> ## plot the given gene interaction
+> buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1], filterLayer=2, netMode='connection')
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction01.jpg}}
+\caption{Screen shot of the given gene interaction network}
+\label{geneInteractionNetwork}
+\end{figure}
+
+In this case, large black dots with yellow frame stand for the 4 given genes. They also connect to other genes by dark-blue-purple edges. Small black dots represent the other genes from getGeneInput(x). Small white dots are genes that are not in the genes from getGeneInput(x), but interact with these genes. 
+
+If there are some certain values associate with genes in geneInput of x, like the example data, you can represent any one column by colors. For example, if users want to show how genes interaction with gene expression information, the following command can show this:
+\begin{Schunk}
+\begin{Sinput}
+> ## plot the given gene interaction
+> buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction02.jpg}}
+\caption{Screen shot of the given gene interaction network with expression information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+The following one is based on expression p-values, we often use -log2 to transform p-values.
+\begin{Schunk}
+\begin{Sinput}
+> ## plot the given gene interaction
+> buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=cbind(getGeneInput(x)[,1], -log2(getGeneInput(x)[,3])), filterLayer=2, netMode='connection')
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction03.jpg}}
+\caption{Screen shot of the given gene interaction network with p-value information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+Users can also define customized color scheme and transfer it into 'buildNet' function by parameter 'colorMap'. Details are available in 'buildNet' manual page. If users want to have a overview for the interaction of all of the given genes from getGeneInput(x), the following command could be used:
+\begin{Schunk}
+\begin{Sinput}
+> ## plot the given gene interaction
+> buildNet(getGeneInput(x)[,1], idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+\end{Sinput}
+\end{Schunk}
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction04.jpg}}
+\caption{Screen shot of all of the given gene interaction network with expression information}
+\label{geneInteractionNetwork}
+\end{figure}
+
+
+If there are a lot of genes, the network could be very complicated. We strongly recommend to use 'interactive' mode to show the network since it's easy to manually change layout. The default setting is 'interactive', but users can change it to 'fixed' for a small or simple network.
+
+
+The following example is to show top 5 GO-gene network for the first 2 level GO nodes removal.
+\begin{Schunk}
+\begin{Sinput}
+> ## plot Go-concept network for 2 level nodes removal
+> geneAnswersConceptNet(ww, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
+\end{Sinput}
+\end{Schunk}
+
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet02.jpg}}
+\caption{Screen shot of concept-gene network for top 2 GO level nodes removal}
+\label{GO-genes network}
+\end{figure}
+
+Also, users can sort enrichment test information and plot it.
+\begin{Schunk}
+\begin{Sinput}
+> ## sort enrichmentInfo dataframe by fdr adjusted p value
+> xxx <- geneAnswersSort(xx, sortBy='correctedPvalue')
+> yyy <- geneAnswersSort(yy, sortBy='pvalue') 
+> zzz <- geneAnswersSort(zz, sortBy='geneNum')
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> geneAnswersConceptNet(yyy, colorValueColumn='foldChange', centroidSize='geneNum', output='fixed')
+> geneAnswersConceptNet(zzz, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=c(10:16))
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet03.jpg}}
+\caption{Screen shot of KEGG-gene network}
+\label{KEGG-genes network}
+\end{figure}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet04.jpg}}
+\caption{Screen shot of DOLite-gene network}
+\label{DOLite-genes network}
+\end{figure}
+
+If users provide a gene expression profile, \Rpackage{GeneAnswers} package can generate a table or heatmap labeling relationship between genes and categories with a heatmap of these genes expression. We call this type of representation as concept-gene cross tabulation.
+
+\begin{Schunk}
+\begin{Sinput}
+> ## generate GO-gene cross tabulation
+> geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\begin{Schunk}
+\begin{Sinput}
+> ## generate GO-gene cross tabulation
+> geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
+\end{Sinput}
+\begin{Soutput}
+initial  value 2.052477 
+iter   5 value 0.547245
+iter  10 value 0.164116
+iter  15 value 0.101851
+iter  20 value 0.062694
+iter  25 value 0.046312
+iter  30 value 0.040133
+iter  35 value 0.024541
+iter  40 value 0.019513
+iter  45 value 0.016212
+iter  50 value 0.011613
+final  value 0.011613 
+stopped after 50 iterations
+initial  value 9.266680 
+iter   5 value 1.132293
+iter  10 value 0.016460
+final  value 0.007005 
+converged
+\end{Soutput}
+\end{Schunk}
+\includegraphics{geneAnswers-017}
+\caption{GO-gene cross tabulation}
+\label{fig:GO-gene cross tabulation}
+\end{figure}    
+
+\begin{Schunk}
+\begin{Sinput}
+> geneAnswersHeatmap(yyy)
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\begin{Schunk}
+\begin{Sinput}
+> geneAnswersHeatmap(yyy)
+\end{Sinput}
+\begin{Soutput}
+initial  value 1.716305 
+iter   5 value 0.407656
+iter  10 value 0.112360
+iter  15 value 0.072109
+iter  20 value 0.052017
+iter  25 value 0.029419
+final  value 0.006019 
+converged
+initial  value 4.466884 
+final  value 4.466884 
+converged
+\end{Soutput}
+\end{Schunk}
+\includegraphics{geneAnswers-019}
+\caption{KEGG-gene cross tabulation}
+\label{fig:KEGG-gene cross tabulation}
+\end{figure}
+
+For cross table, there are two types of representations. One is a table, which is better for few genes, and another one is a two-color heatmap that is adopted for a lot of genes. In the latter,  the default setting is that white bar stands for that a gene in that category.
+
+ 
+\begin{figure}
+\centering
+\begin{Schunk}
+\begin{Soutput}
+initial  value 1.962151 
+iter   5 value 0.463019
+iter  10 value 0.104994
+iter  15 value 0.083234
+iter  20 value 0.051796
+iter  25 value 0.024339
+iter  30 value 0.016949
+iter  35 value 0.011347
+final  value 0.008069 
+converged
+initial  value 11.178377 
+iter   5 value 1.353466
+iter  10 value 0.417364
+iter  15 value 0.058407
+final  value 0.004365 
+converged
+\end{Soutput}
+\end{Schunk}
+\includegraphics{geneAnswers-021}
+\caption{DOLite-gene cross tabulation}
+\label{fig:DOLite-gene cross tabulation}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{Schunk}
+\begin{Soutput}
+[1] "Some specified categories might not be statistical significant! Only show significant categories."
+initial  value 1.955644 
+iter   5 value 0.250440
+iter  10 value 0.129463
+iter  15 value 0.075394
+iter  20 value 0.040824
+iter  25 value 0.016440
+iter  30 value 0.013925
+final  value 0.006865 
+converged
+initial  value 0.000000 
+final  value 0.000000 
+converged
+\end{Soutput}
+\end{Schunk}
+\includegraphics{geneAnswers-023}
+\caption{Customized GO-gene cross tabulation}
+\label{fig: Customized GO-gene cross tabulation}
+\end{figure}
+
+
+Besides top categories, users can also show interested categories.
+\begin{Schunk}
+\begin{Sinput}
+> GOBPIDs <- c("GO:0007049", "GO:0042592", "GO:0006259", "GO:0016265", "GO:0007243")
+> GOBPTerms <- c("cell cycle", "death", "protein kinase cascade", "homeostatic process", "DNA metabolic process") 
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> ## generate concept-gene cross tabulation
+> geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE) 
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{conceptNet05.jpg}}
+\caption{Screen shot of customized GO-gene network}
+\label{customized GO-genes network}
+\end{figure}
+
+\begin{Schunk}
+\begin{Sinput}
+> geneAnswersHeatmap(x, showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE)
+\end{Sinput}
+\end{Schunk}
+
+
+\begin{figure}
+\centering
+\begin{Schunk}
+\begin{Soutput}
+initial  value 2.019969 
+iter   5 value 0.291962
+iter  10 value 0.188187
+iter  15 value 0.144754
+iter  20 value 0.082005
+iter  25 value 0.065685
+iter  30 value 0.023664
+iter  35 value 0.022465
+final  value 0.006909 
+converged
+initial  value 9.435938 
+iter   5 value 2.999357
+iter  10 value 0.139216
+iter  15 value 0.011432
+iter  15 value 0.002732
+iter  15 value 0.002297
+final  value 0.002297 
+converged
+\end{Soutput}
+\end{Schunk}
+\includegraphics{geneAnswers-027}
+\caption{Customized concept-gene cross tabulation}
+\label{fig:Customized concept-gene cross tabulation}
+\end{figure}
+
+Function {\it geneAnswersConcepts} shows the linkages of specified categories. The width of edge stands for how overlapping between two categories.
+\begin{Schunk}
+\begin{Sinput}
+> ## generate concept-gene cross tabulation
+> geneAnswersConcepts(xxx, centroidSize='geneNum', output='fixed', showCats=GOBPTerms) 
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}
+\centering
+\centering
+\resizebox{1\textwidth}{!}{\includegraphics{concept01.jpg}}
+\caption{Screen shot of customized GO category linkage}
+\label{customized GO category linkage}
+\end{figure}
+
+
+
+Users can also print top categories and genes on screen and save them in files by specification as well as these two types of visualization. The default file names are "topCategory.txt" and "topCategoryGenes.txt" for top categories with or without corresponding genes, respectively.
+\begin{Schunk}
+\begin{Sinput}
+> ## print top GO categories sorted by hypergeometric test p value
+> topGOGenes(x,  orderby='pvalue')

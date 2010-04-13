@@ -42,7 +42,8 @@ if (is.null(getGeneric("getEnrichmentInfo"))) setGeneric("getEnrichmentInfo", fu
 if (is.null(getGeneric("setGeneInput"))) setGeneric("setGeneInput", function(object, geneInput) standardGeneric("setGeneInput"))
 if (is.null(getGeneric("setTestType"))) setGeneric("setTestType", function(object, type=c('hyperG', 'none')) standardGeneric("setTestType")) 
 if (is.null(getGeneric("setPValueT"))) setGeneric("setPValueT", function(object, pvalueT) standardGeneric("setPValueT")) 
-#if (is.null(getGeneric("setGenesInCategory"))) setGeneric("setGenesInCategory", function(object) standardGeneric("setGenesInCategory")) 
+if (is.null(getGeneric("setGenesInCategory"))) setGeneric("setGenesInCategory", function(object, genesInCategory) standardGeneric("setGenesInCategory")) 
+if (is.null(getGeneric("setEnrichmentInfo"))) setGeneric("setEnrichmentInfo", function(object, enrichmentInfo) standardGeneric("setEnrichmentInfo"))
 if (is.null(getGeneric("setGeneExprProfile"))) setGeneric("setGeneExprProfile", function(object, geneExprProfile) standardGeneric("setGeneExprProfile")) 
 if (is.null(getGeneric("setAnnLib"))) setGeneric("setAnnLib", function(object, annLib) standardGeneric("setAnnLib")) 
 if (is.null(getGeneric("setCategoryType"))) setGeneric("setCategoryType", function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend')) standardGeneric("setCategoryType")) 
@@ -94,15 +95,26 @@ setMethod("setPValueT", signature(object="GeneAnswers"), function(object, pvalue
 	}
 })
 
-#setMethod("setGenesInCategory", signature(object="GeneAnswers"), function(object, genesInCategory)
-#{
-#	if (is.list(genesInCategory)) {
-#		object@genesInCategory <- genesInCategory
-#		return(object)
-#	} else {
-#		stop('Input is not a list! No value is set')
-#	}
-#})
+setMethod("setGenesInCategory", signature(object="GeneAnswers"), function(object, genesInCategory)
+{
+	if (is.list(genesInCategory)) {
+		object@genesInCategory <- genesInCategory
+		return(object)
+	} else {
+		stop('Input is not a list! No value is set')
+	}
+})
+
+setMethod("setEnrichmentInfo", signature(object="GeneAnswers"), function(object, enrichmentInfo)
+{
+	if (is.data.frame(enrichmentInfo) | is.matrix(enrichmentInfo)) {
+		object@genrichmentInfo <- as.data.frame(enrichmentInfo)
+		return(object)
+	} else {
+		stop('Input is not a list! No value is set')
+	}
+})
+
 
 setMethod("setGeneExprProfile", signature(object="GeneAnswers"), function(object, geneExprProfile)
 {
