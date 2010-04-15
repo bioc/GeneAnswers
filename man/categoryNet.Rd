@@ -21,9 +21,9 @@ categoryNet(catGenesList, centroidSize=NULL, output=c('fixed','interactive'))
 \value{
   A category linkage is generated.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10  }
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ \code{\link{help}}}
 \examples{
 input <- list('cat1'=c(1,4,2,5), 'cat2'=c(3,5,8,9), 'cat3'=c(2,4,5,9), 'cat4'=c(1,5,3))
 \dontrun{categoryNet(input)}

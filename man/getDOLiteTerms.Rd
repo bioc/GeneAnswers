@@ -15,9 +15,9 @@ getDOLiteTerms(DOLiteIDs)
 \value{
   return a DOLite term vector based on given DOLite IDs.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ \code{\link{getCategoryTerms}}}
 \examples{
 data('DOLiteTerm')
 getDOLiteTerms(c('DOLite:25', 'DOLite:142'))

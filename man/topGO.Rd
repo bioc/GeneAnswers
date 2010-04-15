@@ -18,9 +18,9 @@ topGO(x, catTerm = TRUE, keepID = TRUE, ...)
 \value{
    print necessary information on the screen and save into a specified file if request.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{  See Also as \code{\link{topCategory}} }
+\seealso{\code{\link{topCategory}} }
 \examples{
 # x is a GeneAnswers instance with GO test
 \dontrun{topGO(x, top=10)}

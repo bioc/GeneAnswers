@@ -31,7 +31,7 @@
 \value{
   No return value. 
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
 \seealso{ See Also as \code{\link{getConceptTable}}, \code{\link{groupReport}} }
 \examples{

@@ -25,8 +25,9 @@ geneAnswersHomoMapping(x, species = c("human", "rat", "mouse", "fly"), speciesL 
 \value{
   return a mapped GeneAnswers instance
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{getHomoGeneIDs}}, ~~~ }
+\seealso{ \code{\link{getHomoGeneIDs}}}
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersHomoMapping(x, species='human', speciesL='mouse', mappingMethod='direct')}

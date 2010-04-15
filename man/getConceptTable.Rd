@@ -23,8 +23,9 @@ Only gene amounts are kept if items is set to 'geneNum' or enrichment test p val
 \value{
   return a concepts-genes matrix list.
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{\code{\link{GeneAnswersBuilder}} }
 \examples{
 data(sampleGroupsData)
 gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)

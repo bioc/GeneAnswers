@@ -22,9 +22,9 @@ getGOList(geneVector, lib, GOCat = c("ALL", "BP", "CC", "MF"), level = 1)
 \value{
   return a GO list, whose names are GO IDs. Elements are gene entrez IDs belonging to the corresponding GO categories.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ \code{\link{getCategoryList}} }
 \examples{
 a <- getGOList(c('56458', '16590'), 'org.Mm.eg.db', GOCat='BP', level=2)
 length(a)

@@ -12,12 +12,7 @@
 \details{
   Fold change could be negative, which means the ratio of treatment to control is less than 1 and the value is reciprocal of general fold change.
 }
-\source{
-  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-  ~~ possibly secondary sources and usages ~~
-}
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \examples{
 data(mouseGeneInput)
 mouseGeneInput[1:10,] 

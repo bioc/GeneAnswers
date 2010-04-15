@@ -28,9 +28,8 @@ geneConceptNet(inputList, lengthOfRoots=NULL, inputValue = NULL, centroidSize = 
 \value{
   a concept-gene network is generated.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 input <- list('ele01'=c('Aa', 'Bb'), 'ele02'=c('Bb', 'Cc', 'dd'))
 \dontrun{geneConceptNet(input)}

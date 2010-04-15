@@ -24,9 +24,9 @@ geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, ca
 \value{
   The function will generate a map without return value.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{geneAnnotationHeatmap}}, ~~~ }
+\seealso{ \code{\link{geneAnnotationHeatmap}}}
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)}

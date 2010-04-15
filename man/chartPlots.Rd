@@ -25,9 +25,8 @@ chartPlots(x, chartType = c("pieChart", "barPlot", "all"), specifiedCols = c("ge
 \value{
   A pie chart and/or barplot are generated depends on specification.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 x <- matrix(c(6,9,3,30,13,2,15,20), nrow = 4, ncol=2, byrow=FALSE,
                dimnames = list(c("group1", "group2", "group3", "group4"),

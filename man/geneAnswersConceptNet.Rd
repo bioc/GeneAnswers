@@ -36,9 +36,9 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "ge
 \value{
   One concept-gene figure is generated. It could be a R figure or tcltk figure depends on how the user set parameter output. 
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{getMultiLayerGraphIDs}}, \code{\link{geneConceptNet}},~~~ }
+\seealso{ \code{\link{getMultiLayerGraphIDs}}, \code{\link{geneConceptNet}} }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')}

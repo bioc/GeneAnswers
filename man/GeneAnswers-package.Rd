@@ -12,8 +12,8 @@ GeneAnswers provide an integrated tool for given genes biological or medical int
 \tabular{ll}{
 Package: \tab GeneAnswers\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2009-07-16\cr
+Version: \tab 1.4.0\cr
+Date: \tab 2010-04-14\cr
 License: \tab LGPL version 2 or newer \cr
 }
 }

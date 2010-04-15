@@ -60,8 +60,9 @@ buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 \value{
   invisibly return a list containing elements to represent a network. 
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{getCategoryTerms}}, ~~~ }
+\seealso{ \code{\link{getCategoryTerms}}}
 \examples{
 require(GeneAnswers)
 example(GeneAnswers)

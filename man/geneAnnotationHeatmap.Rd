@@ -32,8 +32,8 @@ geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, co
 \value{
   The function will generate a map without return value.
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Pan Du, Gang Feng and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 a <- list(group1 = c('a','b','c','d','f'), group2= c('b','d','e','a','g','h'))
 b <- matrix(rnorm(48), nrow=8,ncol=6)

@@ -37,9 +37,9 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 \value{
   A GeneAnswers class containing geneInput, entrichmentInfo, etc.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng,  Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{geneAnswersSort}}, \code{\link{geneAnswersConceptNet}}, ~~~ } 
+\seealso{ \code{\link{geneAnswersSort}}, \code{\link{geneAnswersConceptNet}}} 
 \examples{
 data('humanExpr')
 data('humanGeneInput') 

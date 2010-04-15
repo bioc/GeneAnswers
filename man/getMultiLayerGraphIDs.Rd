@@ -31,8 +31,9 @@ directional connections.
 \value{
   return a list containing elements to represent a network. The first element is a logic value, TRUE means no more connection between the most external layer nodes and other nodes. The second element is a list of layer-length. If the 1st element is FASLE, the length of 2nd element should be (layers + 1). And starting from the 3rd elements, the remaining elements construct a network.
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{getSingleLayerGraphIDs}}, ~~~ }
+\seealso{\code{\link{getSingleLayerGraphIDs}}}
 \examples{
 require(GeneAnswers)
 example(GeneAnswers)

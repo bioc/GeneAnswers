@@ -24,9 +24,8 @@ getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'rem
 \value{
   return category terms of given category IDs.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 getCategoryTerms(c("04640", "05221", "05215"), catType='KEGG')
 }

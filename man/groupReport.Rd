@@ -36,8 +36,9 @@ are applied color for genes based on the same column name if the length is one. 
 \value{
   no value returned
 }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ See Also as \code{\link{getConceptTable}}, \code{\link{drawTable}}}
+\seealso{\code{\link{getConceptTable}}, \code{\link{drawTable}}}
 \examples{
 data(sampleGroupsData)
 gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)

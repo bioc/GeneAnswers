@@ -24,9 +24,9 @@ geneAnswersChartPlots(x, chartType=c('pieChart', 'barPlot', 'all'), sortBy = c('
 \value{
   A pie chart and/or barplot are generated depends on specification.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{chartPlots}},, ~~~ }
+\seealso{ \code{\link{chartPlots}} }
 \examples{
 example(GeneAnswers)
 \dontrun{geneAnswersChartPlots(x)} 

@@ -20,9 +20,8 @@ getCategoryList(geneVector, lib, categoryType)
 \value{
   return a category list, names of the list are category IDs and elements are genes IDs.
 }
-\references{ ~put references to the literature/web site here ~ }
+\references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 getCategoryList(c('56458', '16590'), 'org.Mm.eg.db', 'PATH')
 }
