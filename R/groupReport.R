@@ -9,6 +9,8 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 	
 	if (!is.null(colorValueColumn) & (length(colorValueColumn) > 1) & (length(colorValueColumn) != length(gAList))) stop('Specified colorValueColumns can not match the given gAList! Aborting ...')
 	
+	if (length(colorValueColumn) == 1) colorValueColumn <- rep(colorValueColumn, length(gAList))
+	
 	if (is.matrix(dataMatrix) | is.data.frame(dataMatrix) | is.vector(dataMatrix)) {
 		dataMatrix <- as.matrix(dataMatrix)
 		if ((NA %in% rownames(dataMatrix)) | is.null(rownames(dataMatrix))) print('Warning: NA or NULL might be in rownames of dataMatrix!')
@@ -93,7 +95,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 						colnames(temp) <- tempColNames
 						rownames(temp) <- tempRowNames
 					}
-  					drawHTMLTable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
+  					.drawHTMLtable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
 				} else {
 					#generate genes in concept table
 					tempGenes <- unlist(getGenesInCategory(gAList[[indexM[a,2]]])[rownames(dataMatrix)[indexM[a,1]]])
@@ -117,10 +119,10 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 						rownames(temp) <- tempRowNames
 					}
 					#### generate a hyperlink by table name based on catType
-					drawHTMLTable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
+					.drawHTMLtable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
 				}
             } else {
-				drawHTMLTable(dataMatrix, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=annLib, matrixOfHeatmap=matrixOfHeatmap, topCat=max(showCats), displayText=TRUE)
+				.drawHTMLtable(dataMatrix, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=annLib, matrixOfHeatmap=matrixOfHeatmap, topCat=max(showCats), displayText=TRUE)
 			} 
 		} else {
 			if (!is.null(matrixOfHeatmap) & is.numeric(showCats)) {

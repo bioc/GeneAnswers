@@ -539,7 +539,7 @@
 
 }
 
-drawHTMLTable <- function(dataMatrix, outFile, tableName='Table', tableLink= NULL, externalLinkOfTable = NULL, tableCenter=TRUE, catType=c('GO', 'KEGG', 'Entrez', 'DOLite', 'Unknown'), 
+.drawHTMLtable <- function(dataMatrix, outFile, tableName='Table', tableLink= NULL, externalLinkOfTable = NULL, tableCenter=TRUE, catType=c('GO', 'KEGG', 'Entrez', 'DOLite', 'Unknown'), 
 						species=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), 
 						lastRowLink=FALSE, highlightLastRow=TRUE, matrixOfHeatmap=NULL, topCat=10,  IDCols=1, heatMap=FALSE, reverseOfCluster=FALSE, displayText=TRUE) {
 								
