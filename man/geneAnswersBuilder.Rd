@@ -21,7 +21,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
   \item{FDR.correction}{ logical indicating if FDR correction of the enrichment test p-value is performed or not. }
   \item{verbose}{ logical, display current building stage. }
   \item{sortBy}{ sorted type } 
-  \item{\dots}{ additional arguments passed on to the corresponding enrichment test. }
+  \item{\dots}{ additional arguments passed to \code{\link{getGOList}}. }
 }
 \details{
   As the input of geneAnswersBuilder, geneInput could be a character vector (Gene Entrez ID vector), a matrix or a dataframe. For the matrix and dataframe, the first column is for Gene Entrez IDs, while other columns could be any interested values that could be used to represent gene expression direction for generating concepts-genes network. Rownames are not necessary. 
@@ -39,7 +39,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 }
 \references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng,  Pan Du and Simon Lin }
-\seealso{ \code{\link{geneAnswersSort}}, \code{\link{geneAnswersConceptNet}}} 
+\seealso{ \code{\link{getGOList}}} 
 \examples{
 data('humanExpr')
 data('humanGeneInput') 

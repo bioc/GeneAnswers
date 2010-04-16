@@ -60,7 +60,7 @@ function (gAList, showCat=10, items=c('both', 'geneNum', 'pvalue'), catTerm=TRUE
 		rownames(indexTable) <- rownames(catTable)[1:(dim(catTable)[1]-1)]
 	} 
   	rownames(catTable)[length(rownames(catTable))] <- 'Genes / Group'
-  	result <- list(as.data.frame(catTable), indexTable)
+  	result <- list(as.data.frame(catTable, stringsAsFactors =FALSE), indexTable)
   	names(result) <- c('CategoriesTable', 'IndexTable')
   	return(result)
 }
