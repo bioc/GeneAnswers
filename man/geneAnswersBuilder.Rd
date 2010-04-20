@@ -6,7 +6,7 @@
   A function to build an object of a GeneAnswers class based on given information.
 }
 \usage{
-geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("hyperG", "none"), totalGeneNumber=NULL, geneExpressionProfile = NULL, categorySubsetIDs = NULL, pvalueT = 0.01, FDR.correction = FALSE, verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...)
+geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("hyperG", "none"), known=FALSE, totalGeneNumber=NULL, geneExpressionProfile = NULL, categorySubsetIDs = NULL, pvalueT = 0.01, FDR.correction = FALSE, verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,12 +14,13 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
   \item{annotationLib}{ name of given annotation library file or user provided annotation list. }
   \item{categoryType}{ name of given annotation category or NULL for user provided annotation list. }
   \item{testType}{ name of enrichment test. }
+  \item{known}{logic, specify only known annotation gene enrichment test. }
   \item{totalGeneNumber}{ number of total genes to perform hypergeometric test. }
   \item{geneExpressionProfile}{ data frame containing gene expression file or NULL. }
   \item{categorySubsetIDs}{ a character vector of user-specified subset of categories to be tested. }
   \item{pvalueT}{ p-value threshold of the enrichment test. }
-  \item{FDR.correction}{ logical indicating if FDR correction of the enrichment test p-value is performed or not. }
-  \item{verbose}{ logical, display current building stage. }
+  \item{FDR.correction}{ logic, indicating if FDR correction of the enrichment test p-value is performed or not. }
+  \item{verbose}{ logic, display current building stage. }
   \item{sortBy}{ sorted type } 
   \item{\dots}{ additional arguments passed to \code{\link{getGOList}}. }
 }
@@ -30,7 +31,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 
   categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
   
-  totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
+  If know is set to TRUE, the enrichment test only considers the genes with annotation. When know is set to FALSE (default setting), totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
 
   sortBy could be one of "geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue" and "none". Default value is 'pvalue'.
 }

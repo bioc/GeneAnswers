@@ -1,5 +1,5 @@
 `geneAnswersBuilder` <-
-function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none'), totalGeneNumber=NULL, geneExpressionProfile=NULL, categorySubsetIDs=NULL, pvalueT=0.01, FDR.correction=FALSE, 
+function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none'), known=FALSE, totalGeneNumber=NULL, geneExpressionProfile=NULL, categorySubsetIDs=NULL, pvalueT=0.01, FDR.correction=FALSE, 
 								verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...) {
 	testType <- match.arg(testType)
 	sortBy <- match.arg(sortBy)
@@ -92,6 +92,25 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'mouse'=61498,
 					'rat'=37536,
 					'fly'=22606)
+			}
+		}
+		if (known) {
+			if (verbose) print('Enrichment test is only performed based on annotated genes')
+			geneIDs <- geneIDs[geneIDs %in% unique(unlist(testLibList))]
+			indexTotalGeneNumber <- list('human'=c('GO'=c(17673), 'GO.BP'=c(14221), 'GO.MF'=c(15264), 'GO.CC'=c(16024), 'KEGG'=c(5056), 'DOLite'=c(4051)), 
+										 'mouse'=c('GO'=c(18022), 'GO.BP'=c(14510), 'GO.MF'=c(15494), 'GO.CC'=c(15976), 'KEGG'=c(5982)),
+										 'rat'=c('GO'=c(17067), 'GO.BP'=c(13445), 'GO.MF'=c(15350), 'GO.CC'=c(13600), 'KEGG'=c(5684)),
+										 'fly'=c('GO'=c(11274), 'GO.BP'=c(9145), 'GO.MF'=c(10079), 'GO.CC'=c(7722), 'KEGG'=c(2281)))
+			if (is.null(totalGeneNumber) & (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db'))) {
+				totalGeneNumber <- switch(x@annLib,
+					'org.Hs.eg.db'='human',
+					'org.Mm.eg.db'='mouse',
+					'org.Rn.eg.db'='rat',
+					'org.Dm.eg.db'='fly')
+			}
+			if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
+				totalGeneNumber <- indexTotalGeneNumber[[totalGeneNumber]][categoryType]
+				if (is.na(totalGeneNumber)) stop('The given species does not contain the given category type! Abort GeneAnswers Building ...')
 			}
 		}
 		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber)
