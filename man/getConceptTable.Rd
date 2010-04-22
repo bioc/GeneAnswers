@@ -28,7 +28,7 @@ Only gene amounts are kept if items is set to 'geneNum' or enrichment test p val
 \seealso{\code{\link{geneAnswersBuilder}} }
 \examples{
 data(sampleGroupsData)
-gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)
+gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.1, verbose=FALSE)
 output<- getConceptTable(gAKEGGL)  
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
