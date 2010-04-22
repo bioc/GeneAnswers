@@ -1,5 +1,5 @@
 `geneAnswersBuilder` <-
-function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none'), known=FALSE, totalGeneNumber=NULL, geneExpressionProfile=NULL, categorySubsetIDs=NULL, pvalueT=0.01, FDR.correction=FALSE, 
+function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none'), known=TRUE, totalGeneNumber=NULL, geneExpressionProfile=NULL, categorySubsetIDs=NULL, pvalueT=0.01, FDR.correction=FALSE, 
 								verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...) {
 	testType <- match.arg(testType)
 	sortBy <- match.arg(sortBy)
@@ -76,24 +76,6 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	if (verbose) print('genesInCategory has built in ...')
 
 	if (testType == 'hyperG') {
-		if (is.null(totalGeneNumber)) {
-			if(is.null(x@annLib)) stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-			if (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db')) {
-				totalGeneNumber <- switch(x@annLib,
-					'org.Hs.eg.db'=45384,
-					'org.Mm.eg.db'=61498,
-					'org.Rn.eg.db'=37536,
-					'org.Dm.eg.db'=22606)
-			} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-		} else {
-			if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
-				totalGeneNumber <- switch(totalGeneNumber,
-					'human'=45384,
-					'mouse'=61498,
-					'rat'=37536,
-					'fly'=22606)
-			}
-		}
 		if (known) {
 			if (verbose) print('Enrichment test is only performed based on annotated genes')
 			geneIDs <- geneIDs[geneIDs %in% unique(unlist(testLibList))]
@@ -101,16 +83,38 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 										 'mouse'=c('GO'=c(18022), 'GO.BP'=c(14510), 'GO.MF'=c(15494), 'GO.CC'=c(15976), 'KEGG'=c(5982)),
 										 'rat'=c('GO'=c(17067), 'GO.BP'=c(13445), 'GO.MF'=c(15350), 'GO.CC'=c(13600), 'KEGG'=c(5684)),
 										 'fly'=c('GO'=c(11274), 'GO.BP'=c(9145), 'GO.MF'=c(10079), 'GO.CC'=c(7722), 'KEGG'=c(2281)))
-			if (is.null(totalGeneNumber) & (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db'))) {
-				totalGeneNumber <- switch(x@annLib,
-					'org.Hs.eg.db'='human',
-					'org.Mm.eg.db'='mouse',
-					'org.Rn.eg.db'='rat',
-					'org.Dm.eg.db'='fly')
+			if (is.null(totalGeneNumber)) {
+				if (is.null(x@annLib)) stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
+				if (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db')) {
+					totalGeneNumber <- switch(x@annLib,
+						'org.Hs.eg.db'='human',
+						'org.Mm.eg.db'='mouse',
+						'org.Rn.eg.db'='rat',
+						'org.Dm.eg.db'='fly')
+				} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
 			}
 			if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
 				totalGeneNumber <- indexTotalGeneNumber[[totalGeneNumber]][categoryType]
 				if (is.na(totalGeneNumber)) stop('The given species does not contain the given category type! Abort GeneAnswers Building ...')
+			}
+		} else {
+			if (is.null(totalGeneNumber)) {
+				if(is.null(x@annLib)) stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
+				if (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db')) {
+					totalGeneNumber <- switch(x@annLib,
+						'org.Hs.eg.db'=45384,
+						'org.Mm.eg.db'=61498,
+						'org.Rn.eg.db'=37536,
+						'org.Dm.eg.db'=22606)
+				} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
+			} else {
+				if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
+					totalGeneNumber <- switch(totalGeneNumber,
+						'human'=45384,
+						'mouse'=61498,
+						'rat'=37536,
+						'fly'=22606)
+				}
 			}
 		}
 		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber)
