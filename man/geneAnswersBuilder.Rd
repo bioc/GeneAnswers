@@ -27,11 +27,11 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 \details{
   As the input of geneAnswersBuilder, geneInput could be a character vector (Gene Entrez ID vector), a matrix or a dataframe. For the matrix and dataframe, the first column is for Gene Entrez IDs, while other columns could be any interested values that could be used to represent gene expression direction for generating concepts-genes network. Rownames are not necessary. 
   
-  annotationLib could be Disease Ontology library, Entrez annotation libraries for a specie, such as 'org.Hs.eg.db'. Current version supports 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db' and 'org.Dm.eg.db'. User can also use own annotation library. User's annotation library should be a list. Each element in this list is a vector of genes for a user-specified category. Names of this annotation list are categories' names.
+  annotationLib could be Disease Ontology library, Entrez annotation libraries for a specie, such as 'org.Hs.eg.db'. Current version supports "org.Ag.eg.db", "org.Bt.eg.db", "org.Ce.eg.db", "org.Cf.eg.db", "org.Dm.eg.db", "org.Dr.eg.db", "org.EcK12.eg.db", "org.EcSakai.eg.db", "org.Gg.eg.db", "org.Hs.eg.db", "org.Mm.eg.db", "org.Mmu.eg.db", "org.Pt.eg.db", "org.Rn.eg.db", "org.Ss.eg.db", "org.Xl.eg.db", "org.At.tair.db", "org.Pf.plasmo.db" and "org.Sc.sgd.db". User can also use own annotation library. User's annotation library should be a list. Each element in this list is a vector of genes for a user-specified category. Names of this annotation list are categories' names.
 
-  categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
+  categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG" and "REACTOME.PATH". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, "GO" for all of these three categories, "KEGG" for all KEGG pathways, and "REACTOME.PATH" for all REACTOME pathways, which might not work with all available Entrez annotation libraries, please refer \code{\link{getTotalGeneNumber}} for details. For user provided annotation library, it should be NULL in most cases.
   
-  If known is set to TRUE, the enrichment test only considers the genes with annotation. When known is set to FALSE, totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
+  If known is set to TRUE, the enrichment test only considers the genes with annotation. If FALSE, the total number of genes in that species will be returned. If user has own annotationLib, totalGeneNumber should be an integer, or one of "anopheles", "arabidopsis", "bovine", "worm", "canine", "fly", "zebrafish", "ecolistraink12", "ecolistrainsakai", "chicken", "human", "mouse", "rhesus", "malaria", "chimp", "rat", "yeast", "pig" and "xenopus". NULL only works when "known" is set TRUE. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber. User can get total gene numbers by \code{\link{getTotalGeneNumber}}, too. 
 
   sortBy could be one of "geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue" and "none". Default value is 'pvalue'.
 }
@@ -40,7 +40,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 }
 \references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng,  Pan Du and Simon Lin }
-\seealso{ \code{\link{getGOList}}} 
+\seealso{ \code{\link{getTotalGeneNumber}}} 
 \examples{
 data('humanExpr')
 data('humanGeneInput') 

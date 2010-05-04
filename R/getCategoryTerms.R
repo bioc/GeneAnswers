@@ -1,14 +1,15 @@
 `getCategoryTerms` <-
 function(catIDs, catType, strict=FALSE, missing=c('name', 'keep', 'remove'), nameLength='all', addID=FALSE) {
 	missing=match.arg(missing)
-	if (toupper(catType) %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG')) {
+	if (toupper(catType) %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH')) {
 		catTerms = switch(toupper(catType), 
 		'GO'=.getGOTerms(catIDs),
 		'GO.BP'=.getGOTerms(catIDs),
 		'GO.CC'=.getGOTerms(catIDs),
 		'GO.MF'=.getGOTerms(catIDs),
 		'DOLITE'=getDOLiteTerms(catIDs),
-		'KEGG'=getPATHTerms(catIDs))
+		'KEGG'=getPATHTerms(catIDs),
+		'REACTOAM.PATH'=getREACTOMEPATHTerms(catIDs))
 		if (NA %in% unlist(catTerms)) {
 			print('Warning: some category IDs do not have names!')
 			if (strict) stop('Interrupt conversion!')

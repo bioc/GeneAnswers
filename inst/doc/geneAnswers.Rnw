@@ -114,7 +114,7 @@ class(x)
 ## build a GeneAnswers instance with statistical test based on KEGG and saved example data. 
 y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 ## build a GeneAnswers instance with statistical test based on DOLite and saved example data.
-z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLite', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
 @  
 
@@ -442,7 +442,7 @@ Several groups of genes are used to dynamically study biological processes by di
 ##load multigroup genes sample data
 data(sampleGroupsData)
 ##Build a GeneAnswers List
-gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.1, verbose=FALSE)
+gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.01, verbose=FALSE)
 ##Output integrated text table
 output<- getConceptTable(gAKEGGL, items='geneNum')
 @
@@ -485,7 +485,7 @@ newExpr[,1] <- homoLLExpr[as.character(newExpr[,1])]
 dim(mouseExpr)
 dim(newExpr)
 ## build a GeneAnswers instance based on mapped data
-v <- geneAnswersBuilder(newGeneInput, 'org.Hs.eg.db', categoryType='DOLite', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=newExpr)
+v <- geneAnswersBuilder(newGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=newExpr)
 ## make the GeneAnswers instance readable, only map DOLite IDs to terms
 vv <- geneAnswersReadable(v, geneSymbol=F)
 getAnnLib(vv)

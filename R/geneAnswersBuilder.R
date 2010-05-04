@@ -4,7 +4,9 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	testType <- match.arg(testType)
 	sortBy <- match.arg(sortBy)
 	if(!(is.null(totalGeneNumber))) {
-		if (!(is.numeric(totalGeneNumber)) & !(tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly'))) stop('TotalGeneNumber should be NULL or numeric or one of "human", "mouse", "rat" and "fly"! Abort GeneAnswers Building ...')
+		if (!(is.numeric(totalGeneNumber)) & !(tolower(totalGeneNumber) %in% c('anopheles', 'arabidopsis', 'bovine', 'worm', 'canine', 'fly', 'zebrafish', 'ecolistraink12', 'ecolistrainsakai', 'chicken', 
+																				'human', 'mouse', 'rhesus', 'malaria', 'chimp', 'rat', 'yeast', 'pig', 'xenopus') ))
+			stop('TotalGeneNumber should be NULL or numeric or one of anopheles, arabidopsis, bovine, worm, canine, fly, zebrafish, ecolistraink12, ecolistrainsakai, chicken, human, mouse, rhesus, malaria, chimp, rat, yeast, pig and xenopus! Abort GeneAnswers Building ...')
 	}
 	x <- new("GeneAnswers")
 	require(annotate)
@@ -29,17 +31,12 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 		if (!(is.null(categoryType))) print('categoryType is set User defined')
 		x@categoryType <- 'User defined'
 	} else {
+		if (is.null(annotationLib) & !(is.null(totalGeneNumber))) {
+			annotationLib <- .name2lib(totalGeneNumber)                                                                                                                                                                                      
+		}
 		if (is.character(annotationLib) & (length(annotationLib) == 1) & (length(categoryType) == 1)) {
-			if (toupper(categoryType) %in% c('GO','GO.BP','GO.CC','GO.MF','DOLITE','KEGG')) {
-				if (length(which(c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db') %in% annotationLib)) == 0) {
-					stop(paste(annotationLib, 'can not be loaded! Abort GeneAnswers Building ...'))
-				} else {
-					switch(which(c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db') %in% annotationLib),
-						require('org.Hs.eg.db'),
-						require('org.Mm.eg.db'),
-						require('org.Rn.eg.db'),
-						require('org.Dm.eg.db'))
-				}
+			if (toupper(categoryType) %in% c('GO','GO.BP','GO.CC','GO.MF','DOLITE','KEGG', 'REACTOME.PATH')) {
+				require(annotationLib, character.only=TRUE)
 				data('DOLite', package='GeneAnswers')
    				annLibList = switch(toupper(categoryType), 
 					'GO'=getGOList(geneIDs, annotationLib, GOCat='ALL', ...),
@@ -47,9 +44,10 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'GO.CC'=getGOList(geneIDs, annotationLib, GOCat='CC', ...),
 					'GO.MF'=getGOList(geneIDs, annotationLib, GOCat='MF', ...),
 					'DOLITE'=DOLite,
-					'KEGG'= getPATHList(geneIDs, annotationLib))
+					'KEGG'= getPATHList(geneIDs, annotationLib),
+					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs, annotationLib))
 					x@annLib <- annotationLib
-					x@categoryType <- categoryType
+					x@categoryType <- toupper(categoryType)
 			} else {
 				stop('AnnotationLib can not be recognized! Abort GeneAnswers Building ...')
 			}
@@ -79,45 +77,23 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 		if (known) {
 			if (verbose) print('Enrichment test is only performed based on annotated genes')
 			geneIDs <- geneIDs[geneIDs %in% unique(unlist(testLibList))]
-			indexTotalGeneNumber <- list('human'=c('GO'=c(17673), 'GO.BP'=c(14221), 'GO.MF'=c(15264), 'GO.CC'=c(16024), 'KEGG'=c(5056), 'DOLite'=c(4051)), 
-										 'mouse'=c('GO'=c(18022), 'GO.BP'=c(14510), 'GO.MF'=c(15494), 'GO.CC'=c(15976), 'KEGG'=c(5982)),
-										 'rat'=c('GO'=c(17067), 'GO.BP'=c(13445), 'GO.MF'=c(15350), 'GO.CC'=c(13600), 'KEGG'=c(5684)),
-										 'fly'=c('GO'=c(11274), 'GO.BP'=c(9145), 'GO.MF'=c(10079), 'GO.CC'=c(7722), 'KEGG'=c(2281)))
-			if (is.null(totalGeneNumber)) {
-				if (is.null(x@annLib)) stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-				if (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db')) {
-					totalGeneNumber <- switch(x@annLib,
-						'org.Hs.eg.db'='human',
-						'org.Mm.eg.db'='mouse',
-						'org.Rn.eg.db'='rat',
-						'org.Dm.eg.db'='fly')
-				} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-			}
-			if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
-				totalGeneNumber <- indexTotalGeneNumber[[totalGeneNumber]][categoryType]
-				if (is.na(totalGeneNumber)) stop('The given species does not contain the given category type! Abort GeneAnswers Building ...')
-			}
-		} else {
-			if (is.null(totalGeneNumber)) {
-				if(is.null(x@annLib)) stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-				if (x@annLib %in% c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db')) {
-					totalGeneNumber <- switch(x@annLib,
-						'org.Hs.eg.db'=45384,
-						'org.Mm.eg.db'=61498,
-						'org.Rn.eg.db'=37536,
-						'org.Dm.eg.db'=22606)
-				} else stop('Missing total gene number for hypergeometic test! Abort GeneAnswers Building ...')
-			} else {
-				if (tolower(totalGeneNumber) %in% c('human', 'mouse', 'rat', 'fly')) {
-					totalGeneNumber <- switch(totalGeneNumber,
-						'human'=45384,
-						'mouse'=61498,
-						'rat'=37536,
-						'fly'=22606)
+		}
+		if (x@categoryType == 'User defined') {
+			if (!is.numeric(totalGeneNumber)) {
+				if (known) {
+					totalGeneNumber <- length(unique(unlist(testLibList)))
+				} else {
+					if (is.null(totalGeneNumber)) stop('totalGeneNumber is not specified! Aborting GeneAnswers Building ...')
+					annLibName <- .name2lib(species=totalGeneNumber)
+					if (is.null(annLibName)) stop('species is not support! Aborting GeneAnswers Building ...')
+					totalGeneNumber <- getTotalGeneNumber(categoryType='GO', known=FALSE, annotationLib=annLibName)
 				}
 			}
+		} else {
+			if (!is.numeric(totalGeneNumber)) totalGeneNumber <- getTotalGeneNumber(categoryType=x@categoryType, known=known, annotationLib=x@annLib) 
+			if (is.null(totalGeneNumber)) stop('REACTOME.PATH does not support your specified species currently! Aborting GeneAnswers Building ...')
 		}
-		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber)
+		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber) 
 	}
 	
 	x@testType <- testType

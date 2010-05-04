@@ -536,7 +536,6 @@
 		print('matrix is empty!')
 		return(NULL) 
 	}
-
 }
 
 .drawHTMLtable <- function(dataMatrix, outFile, tableName='Table', tableLink= NULL, externalLinkOfTable = NULL, tableCenter=TRUE, catType=c('GO', 'KEGG', 'Entrez', 'DOLite', 'Unknown'), 
@@ -702,4 +701,12 @@
 	
 	cat("</TABLE>", sep = "\n", file = outFile)
     if (tableCenter) cat("</center> \n", file = outFile)
+}
+
+.name2lib <- function(species=c('anopheles', 'arabidopsis', 'bovine', 'worm', 'canine', 'fly', 'zebrafish', 'ecolistraink12', 'ecolistrainsakai', 'chicken', 'human', 'mouse', 'rhesus', 'malaria', 'chimp', 
+								'rat', 'yeast', 'pig', 'xenopus')) {
+	return(switch(tolower(species), 
+		'anopheles'='org.Ag.eg.db', 'arabidopsis'='org.At.tair.db', 'bovine'='org.Bt.eg.db', 'worm'='org.Ce.eg.db', 'canine'='org.Cf.eg.db', 'fly'='org.Dm.eg.db', 'zebrafish'='org.Dr.eg.db',
+		'ecolistraink12'='org.EcK12.eg.db', 'ecolistrainsakai'='org.EcSakai.eg.db', 'chicken'='org.Gg.eg.db', 'human'='org.Hs.eg.db', 'mouse'='org.Mm.eg.db', 'rhesus'='org.Mmu.eg.db', 
+		'malaria'='org.Pf.plasmo.db', 'chimp'='org.Pt.eg.db', 'rat'='org.Rn.eg.db', 'yeast'='org.Sc.sgd.db', 'pig'='org.Ss.eg.db', 'xenopus'='org.Xl.eg.db', NULL))
 }
