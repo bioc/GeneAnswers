@@ -109,13 +109,13 @@ The key point of \Rpackage{GeneAnswers} package is to build a GeneAnswers instan
 data('humanGeneInput')
 data('humanExpr')
 ## build a GeneAnswers instance with statistical test based on biological process of GO and saved example data.
-x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr)
+x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG',  pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr)
 class(x)
 ## build a GeneAnswers instance with statistical test based on KEGG and saved example data. 
 y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 ## build a GeneAnswers instance with statistical test based on DOLite and saved example data.
-z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLite', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr, verbose=FALSE)
-w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
+z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLite', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
 @  
 
 We have four GeneAnswers objects, x, y, z and w, containing the statistical test of biological process of GO, KEGG, DOLite and GO (The first two level nodes are removed), respectively. For Gene Ontology, sometimes, users think some nodes are too general and not very relative to their interests. So we provide parameter {\it level} to determine how many top levels of GO nodes are removed. The instances have included the relationship between given genes and specified categories.
@@ -442,7 +442,7 @@ Several groups of genes are used to dynamically study biological processes by di
 ##load multigroup genes sample data
 data(sampleGroupsData)
 ##Build a GeneAnswers List
-gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.05, FDR.correct=TRUE, verbose=FALSE)
+gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.1, verbose=FALSE)
 ##Output integrated text table
 output<- getConceptTable(gAKEGGL, items='geneNum')
 @

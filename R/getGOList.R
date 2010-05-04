@@ -17,7 +17,7 @@ function(geneVector, lib, GOCat = c('ALL', 'BP', 'CC', 'MF'), level = 1) {
 						allGOIDs <- allGOIDs[!(allGOIDs %in% names(naGOIDs[naGOIDs %in% TRUE]))]
 						allGOIDs <- allGOIDs[!(allGOIDs %in% .filterGOIDs(GOCategory=GOCat, level=level))]
 						if (!is.null(allGOIDs)) {
-							return(lookUp(allGOIDs, lib, 'GO2ALLEGS') )
+							return(lapply(lookUp(allGOIDs, lib, 'GO2ALLEGS'), unique))
 						} else stop('input genes do not belong to any category!!!') 
 	} else {
 		stop('the specified annotation library can not be found!!!')

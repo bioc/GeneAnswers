@@ -6,7 +6,7 @@
   A function to build an object of a GeneAnswers class based on given information.
 }
 \usage{
-geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("hyperG", "none"), known=FALSE, totalGeneNumber=NULL, geneExpressionProfile = NULL, categorySubsetIDs = NULL, pvalueT = 0.01, FDR.correction = FALSE, verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...)
+geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("hyperG", "none"), known=TRUE, totalGeneNumber=NULL, geneExpressionProfile = NULL, categorySubsetIDs = NULL, pvalueT = 0.01, FDR.correction = FALSE, verbose=TRUE, sortBy=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue', 'none'), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,7 +31,7 @@ geneAnswersBuilder(geneInput, annotationLib, categoryType = NULL, testType = c("
 
   categoryType could be "GO", "GO.BP", "GO.CC", "GO.MF", "DOLite", "KEGG". "GO.BP" only test biological process Gene Ontology terms, "GO.CC" for cellular components, "GO.MF" for molecular functions, and "GO" for all of these three categories. For user provided annotation library, it should be NULL in most cases.
   
-  If know is set to TRUE, the enrichment test only considers the genes with annotation. When know is set to FALSE (default setting), totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
+  If known is set to TRUE, the enrichment test only considers the genes with annotation. When known is set to FALSE, totalGeneNumber could be NULL if annotationLib is one of 'org.Hs.eg.db'(45384), 'org.Mm.eg.db'(61498), 'org.Rn.eg.db'(37536) and 'org.Dm.eg.db'(22606). If user has own annotationLib, totalGeneNumber should be an integer, or one of 'human', 'mouse', 'rat' and 'fly'. geneAnswersBuilder will automatically assign the corresponding value to totalGeneNumber.  
 
   sortBy could be one of "geneNum", "pvalue", "foldChange", "oddsRatio", "correctedPvalue" and "none". Default value is 'pvalue'.
 }

@@ -1,6 +1,6 @@
 `drawTable` <-
 function(dataMatrix, topCat=10, heatMap=TRUE, matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), methodOfCluster=c('mds', 'sort'), mar=c(1,5,5,8), addRowLabel=TRUE, cex.axis=c(1.1, 0.9), 
-		reverseOfCluster=FALSE, xGridLine=FALSE,  colorBar=TRUE, newWindow=TRUE, endOfColoBar=c('> 0.01', 'Minimum of p values'), ...) {
+		reverseOfCluster=FALSE, xGridLine=FALSE,  colorBar=TRUE, newWindow=TRUE, endOfColoBar=c('1', 'Minimum of p values'), ...) {
 	if (!is.null(clusterTable))  {
 		clusterTable <- match.arg(clusterTable)
 		methodOfCluster <- match.arg(methodOfCluster)
