@@ -9,7 +9,7 @@ function(catIDs, catType, strict=FALSE, missing=c('name', 'keep', 'remove'), nam
 		'GO.MF'=.getGOTerms(catIDs),
 		'DOLITE'=getDOLiteTerms(catIDs),
 		'KEGG'=getPATHTerms(catIDs),
-		'REACTOAM.PATH'=getREACTOMEPATHTerms(catIDs))
+		'REACTOME.PATH'=getREACTOMEPATHTerms(catIDs))
 		if (NA %in% unlist(catTerms)) {
 			print('Warning: some category IDs do not have names!')
 			if (strict) stop('Interrupt conversion!')

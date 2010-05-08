@@ -21,7 +21,7 @@ function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, name
 		rownames(newDataMatrix) <- getSymbols(rownames(newDataMatrix), x@annLib, missing='name')
 	}
 	if (catTerm) {
-		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH')) {
 	  		names(newList) <- getCategoryTerms(names(newList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		}else {
 		 	print('Slot categoryType is not recognized! No mapping ...')

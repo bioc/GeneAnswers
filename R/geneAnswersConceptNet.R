@@ -56,7 +56,7 @@ function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChan
 		'-Log10'= -log10(temp))
 	
 	if (catTerm) {
-		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG')) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH')) {
   			names(inputList) <- getCategoryTerms(names(inputList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
   			names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		} else {
