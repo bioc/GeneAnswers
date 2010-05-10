@@ -14,11 +14,12 @@ getREACTOMEPATHTerms(pathDBIDs)
 }
 \value{
   return a REACTOME pathway terms of given REACTOME PATH_DB IDs.
+  If the REACTOME service is not available, the function will stop.
 }
 \references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
 \examples{
-getREACTOMEPATHTerms(c('174143', '453274'))
+\dontrun{getREACTOMEPATHTerms(c('174143', '453274'))}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

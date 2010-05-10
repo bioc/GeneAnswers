@@ -15,6 +15,7 @@ getREACTOMEPATHList(geneVector, lib)
 }
 \details{
   The current version only supports Bioconductor team maintained annotation libraries, like 'org.Bt.eg.db', 'org.Ce.eg.db', 'org.Cf.eg.edu', 'org.Dm.eg.db', 'org.Dr.eg.db', 'org.EcK12.eg.db', 'org.EcSakai.eg.db', 'org.Gg.eg.db', 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db' and 'org.Ss.eg.db'.
+  If the REACTOME service is not available, the function will stop.
 }
 \value{
   return a REACTOME genes ID list, names of the list are REACTOME path IDs IDs and elements are gene IDs.
@@ -23,8 +24,8 @@ getREACTOMEPATHList(geneVector, lib)
 \author{ Gang Feng, Pan Du and Simon Lin }
 \seealso{ \code{\link{getCategoryList}}}
 \examples{
-a <- getREACTOMEPATHList(c('8772', '1017'), 'org.Hs.eg.db')
-length(a)
+\dontrun{a <- getREACTOMEPATHList(c('8772', '1017'), 'org.Hs.eg.db')}
+\dontrun{length(a)}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
