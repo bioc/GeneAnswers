@@ -10,9 +10,10 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	require(annotate)
 	if (is.vector(geneInput) | is.data.frame(geneInput) | is.matrix(geneInput)) {
 		if (is.vector(geneInput)) {
-			geneIDs <- as.character(as.numeric(geneInput))
+			geneIDs <- as.character(geneInput)
+			geneInput <- geneIDs
 		} else { 
-			geneIDs <- as.character(as.numeric(geneInput[,1]))
+			geneIDs <- as.character(geneInput[,1])
 			geneInput[,1] <- geneIDs
 		}
 		if (NA %in% geneIDs) stop('Given gene IDs contain NA, please check!!! Aborting ...')
