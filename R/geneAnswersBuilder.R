@@ -13,6 +13,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	if (is.vector(geneInput) | is.data.frame(geneInput) | is.matrix(geneInput)) {
 		if (is.vector(geneInput)) {
 			geneIDs <- as.character(geneInput)
+			geneInput <- geneIDs
 		} else { 
 			geneIDs <- as.character(geneInput[,1])
 			geneInput[,1] <- geneIDs

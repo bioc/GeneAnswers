@@ -321,7 +321,7 @@
 .hyperGTest <- function(inputVector, categoryList, ...) {
 	if (is.vector(inputVector) & is.character(inputVector)) {
 		testResult <- lapply(categoryList, .overReprsTest, inputVector, ...)
-		hyperGTest <- as.data.frame(t(matrix(unlist(testResult), ncol=length(testResult), nrow=length(testResult[[1]]))))
+		hyperGTest <- as.data.frame(t(matrix(unlist(testResult), ncol=length(testResult), nrow=length(testResult[[1]]))), stringsAsFactors=FALSE)
 		rownames(hyperGTest) <- names(testResult)
 		colnames(hyperGTest) <- names(testResult[[1]])
 		return(cbind(hyperGTest, 'fdr p value'=p.adjust(hyperGTest[,'p value'], method='fdr')))
@@ -634,7 +634,7 @@
 	if (IDCols == 0) {
 		hyperLinkPrefix <- switch(catType,
 			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
-			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', 	getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'DOLite'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'Entrez'=paste('<a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</a>',sep=''),
 			'Unknown'=rowIDs[1:linkRowIDs])
@@ -709,4 +709,88 @@
 		'anopheles'='org.Ag.eg.db', 'arabidopsis'='org.At.tair.db', 'bovine'='org.Bt.eg.db', 'worm'='org.Ce.eg.db', 'canine'='org.Cf.eg.db', 'fly'='org.Dm.eg.db', 'zebrafish'='org.Dr.eg.db',
 		'ecolistraink12'='org.EcK12.eg.db', 'ecolistrainsakai'='org.EcSakai.eg.db', 'chicken'='org.Gg.eg.db', 'human'='org.Hs.eg.db', 'mouse'='org.Mm.eg.db', 'rhesus'='org.Mmu.eg.db', 
 		'malaria'='org.Pf.plasmo.db', 'chimp'='org.Pt.eg.db', 'rat'='org.Rn.eg.db', 'yeast'='org.Sc.sgd.db', 'pig'='org.Ss.eg.db', 'xenopus'='org.Xl.eg.db', NULL))
+}
+
+#kernal xml query function
+.getIDInfo <- function(xmlLink, IDinfo=c('indirect', 'direct', 'path')) {
+	IDinfo <- match.arg(IDinfo)
+	require(XML)
+	root <- xmlChildren(xmlRoot(try(xmlTreeParse(file=URLencode(xmlLink), isURL=TRUE))))
+	if ('queryResponse' %in% names(root)) {
+		level1 <- xmlChildren(root[['queryResponse']])
+		if (xmlValue(level1[['recordCounter']]) > 0) {
+			getID <- function(x) {
+				temp <- xmlChildren(x)
+				content <- lapply(temp, xmlAttrs)
+				names(content) <- lapply(temp, xmlValue)
+				if (IDinfo == 'indirect') {
+					catch <- function(y) { if (y['name'] == 'id') {names(y) <- NULL; return(y)}}
+					return(names(unlist(sapply(content, catch))))
+				}
+				if (IDinfo == 'direct') {
+					tempVector <- unlist(content)
+					if (names(tempVector[tempVector == 'sourceType']) == 'Entrez gene.name') {
+						return(sub(".name", "", names(tempVector[tempVector == "crossReferenceId"])))
+					}
+				}
+				if (IDinfo == 'path') {
+					tempVector <- unlist(content)
+					tempList <- lapply(c("displayValue", "description", "name", "source"), function(x, y) {return(sub(".name", "", names(y[y==x])))}, tempVector)
+					names(tempList) <- c("displayValue", "description", "name", "source")
+	   				return(unlist(tempList))
+				}
+			}
+			result <- unlist(sapply(level1[which(names(level1) == "class")], getID))
+			if (is.matrix(result)) colnames(result) <- NULL
+			else names(result) <- NULL
+			return(result)
+		}
+	}
+}
+
+# retrieve caBio pathway info
+.getcaBioPATHInfo <- function(caBioPATHIDs) {
+	temp <- lapply(paste('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=Pathway[@id=',caBioPATHIDs, ']', sep=''), function(x, ...) {return(unlist(as.list(.getIDInfo(x, ...)[,1])))}, IDinfo='path')
+	names(temp) <- caBioPATHIDs
+	return(temp)
+}
+
+.getcaBioPATHs <- function(caBioIDs) {
+	print('Start retrieving pathways in caBio ...')
+	temp <- lapply(paste('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=Pathway&Gene[@id=', unlist(caBioIDs), ']',sep=''), .getIDInfo)
+	names(temp) <- unlist(caBioIDs)
+	return(temp)
+}
+
+#retrieve all caBio genes based on the given caBio pathway IDs 
+#"http://cabioapi.nci.nih.gov/cabio43/GetXML?query=Gene&Pathway[@id=95]"
+.getcaBioPATHGenes <- function(caBioPATHIDs) {
+	print('Start retrieving pathways genes in caBio ...')
+	temp <- lapply(paste('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=Gene&Pathway[@id=', unlist(caBioPATHIDs), ']',sep=''), .getIDInfo)
+	names(temp) <- unlist(caBioPATHIDs)
+	return(temp)
+}
+
+
+#map all caBio Gene IDs in a list to entrez IDs
+.mapListcaBioIDs2entrez <- function(caBioList, hide=TRUE) {
+	allMapping <- caBio2entrez(unique(unlist(caBioList)))
+	mappingVector <- function(x, y, hide=hide) {
+		temp <- unique(unlist(y[names(y) %in% x]))
+		if (hide) names(temp) <- NULL
+		return(temp)
+	}
+	return(lapply(caBioList, mappingVector, allMapping, hide=hide))
+}
+
+#generate pathway link based on the given caBio pathway ID
+.caBioLink <- function(caBioPATHID){
+	temp <- .getcaBioPATHInfo(caBioPATHID)[[1]]
+	if (all(c("displayValue", "description", "name", "source") %in% names(temp))) {
+		return(switch(temp['source'],
+				'NCI-Nature Curated'=paste('http://pid.nci.nih.gov/search/pathway_landing.shtml?pathway_id=', substr(temp['name'], 3, nchar(temp['name'])), '&pathway_name=', 
+											gsub(' ', '%20', temp['displayValue']), '&source=NCI-Nature%20curated&what=graphic&jpg=on', sep=''),
+				'Reactome'=paste('http://www.reactome.org/cgi-bin/search2?DB=gk_current&OPERATOR=ALL&QUERY=', gsub(' ', '+', temp['displayValue']), '&SPECIES=&SUBMIT=Go!', sep=''),
+				'BioCarta'=paste('http://cgap.nci.nih.gov/Pathways/BioCarta/', temp['name'], sep='')))
+	}
 }
