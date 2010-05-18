@@ -7,7 +7,7 @@
 }
 \usage{
 groupReport(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), catTerm=TRUE,
-		fileName = "multiConceptsGenes.html", title='Multigroup Genes Concepts Analysis', catType=c('GO', 'KEGG', 'DOLite','Unknown'), reverseOfCluster=FALSE,  colorValueColumn = NULL, 
+		fileName = "multiConceptsGenes.html", title='Multigroup Genes Concepts Analysis', catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), reverseOfCluster=FALSE,  colorValueColumn = NULL, 
 		annLib=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), ...)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
