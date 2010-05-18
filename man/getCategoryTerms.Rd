@@ -18,7 +18,7 @@ getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'rem
   \item{addID}{ logic, add term IDs following term names or not}
 }
 \details{
-  The current version only supports 'GO', 'DOLite' and 'KEGG'.
+  The current version only supports 'GO', 'DOLite', 'KEGG', 'REACTOME.PATH' and 'caBIO.PATH'.
   There are three types of parameters for variable 'missing'. 'name' means the NA mapping values are replaced by their names. 'keep' means all of NA values are kept. 'remove' means all of NA values are removed.
 }
 \value{

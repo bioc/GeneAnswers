@@ -6,12 +6,12 @@
   Function to generate a top concepts-genes table based on a given GeneAnswers instance list.
 }
 \usage{
-getConceptTable(gAList, showCat=10, items=c('both', 'geneNum', 'pvalue'), catTerm=TRUE, strict=FALSE)
+getConceptTable(gAList, topCat=10, items=c('both', 'geneNum', 'pvalue'), catTerm=TRUE, strict=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{gAList}{ a GeneAnswers instance list }
-  \item{showCat}{ a numeric or string vector specified categories  } 
+  \item{topCat}{ a numeric or string vector specified categories  } 
   \item{items}{ specify the contents in cells, see details }
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
   \item{strict}{ logic value to stop conversion if NA is introduced. }

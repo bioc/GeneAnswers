@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Get DOLite Terms of Given DOLite IDs }
 \description{
-  function to convert DOLite IDs to DOLite Terms
+  function to map DOLite IDs to DOLite Terms
 }
 \usage{
 getDOLiteTerms(DOLiteIDs)

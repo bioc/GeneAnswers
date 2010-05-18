@@ -1,5 +1,5 @@
 `geneAnswersReadable` <-
-function(x, catTerm=TRUE, geneSymbol=TRUE, strict=FALSE, verbose=TRUE, missing=c('name', 'keep', 'remove')) {
+function(x, catTerm=TRUE, geneSymbol=TRUE, strict=FALSE, verbose=TRUE, missing=c('name', 'keep', 'remove'), ...) {
 	missing <- match.arg(missing)
 	y <- x
 	if (geneSymbol) {
@@ -8,10 +8,10 @@ function(x, catTerm=TRUE, geneSymbol=TRUE, strict=FALSE, verbose=TRUE, missing=c
 	}
  	if (verbose) print('Mapping genesInCategory ...')
 	if (geneSymbol) y@genesInCategory <- lapply(x@genesInCategory, getSymbols, x@annLib, strict=strict, missing=missing)
-	if (catTerm) names(y@genesInCategory) <- getCategoryTerms(names(x@genesInCategory), x@categoryType, strict=strict, missing=missing)
+	if (catTerm) names(y@genesInCategory) <- getCategoryTerms(names(x@genesInCategory), x@categoryType, strict=strict, missing=missing, ...)
 	if (catTerm) {
 		if (verbose) print('Mapping enrichmentInfo rownames ...')
-		rownames(y@enrichmentInfo) <- getCategoryTerms(rownames(x@enrichmentInfo), x@categoryType, strict=strict, missing=missing)
+		rownames(y@enrichmentInfo) <- getCategoryTerms(rownames(x@enrichmentInfo), x@categoryType, strict=strict, missing=missing, ...)
 	}
 	if (!is.null(y@geneExprProfile) & geneSymbol) {
 		if (verbose) print('Mapping geneExprProfile rownames ...')

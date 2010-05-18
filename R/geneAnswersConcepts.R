@@ -28,7 +28,7 @@ function(x, centroidSize=c('geneNum', 'pvalue', 'foldChange', 'oddsRatio', 'corr
 		'-Log10'= -log10(temp))
     newList <- x@genesInCategory[showCats]
 	if (catTerm) {
-		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH')) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
 			if (catID) {
 				names(newList) <- paste(getCategoryTerms(names(newList), x@categoryType, missing='name'), '::', names(newList), sep='')
 				names(scaledTemp) <- paste(getCategoryTerms(names(scaledTemp), x@categoryType, missing='name'), '::', names(scaledTemp), sep='')

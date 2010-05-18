@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Get Pathway names of given KEGG IDs }
 \description{
-  Function to convert given KEGG IDs to Pathway names.
+  Function to map given KEGG IDs to Pathway names.
 }
 \usage{
 getPATHTerms(pathIDs)

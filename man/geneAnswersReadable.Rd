@@ -6,7 +6,7 @@
   a function to mapping category IDs and gene IDs to names and symbols.
 }
 \usage{
-geneAnswersReadable(x, catTerm = TRUE, geneSymbol = TRUE, strict = FALSE, verbose=TRUE, missing=c('name', 'keep', 'remove'))
+geneAnswersReadable(x, catTerm = TRUE, geneSymbol = TRUE, strict = FALSE, verbose=TRUE, missing=c('name', 'keep', 'remove'), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,10 +16,12 @@ geneAnswersReadable(x, catTerm = TRUE, geneSymbol = TRUE, strict = FALSE, verbos
   \item{strict}{ logic value to determine whether interrupt conversion if NA is introduced. }
   \item{verbose}{ logical, show current stage or not}
   \item{missing}{ type of handling NA mapping. }
+  \item{\dots}{ other parameters used by \code{\link{getCategoryTerms}} }
 }
 \details{
   Conversion could stop if NA is introduced and strict is set to TRUE.
-  There are three types of parameters for variable 'missing'. 'name' means the NA mapping values are replaced by their names. 'keep' means all of NA values are kept. 'remove' means all of NA values are removed. 
+  There are three types of parameters for variable 'missing'. 'name' means the NA mapping values are replaced by their names. 'keep' means all of NA values are kept. 'remove' means all of NA values are removed.
+  Occationally, Reactome uses the same name for species-mixed pathways based on in vivo and in vitro experiments, so we highly recommend to set addID as TRUE for Reactome and caBIO test.
 }
 \value{
   return a GeneAnswers instance with category names and/or gene symbols.

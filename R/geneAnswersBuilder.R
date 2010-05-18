@@ -36,7 +36,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 			annotationLib <- .name2lib(totalGeneNumber)                                                                                                                                                                                      
 		}
 		if (is.character(annotationLib) & (length(annotationLib) == 1) & (length(categoryType) == 1)) {
-			if (toupper(categoryType) %in% c('GO','GO.BP','GO.CC','GO.MF','DOLITE','KEGG', 'REACTOME.PATH')) {
+			if (toupper(categoryType) %in% c('GO','GO.BP','GO.CC','GO.MF','DOLITE','KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
 				require(annotationLib, character.only=TRUE)
 				data('DOLite', package='GeneAnswers')
    				annLibList = switch(toupper(categoryType), 
@@ -46,7 +46,8 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'GO.MF'=getGOList(geneIDs, annotationLib, GOCat='MF', ...),
 					'DOLITE'=DOLite,
 					'KEGG'= getPATHList(geneIDs, annotationLib),
-					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs, annotationLib))
+					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs, annotationLib),
+					'CABIO.PATH'=getcaBIOPATHList(geneIDs))
 					x@annLib <- annotationLib
 					x@categoryType <- toupper(categoryType)
 			} else {
@@ -92,7 +93,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 			}
 		} else {
 			if (!is.numeric(totalGeneNumber)) totalGeneNumber <- getTotalGeneNumber(categoryType=x@categoryType, known=known, annotationLib=x@annLib) 
-			if (is.null(totalGeneNumber)) stop('REACTOME.PATH does not support your specified species currently! Aborting GeneAnswers Building ...')
+			if (is.null(totalGeneNumber)) stop(paste(x@categoryType,' does not support your specified species currently! Aborting GeneAnswers Building ...', sep=''))
 		}
 		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber) 
 	}

@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Get Pathway names of given REACTOME PATH_DB IDs }
 \description{
-  Function to convert given REACTOME PATH_DB IDs to Pathway names.
+  Function to map given REACTOME PATH_DB IDs to Pathway names.
 }
 \usage{
 getREACTOMEPATHTerms(pathDBIDs)

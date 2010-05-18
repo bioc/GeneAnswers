@@ -1,6 +1,6 @@
 `groupReport` <- 
 function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), catTerm=TRUE, 
-		fileName = "multiConceptsGenes.html", title='Multigroup Genes Concepts Analysis', catType=c('GO', 'KEGG', 'DOLite','Unknown'), reverseOfCluster=FALSE,  colorValueColumn = NULL, 
+		fileName = "multiConceptsGenes.html", title='Multigroup Genes Concepts Analysis', catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), reverseOfCluster=FALSE,  colorValueColumn = NULL, 
 		annLib=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), ...) { 
 	catType <-match.arg(catType)
 	annLib <- match.arg(annLib)
@@ -50,7 +50,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 	}
  
     indexM <- which(dataMatrix > 0, arr.ind=TRUE)
-    if (catType != 'Unknown') {
+    if (catType != 'Unknown') { 
 		tableNames <- c('Concepts-Genes Table', paste('Group', colnames(dataMatrix), 'Concepts-Gene network'), gsub('Genes / Group :: NA and ', replacement='', 
 							paste('Genes in', rownames(indexM)[1:dim(indexM)[1]], '::', getCategoryTerms(rownames(indexM)[1:dim(indexM)[1]], catType=catType, missing='keep'), 'and Group', colnames(dataMatrix)[indexM[1:dim(indexM)[1],2]])))
 	} else {
@@ -129,7 +129,8 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 				temp <- matrixOfHeatmap[,(i-1)]
 				drawCats <- names(sort(temp))[showCats]
 			} else drawCats <- showCats
-			drawCats <- drawCats[drawCats %in% rownames(getEnrichmentInfo(gAList[[i-1]]))]
+			if (is.character(drawCats)) drawCats <- drawCats[drawCats %in% rownames(getEnrichmentInfo(gAList[[i-1]]))]
+			else drawCats <- rownames(getEnrichmentInfo(gAList[[i-1]]))[intersect(showCats, c(1:dim(getEnrichmentInfo(gAList[[i-1]]))[1]))]
 			if (!is.null(drawCats)) {
 				png(filename=paste(tableNames[i], '_', catType, '.png', sep=''),width=1000, height=1000)
 				if (length(colorValueColumn) > 1) geneAnswersConceptNet(gAList[[i-1]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-1], output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
