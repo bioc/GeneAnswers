@@ -3,8 +3,8 @@ function (gAList, topCat=10, items=c('both', 'geneNum', 'pvalue'), catTerm=TRUE,
 	items <- match.arg(items)
 	
 	if (is.numeric(topCat) & length(topCat) == 1) {
-		topCat <- function (x, top=topCat) { top <- min(top, dim(x@enrichmentInfo)[1]); return(rownames(geneAnswersSort(x, sortBy='pvalue')@enrichmentInfo)[1:top]) }
-		catList <- lapply(gAList, topCat, top=topCat)
+		topCatFun <- function (x, top=topCat) { top <- min(top, dim(x@enrichmentInfo)[1]); return(rownames(geneAnswersSort(x, sortBy='pvalue')@enrichmentInfo)[1:top]) }
+		catList <- lapply(gAList, topCatFun, top=topCat)
 		categories <- unique(unlist(catList))
 	} else {
 		if (is.character(topCat)) {
