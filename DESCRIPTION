@@ -1,7 +1,7 @@
 Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
-Version: 1.4.1
+Version: 1.4.2
 Date: 20010-5-5
 Depends: R (>= 2.10.0), igraph, RCurl, annotate, Biobase (>= 1.12.0), methods, XML, RSQLite, MASS, rgl 
 Suggests: GO.db, KEGG.db, biomaRt, AnnotationDbi, org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db, Heatplus, RColorBrewer
