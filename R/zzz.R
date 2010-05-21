@@ -418,15 +418,15 @@
 
 	if (matchMode == 'absolute') {
 		if (is.numeric(zeroColorIndex) & (length(zeroColorIndex) == 1)) {
-			if ((zeroColorIndex < length(colorMap)) & (zeroColorIndex > 1)) {
+			if (length(unique(values) > 1) | ((zeroColorIndex < length(colorMap)) & (zeroColorIndex > 1))) {
 				tempColor <- c(tempColor, colorMapping(c(0, values[values >= 0]), colorMap[zeroColorIndex:length(colorMap)])[-1])
 				tempColor <- c(tempColor, colorMapping(c(0, values[values < 0]), colorMap[1:(zeroColorIndex-1)])[-1])
 				outColor <- tempColor[as.character(values)]
 			} else {
 				if ((zeroColorIndex == length(colorMap)) | (zeroColorIndex == 1)) {
-					if (values == 0) outColor <- colorMap[zeroColorIndex]
+					if (unique(values) == 0) outColor <- colorMap[zeroColorIndex]
 					else {
-						if (values > 0) outColor <- colorMap[length(colorMap)]
+						if (unique(values) > 0) outColor <- colorMap[length(colorMap)]
 						else outColor <- colorMap[1]
 					}
 				names(outColor) <- as.character(values) 
