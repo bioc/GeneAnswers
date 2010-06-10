@@ -19,22 +19,29 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 		if(all(!is.na(as.numeric(inputValue))) & (all(unique(unlist(inputList)) %in% names(inputValue)))) {
 			if (is.null(colorMap)) {
 				colorLevel <- 256
-				if ((min(as.numeric(inputValue)) > 0) | (max(as.numeric(inputValue)) < 0)) {
-					if (min(as.numeric(inputValue)) > 0) {
-						zeroColorIndex <- 1
-						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
-					} else {
-						zeroColorIndex <- colorLevel
-						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
-					}
-					colorMap <- conceptCol(colorLevel)
+#				if ((min(as.numeric(inputValue)) == 0) & (max(as.numeric(inputValue)) == 0))
+				if (all(as.numeric(inputValue) == 0)) {
+					matchMode='relative'
+					colorMap=rep(V(g)$color, length(inputValue))
+					zeroColorIndex <- NULL
 				} else {
-					zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
-					conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
-					colorMap <- conceptCol(zeroColorIndex)
-					conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
-					colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
-				}
+					if (all(as.numeric(inputValue) > 0) | all(as.numeric(inputValue) < 0)) {
+						if (all(as.numeric(inputValue) > 0)) {
+							zeroColorIndex <- 1
+							conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+						} else {
+							zeroColorIndex <- colorLevel
+							conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+						}
+						colorMap <- conceptCol(colorLevel)
+					} else {
+						zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
+						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
+						colorMap <- conceptCol(zeroColorIndex)
+						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+						colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
+					}
+				} 
 			}
 			colorValues <- .colorMatch(as.numeric(inputValue), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
 			names(colorValues) <- names(inputValue)

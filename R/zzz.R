@@ -400,6 +400,7 @@
 }
 
 .getGOTerms <- function(GOIDs) {
+	require('GO.db')
 	temp <- getGOTerm(GOIDs)
 	names(temp) <- NULL
 	return(unlist(temp)[GOIDs])
@@ -410,7 +411,9 @@
 	tempColor <- c()
 
 	colorMapping <- function(inputValues, inputColors) {
-		scaledValues <- scale(inputValues, scale=(max(inputValues)-min(inputValues)))
+		tempRange <- max(inputValues)-min(inputValues)
+		if (tempRange > 0) scaledValues <- scale(inputValues, scale=(tempRange))
+		else scaledValues <- rep(0, length(inputValues))
 		outputColors <- inputColors[as.integer((scaledValues - min(scaledValues)) * (length(inputColors) - 1)) + 1]
 		names(outputColors) <- as.character(inputValues)
 		return(outputColors)
@@ -609,7 +612,7 @@
 		indexM <- NULL
 	} else {
 		firstLine <- paste(firstLine, paste(HTwrap(HTwrap(colnames(dataMatrix), tag='A', scripts=paste('HREF="#h-', 1+c(1:dim(dataMatrix)[2]), '"', sep=''))), sep='', collapse=''), sep='')
-		indexM <- which(dataMatrix > 0, arr.ind=TRUE)
+		indexM <- which((is.numeric(dataMatrix) & (dataMatrix > 0)) | (is.character(dataMatrix) & (dataMatrix != "0 (1)")), arr.ind = TRUE)
 	}
 	
 	cat(firstLine, '\n', file = outFile, sep="")

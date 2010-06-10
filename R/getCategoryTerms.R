@@ -23,10 +23,13 @@ function(catIDs, catType, strict=FALSE, missing=c('name', 'keep', 'remove'), nam
 		if (tolower(nameLength) != 'all') {
 			if ((length(nameLength) == 1) & is.numeric(nameLength)) {
 				tempNames <- names(temp)
-				dots <- rep('...', length(temp))
-				dots[which(nchar(temp) <= nameLength)] <- ''
-				temp <- paste(sapply(temp, substr, 1, nameLength), dots, sep='')
-				names(temp)  <- tempNames
+				temp <- paste(strtrim(temp, nameLength), '...', sep='')
+				names(temp) <- tempNames
+#				tempNames <- names(temp)
+#				dots <- rep('...', length(temp))
+#				dots[which(nchar(temp) <= nameLength)] <- ''
+#				temp <- paste(sapply(temp, substr, 1, nameLength), dots, sep='')
+#				names(temp)  <- tempNames
 			} else {
 				stop('nameLength can not be recognized!')
 			}

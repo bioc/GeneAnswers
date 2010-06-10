@@ -49,7 +49,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 		}
 	}
  
-    indexM <- which(dataMatrix > 0, arr.ind=TRUE)
+    indexM <- which((is.numeric(dataMatrix) & (dataMatrix > 0)) | (is.character(dataMatrix) & (dataMatrix != "0 (1)")), arr.ind = TRUE)
     if (catType != 'Unknown') { 
 		tableNames <- c('Concepts-Genes Table', paste('Group', colnames(dataMatrix), 'Concepts-Gene network'), gsub('Genes / Group :: NA and ', replacement='', 
 							paste('Genes in', rownames(indexM)[1:dim(indexM)[1]], '::', getCategoryTerms(rownames(indexM)[1:dim(indexM)[1]], catType=catType, missing='keep'), 'and Group', colnames(dataMatrix)[indexM[1:dim(indexM)[1],2]])))
@@ -74,49 +74,56 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 	for (i in 1:length(tableNames)) {
 		if (attr[i] != 'Pictures') {
 			if (attr[i] == 'Entrez') {
-				a <- i - 1 - dim(dataMatrix)[2]
+				a <- i - 1 - dim(dataMatrix)[2] 
+				tempGeneInput <- getGeneInput(gAList[[indexM[a,2]]])
 				if (indexM[a,1] == dim(dataMatrix)[1]){
 					# generate all genes table
-					temp <- as.matrix(getGeneInput(gAList[[indexM[a,2]]]))
+					temp <- as.matrix(tempGeneInput)
+					colnames(temp) <- colnames(tempGeneInput)
 					rownames(temp) <- temp[,1]
-                    if (dim(temp)[1] > 1) {
-						tempColNames <- colnames(temp)
-						temp <- temp[!duplicated(temp),]
-						if (!is.matrix(temp)) {
-							temp <- matrix(temp, ncol=length(tempColNames))
-							rownames(temp) <- temp[,1]
-							colnames(temp) <- tempColNames
-						}
-					}
 					if (dim(temp)[2] > 1) {
-						tempColNames <- colnames(temp)[2:dim(temp)[2]]
-						tempRowNames <- rownames(temp)
-						temp <- as.matrix(temp[,2:dim(temp)[2]])
-						colnames(temp) <- tempColNames
-						rownames(temp) <- tempRowNames
+	                    if (dim(temp)[1] > 1) {
+							tempColNames <- colnames(temp)
+							temp <- temp[!duplicated(temp),]
+							if (!is.matrix(temp)) {
+								temp <- matrix(temp, ncol=length(tempColNames))
+								rownames(temp) <- temp[,1]
+								colnames(temp) <- tempColNames
+							}
+						}
+						if (dim(temp)[2] > 1) {
+							tempColNames <- colnames(temp)[2:dim(temp)[2]]
+							tempRowNames <- rownames(temp)
+							temp <- as.matrix(temp[,2:dim(temp)[2]])
+							colnames(temp) <- tempColNames
+							rownames(temp) <- tempRowNames
+						}
 					}
   					.drawHTMLtable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
 				} else {
 					#generate genes in concept table
 					tempGenes <- unlist(getGenesInCategory(gAList[[indexM[a,2]]])[rownames(dataMatrix)[indexM[a,1]]])
-					tempGeneInput <- getGeneInput(gAList[[indexM[a,2]]])
+					
 					temp <- as.matrix(tempGeneInput[tempGeneInput[,1] %in% tempGenes,])
-					rownames(temp) <- temp[,1] 
-					if (dim(temp)[1] > 1) {
-						tempColNames <- colnames(temp)
-						temp <- temp[!duplicated(temp),]
-						if (!is.matrix(temp)) {
-							temp <- matrix(temp, ncol=length(tempColNames))
-							rownames(temp) <- temp[,1]
-							colnames(temp) <- tempColNames
-						}
-					}
+					rownames(temp) <- temp[,1]
+					colnames(temp) <- colnames(tempGeneInput)
 					if (dim(temp)[2] > 1) {
-						tempColNames <- colnames(temp)[2:dim(temp)[2]]
-						tempRowNames <- rownames(temp)
-						temp <- matrix(temp[,2:dim(temp)[2]], ncol=length(tempColNames))
-						colnames(temp) <- tempColNames
-						rownames(temp) <- tempRowNames
+						if (dim(temp)[1] > 1) {
+							tempColNames <- colnames(temp)
+							temp <- temp[!duplicated(temp),]
+							if (!is.matrix(temp)) {
+								temp <- matrix(temp, ncol=length(tempColNames))
+								rownames(temp) <- temp[,1]
+								colnames(temp) <- tempColNames
+							}
+						}
+						if (dim(temp)[2] > 1) {
+							tempColNames <- colnames(temp)[2:dim(temp)[2]]
+							tempRowNames <- rownames(temp)
+							temp <- matrix(temp[,2:dim(temp)[2]], ncol=length(tempColNames))
+							colnames(temp) <- tempColNames
+							rownames(temp) <- tempRowNames
+						}
 					}
 					#### generate a hyperlink by table name based on catType
 					.drawHTMLtable(temp, outFile, tableName=tableNames[i], tableLink=paste('h-', i, sep=''), catType=attr[i], species=getAnnLib(gAList[[1]]), lastRowLink=TRUE, highlightLastRow=FALSE, topCat=0, IDCols=2)
@@ -132,12 +139,14 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 			if (is.character(drawCats)) drawCats <- drawCats[drawCats %in% rownames(getEnrichmentInfo(gAList[[i-1]]))]
 			else drawCats <- rownames(getEnrichmentInfo(gAList[[i-1]]))[intersect(showCats, c(1:dim(getEnrichmentInfo(gAList[[i-1]]))[1]))]
 			if (!is.null(drawCats)) {
-				png(filename=paste(tableNames[i], '_', catType, '.png', sep=''),width=1000, height=1000)
+				if (catType == 'GO') tempConceptFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-1]]), '.png', sep='') 
+				else  tempConceptFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
+				png(filename=tempConceptFileName, width=1000, height=1000)
 				if (length(colorValueColumn) > 1) geneAnswersConceptNet(gAList[[i-1]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-1], output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
 				else geneAnswersConceptNet(gAList[[i-1]], centroidSize='pvalue', colorValueColumn = colorValueColumn, output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
 				dev.off()
 				cat(paste('<H2 align=center><font face="courier" size="2"><A name="', paste('h-', i, sep=''), '">', tableNames[i], "</a></font></H2>", sep=''), file = outFile, sep = "\n") 
-				cat('<center><IMG src="', paste(tableNames[i], '_', catType, '.png', sep=''), '"></center>\n', file = outFile, sep="")
+				cat('<center><IMG src="', tempConceptFileName, '"></center>\n', file = outFile, sep="")
 			} else {
 				print('Given categories are not statistical significant!!! No category is selected!')
 				cat(paste('<H2 align=center><font face="courier" size="2"><A name="', paste('h-', i, sep=''), '">', tableNames[i], "</a></font></H2>", sep=''), file = outFile, sep = "\n")
