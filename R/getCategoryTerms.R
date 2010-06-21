@@ -23,7 +23,9 @@ function(catIDs, catType, strict=FALSE, missing=c('name', 'keep', 'remove'), nam
 		if (tolower(nameLength) != 'all') {
 			if ((length(nameLength) == 1) & is.numeric(nameLength)) {
 				tempNames <- names(temp)
-				temp <- paste(strtrim(temp, nameLength), '...', sep='')
+				dots <- rep('...', length(temp))
+				dots[which(nchar(temp) <= nameLength)] <- ''
+				temp <- paste(strtrim(temp, nameLength), dots, sep='')
 				names(temp) <- tempNames
 #				tempNames <- names(temp)
 #				dots <- rep('...', length(temp))

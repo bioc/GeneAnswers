@@ -600,7 +600,7 @@
 			if (catType == 'Entrez')  firstLine <- paste(HTwrap(paste('Gene Symbols', sep='')), HTwrap(paste(catType, ' IDs', sep='')), sep='')
 			else {
 				if (catType == 'Unknown') firstLine <- HTwrap(paste(catType, ' Terms', sep=''))
-				else firstLine <- paste(HTwrap(paste(catType, ' Terms', sep='')), HTwrap(paste(catType, ' IDs', sep='')),sep='')
+				else firstLine <- paste(HTwrap(HTwrap(paste(catType, ' Terms', sep=''), tag='A', scripts='HREF="#h-2"')), HTwrap(paste(catType, ' IDs', sep='')),sep='')
 			}
 		}
 		else firstLine <- paste(HTwrap(paste('Gene Symbols', sep='')), HTwrap(paste(catType, ' IDs', sep='')), HTwrap(paste('Gene Names', sep='')),sep='')
@@ -611,7 +611,7 @@
 		firstLine <- paste(firstLine, paste(HTwrap(colnames(dataMatrix)), collapse=''), sep='')
 		indexM <- NULL
 	} else {
-		firstLine <- paste(firstLine, paste(HTwrap(HTwrap(colnames(dataMatrix), tag='A', scripts=paste('HREF="#h-', 1+c(1:dim(dataMatrix)[2]), '"', sep=''))), sep='', collapse=''), sep='')
+		firstLine <- paste(firstLine, paste(HTwrap(HTwrap(colnames(dataMatrix), tag='A', scripts=paste('HREF="#h-', 2+c(1:dim(dataMatrix)[2]), '"', sep=''))), sep='', collapse=''), sep='')
 		indexM <- which((is.numeric(dataMatrix) & (dataMatrix > 0)) | (is.character(dataMatrix) & (dataMatrix != "0 (1)")), arr.ind = TRUE)
 	}
 	
@@ -637,7 +637,7 @@
 	if (IDCols == 0) {
 		hyperLinkPrefix <- switch(catType,
 			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
-			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', 	getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'DOLITE'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'REACTOME.PATH'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'CABIO.PATH'=paste('<a href=', unlist(lapply(rowIDs[1:linkRowIDs], .caBIOLink)), '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>', sep=''),
@@ -699,7 +699,7 @@
 						if (!is.null(matrixOfHeatmapIndex) & (i %in% matrixOfHeatmapIndex[matrixOfHeatmapIndex[,2] == j,1])) bgColor <- 'bgcolor="#ccff00"'
 					}
 					
-					textLine <- paste(textLine, HTwrap(HTwrap(dataMatrix[i,j], tag='A', scripts=paste('href="#h-', k, '"', sep='')), scripts=bgColor), sep='')
+					textLine <- paste(textLine, HTwrap(HTwrap(dataMatrix[i,j], tag='A', scripts=paste('href="#h-', (k+1), '"', sep='')), scripts=bgColor), sep='')
 				}else textLine <- paste(textLine, HTwrap(dataMatrix[i,j]), sep='')
 			}			
 		}
@@ -811,4 +811,29 @@
 				'Reactome'=paste('http://pid.nci.nih.gov/search/pathway_landing.shtml?source=Reactome%20Imported&what=graphic&jpg=on&pathway_id=', substr(temp['name'], 3, nchar(temp['name'])), sep=''),
 				'BioCarta'=paste('http://cgap.nci.nih.gov/Pathways/BioCarta/', temp['name'], sep='')))
 	}
+}
+
+#generate concepts relationship for given concepts.
+.catsCluster <- function(dataMatrix, gAL, clusterMethod=c("ward", "single", "complete", "average", "mcquitty", "median", "centroid"), catTerm=TRUE, 
+						catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), ...) {
+	clusterMethod <- match.arg(clusterMethod)
+	catType <-match.arg(catType)
+	catsGenes <- lapply(rownames(dataMatrix), function(x, y) {return(unique(unlist(lapply(lapply(y, getGenesInCategory), function(m,n) {return(m[names(m) %in% n])}, x))))}, gAL)
+	names(catsGenes) <- rownames(dataMatrix) 
+	allGenes <- unique(unlist(catsGenes))
+   #indexCats <- as.character(c(1:length(catsGenes)))
+	#names(indexCats) <- rownames(dataMatrix)
+	if (catTerm & (catType != 'Unknown')) {
+		names(catsGenes) <- getCategoryTerms(names(catsGenes), catType, ...)
+	}
+	clusterM <- matrix(0, nrow=length(allGenes), ncol=length(catsGenes), dimnames=list(allGenes, names(catsGenes))) 
+	for (i in 1:dim(clusterM)[2]) {
+		clusterM[catsGenes[[i]],i] <- 1
+	}
+	hc <- hclust(dist(t(clusterM)), method=clusterMethod)
+	#print(ceiling(log2(max(nchar(colnames(clusterM))))))
+    op <- par(mar=c(1,1,1,40))
+	plot(as.dendrogram(hc), horiz=TRUE, xlab='Concepts', ylab=NULL, main=NULL, axes=FALSE, ann=FALSE)
+	par(op)
+	return(invisible(clusterM))
 }
