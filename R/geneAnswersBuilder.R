@@ -19,7 +19,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 			geneInput[,1] <- geneIDs
 		}
 		if (NA %in% geneIDs) stop('Given gene IDs contain NA, please check!!! Aborting ...')
-		x@geneInput <- as.data.frame(geneInput)
+		x@geneInput <- as.data.frame(geneInput, stringsAsFactors=FALSE)
 		#rownames(x@geneInput) <- geneIDs
 	} else {
 		stop('input gene info can not be recognized! Abort GeneAnswers Building ...')
@@ -117,7 +117,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 
 	if (verbose) print('testType, pvalueT and enrichmentInfo have built in ...')
 	if (is.null(geneExpressionProfile)) x@geneExprProfile <- NULL
-	else x@geneExprProfile <- as.data.frame(geneExpressionProfile)
+	else x@geneExprProfile <- as.data.frame(geneExpressionProfile, stringsAsFactors=FALSE)
 	if (verbose) print('geneExpressionProfile has been built in ...')
 	
 	print('GeneAnswers instance has been successfully generated!')
