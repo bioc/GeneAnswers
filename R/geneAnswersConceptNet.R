@@ -1,5 +1,5 @@
 `geneAnswersConceptNet` <-
-function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive'), 
+function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue'), output=c('fixed','interactive', 'none'), 
 			showCats=c(1:5), geneLayer=1, edgeM=NULL, catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...) {
 	centroidSize <- match.arg(centroidSize)
 	if ((centroidSize == 'correctedPvalue') & !('fdr p value' %in% colnames(x@enrichmentInfo))) stop('input geneAnswer class does not contain fdr p value!!!')
@@ -56,7 +56,7 @@ function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChan
 		'-Log10'= -log10(temp))
 	
 	if (catTerm) {
-		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
   			names(inputList) <- getCategoryTerms(names(inputList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
   			names(scaledTemp) <- getCategoryTerms(names(scaledTemp), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		} else {
@@ -104,7 +104,6 @@ function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChan
 		if (length(IAgenes) > 1) inputList <- c(inputList, IAgenes)
 	} 
 	
-	geneConceptNet(inputList, lengthOfRoots=length(scaledTemp), inputValue = inputXValue[unique(c(unlist(inputList),names(inputList)[-(1:length(scaledTemp))]))], centroidSize=scaledTemp, output=output, ...)
-	return(invisible(x))
+	return(invisible(geneConceptNet(inputList, lengthOfRoots=length(scaledTemp), inputValue = inputXValue[unique(c(unlist(inputList),names(inputList)[-(1:length(scaledTemp))]))], centroidSize=scaledTemp, output=output, ...)))
 }
 

@@ -377,8 +377,8 @@ geneAnswersHeatmap(qq)
 
 Besides top categories, users can also show interested categories.
 <<plot customized concept-gene cross tabulation,  echo=T, eval=T>>=  
-GOBPIDs <- c("GO:0007049", "GO:0042592", "GO:0006259", "GO:0016265", "GO:0007243")
-GOBPTerms <- c("cell cycle", "death", "protein kinase cascade", "homeostatic process", "DNA metabolic process") 
+GOBPIDs <- c("GO:0043627", "GO:0042493", "GO:0006259", "GO:0007243")
+GOBPTerms <- c("response to estrogen stimulus", "response to drug", "protein kinase cascade", "DNA metabolic process")
 @
 
 <<generate concept-gene cross tabulation,  echo=T, eval=F>>=

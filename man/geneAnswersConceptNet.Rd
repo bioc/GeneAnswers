@@ -6,7 +6,7 @@
   A function to generate a concept-gene network by given gene information
 }
 \usage{
-geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "geneNum", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive"), showCats=c(1:5), geneLayer=1, edgeM=NULL, catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...)
+geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "geneNum", "foldChange", "oddsRatio", "correctedPvalue"), output = c("fixed", "interactive", "none"), showCats=c(1:5), geneLayer=1, edgeM=NULL, catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,7 +31,8 @@ geneAnswersConceptNet(x, colorValueColumn = NULL, centroidSize = c("pvalue", "ge
   foldChange: fold of gene overrepresent in concepts
   oddsRatio: odds ratio of enrichment test	
   correctedPvalue: adjusted p value of enrichment test
-  output defines whether the final figure is interactive or not. Interactive figure calls igraph package to generate a tck/tk canvas. Fixed figure is a non-interactive png figure.
+  output defines whether the final figure is interactive or not. Interactive figure calls igraph package to generate a tck/tk canvas. Fixed figure is a non-interactive png figure. None will not output any figure but a list. 
+See details in \code{\link{geneConceptNet}} 
 }
 \value{
   One concept-gene figure is generated. It could be a R figure or tcltk figure depends on how the user set parameter output. 

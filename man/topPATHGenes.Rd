@@ -6,12 +6,13 @@
  Function to present top KEGG enichmentInfo of given GeneAnswers instance with genes.
 }
 \usage{
-topPATHGenes(x, catTerm = TRUE, geneSymbol = TRUE, ...)
+topPATHGenes(x, catTerm = TRUE, keepID=TRUE, geneSymbol = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ a given GeneAnswers instance with KEGG test }
   \item{catTerm}{ logic value to determine whether mapping KEGG IDs to KEGG terms }
+  \item{keepID}{ logic, to determine whether keep KEGG IDs}
   \item{geneSymbol}{ logic value to determine whether mapping gene Entrez IDs to gene symbols}
   \item{\dots}{ other parameters to transfer to topCategoryGenes }
 }

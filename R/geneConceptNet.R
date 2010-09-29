@@ -1,11 +1,11 @@
 `geneConceptNet` <-
-function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum', output=c('fixed','interactive'), colorMap=NULL, matchMode=c('absolute', 'relative'), zeroColorIndex=NULL) {
+function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum', output=c('fixed','interactive', 'none'), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE) {
 	require(igraph)
 	output <- match.arg(output)
 	matchMode <- match.arg(matchMode)
 	
 	if (is.null(lengthOfRoots)) lengthOfRoots <- length(inputList)
-	temp <- .list2graph(inputList)
+	temp <- .list2graph(inputList, verbose=verbose)
 	g <- temp[[1]]
 	nodes <- temp[[2]]
 	vertexLabels <- names(nodes)
@@ -28,17 +28,17 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 					if (all(as.numeric(inputValue) > 0) | all(as.numeric(inputValue) < 0)) {
 						if (all(as.numeric(inputValue) > 0)) {
 							zeroColorIndex <- 1
-							conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+							conceptCol <- colorRampPalette(c(bgColor,'#ff0000'))
 						} else {
 							zeroColorIndex <- colorLevel
-							conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+							conceptCol <- colorRampPalette(c('#00ff00',bgColor))
 						}
 						colorMap <- conceptCol(colorLevel)
 					} else {
 						zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
-						conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))                  
+						conceptCol <- colorRampPalette(c('#00ff00',bgColor))                  
 						colorMap <- conceptCol(zeroColorIndex)
-						conceptCol <- colorRampPalette(c('#ffffff','#ff0000'))
+						conceptCol <- colorRampPalette(c(bgColor,'#ff0000'))
 						colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
 					}
 				} 
@@ -62,11 +62,19 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 		}
 	}
 	V(g)[0:(lengthOfRoots-1)]$color <- "#ffd900"
-	if (output == 'fixed') {
-		plot.igraph(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, vertex.frame.color=V(g)$color, edge.loop.angle=-90, layout=layout.fruchterman.reingold) 
+	edgesMatrix <- as.data.frame(apply(get.edges(g,0:(ecount(g)-1)), 2, function(z, labels) return(labels[z+1]), V(g)$label), stringsAsFactors =FALSE)
+	colnames(edgesMatrix) <- c('NODES1', 'NODES2')
+	if (output == 'none') {
+		return(c('graph'=list(g), 'vertex.attributes'=list(as.data.frame(cbind('NODES'=V(g)$label, 'NODE_FILL_COLOR'=V(g)$color, 'NODE_SIZE'=3*V(g)$size), stringsAsFactors =FALSE)), 
+						'edge.attributes'=list(as.data.frame(cbind(edgesMatrix, 'EDGE_COLOR'=E(g)$color, 'EDGE_LINE_WIDTH'=E(g)$width), stringsAsFactors =FALSE))))
 	} else {
-		tkplot(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, vertex.frame.color=V(g)$color, edge.loop.angle=-90, layout=layout.fruchterman.reingold) 
+		if (output == 'fixed') {
+			plot.igraph(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, vertex.frame.color=V(g)$color, edge.loop.angle=-90, layout=layout.fruchterman.reingold) 
+		} else {
+			tkplot(g, vertex.label.font=2, vertex.label=V(g)$label, vertex.label.color='#666666', vertex.label.cex=1.5, vertex.frame.color=V(g)$color, edge.loop.angle=-90, layout=layout.fruchterman.reingold) 
+		}
+		return(invisible(c('graph'=list(g), 'vertex.attributes'=list(as.data.frame(cbind('NODES'=V(g)$label, 'NODE_FILL_COLOR'=V(g)$color, 'NODE_SIZE'=3*V(g)$size), stringsAsFactors =FALSE)), 
+						'edge.attributes'=list(as.data.frame(cbind(edgesMatrix, 'EDGE_COLOR'=E(g)$color, 'EDGE_LINE_WIDTH'=E(g)$width), stringsAsFactors =FALSE)))))
 	}
-	
 }
 

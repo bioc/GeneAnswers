@@ -6,12 +6,13 @@
   Function to present top GO enichmentInfo of given GeneAnswers instance with genes. 
 }
 \usage{
-topGOGenes(x, catTerm = TRUE, geneSymbol = TRUE, ...)
+topGOGenes(x, catTerm = TRUE, keepID=TRUE, geneSymbol = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ a given GeneAnswers instance with GO test }
   \item{catTerm}{ logic value to determine whether mapping GO IDs to GO terms }
+  \item{keepID}{ logic, to determine whether keep GO IDs}
   \item{geneSymbol}{ logic value to determine whether mapping gene Entrez IDs to gene symbols}
   \item{\dots}{ other parameters to transfer to topCategoryGenes }
 }

@@ -1,16 +1,17 @@
 `getConceptTable` <-
-function (gAList, topCat=10, items=c('both', 'geneNum', 'pvalue'), catTerm=TRUE, strict=FALSE) {
+function (gAList, topCat=10, items=c('both', 'geneNum', 'pvalue'), sortBy = c('pvalue', 'geneNum', 'foldChange', 'oddsRatio', 'correctedPvalue'), catTerm=TRUE, strict=FALSE) {
 	items <- match.arg(items)
+	sortBy <- match.arg(sortBy)
 	
 	if (is.numeric(topCat) & length(topCat) == 1) {
-		topCatFun <- function (x, top=topCat) { top <- min(top, dim(x@enrichmentInfo)[1]); return(rownames(geneAnswersSort(x, sortBy='pvalue')@enrichmentInfo)[1:top]) }
+		topCatFun <- function (x, top=topCat) { top <- min(top, dim(x@enrichmentInfo)[1]); return(rownames(geneAnswersSort(x, sortBy=sortBy)@enrichmentInfo)[1:top]) }
 		catList <- lapply(gAList, topCatFun, top=topCat)
 		categories <- unique(unlist(catList))
 	} else {
 		if (is.character(topCat)) {
 			categories <- topCat
 		} else {
-			pickCat <- function (x, pick=topCat) { pick <- intersect(pick, c(1:dim(x@enrichmentInfo)[1])); return(rownames(geneAnswersSort(x, sortBy='pvalue')@enrichmentInfo)[pick]) }
+			pickCat <- function (x, pick=topCat) { pick <- intersect(pick, c(1:dim(x@enrichmentInfo)[1])); return(rownames(geneAnswersSort(x, sortBy=sortBy)@enrichmentInfo)[pick]) }
 			catList <- lapply(gAList, pickCat, pick=topCat)
 			categories <- unique(unlist(catList))
 		}

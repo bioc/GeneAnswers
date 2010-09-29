@@ -65,14 +65,18 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	}
 	if (verbose) print('annLib and categoryType have built in ...')
 
-	x@genesInCategory <- list()
-	for (i in 1:length(testLibList)) {
-		temp <- list(intersect(testLibList[[i]], geneIDs))
-		if (length(temp[[1]]) > 0) {
-			names(temp) <- names(testLibList[i])
-			x@genesInCategory <- c(x@genesInCategory, temp)
-		}
-	}
+#	x@genesInCategory <- list()
+#	for (i in 1:length(testLibList)) {
+#		temp <- list(intersect(testLibList[[i]], geneIDs))
+#		if (length(temp[[1]]) > 0) {
+#			names(temp) <- names(testLibList[i])
+#			x@genesInCategory <- c(x@genesInCategory, temp)
+#		}
+#	}
+	
+	x@genesInCategory <- lapply(testLibList, function(x,y) return(unique(intersect(x,y))), geneIDs)
+	x@genesInCategory <- x@genesInCategory[which(sapply(x@genesInCategory, length) != 0)]
+	testLibList <- testLibList[names(x@genesInCategory)]
 	if (verbose) print('genesInCategory has built in ...')
 
 	if (testType == 'hyperG') {
@@ -92,7 +96,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 				}
 			}
 		} else {
-			if (!is.numeric(totalGeneNumber)) totalGeneNumber <- getTotalGeneNumber(categoryType=x@categoryType, known=known, annotationLib=x@annLib) 
+			if (!is.numeric(totalGeneNumber)) totalGeneNumber <- max(getTotalGeneNumber(categoryType=x@categoryType, known=known, annotationLib=x@annLib), length(unique(unlist(testLibList)))) 
 			if (is.null(totalGeneNumber)) stop(paste(x@categoryType,' does not support your specified species currently! Aborting GeneAnswers Building ...', sep=''))
 		}
 		fullResult <- .hyperGTest(geneIDs, testLibList, totalNGenes=totalGeneNumber) 
@@ -120,7 +124,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	else x@geneExprProfile <- as.data.frame(geneExpressionProfile, stringsAsFactors=FALSE)
 	if (verbose) print('geneExpressionProfile has been built in ...')
 	
-	print('GeneAnswers instance has been successfully generated!')
+	print('GeneAnswers instance has been successfully created!')
 	if (sortBy != 'none') return(geneAnswersSort(x, sortBy=sortBy))
 	else return(x)
 }

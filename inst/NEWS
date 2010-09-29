@@ -1,3 +1,19 @@
+CHANGES IN VERSION 1.5
+----------------------
+
+NEW FEATURES
+
+    o Multigroup concept-gene analysis html report supports interactive
+    network with cytoscape web support as well as original fixed images
+
+    o caBIO pathway and REACTOME pathway are included with xml queries,
+    therefore, internet access is required.
+
+    o The total number of pooled genes in Hypergeometric test can be set
+    by the amount of genes in annotation library or the total annoted 
+    genes in the given species.
+
+
 CHANGES IN VERSION 1.4
 ----------------------
 

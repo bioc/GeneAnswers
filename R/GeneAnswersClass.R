@@ -46,7 +46,7 @@ if (is.null(getGeneric("setGenesInCategory"))) setGeneric("setGenesInCategory", 
 if (is.null(getGeneric("setEnrichmentInfo"))) setGeneric("setEnrichmentInfo", function(object, enrichmentInfo) standardGeneric("setEnrichmentInfo"))
 if (is.null(getGeneric("setGeneExprProfile"))) setGeneric("setGeneExprProfile", function(object, geneExprProfile) standardGeneric("setGeneExprProfile")) 
 if (is.null(getGeneric("setAnnLib"))) setGeneric("setAnnLib", function(object, annLib) standardGeneric("setAnnLib")) 
-if (is.null(getGeneric("setCategoryType"))) setGeneric("setCategoryType", function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend')) standardGeneric("setCategoryType")) 
+if (is.null(getGeneric("setCategoryType"))) setGeneric("setCategoryType", function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH', 'User defiend')) standardGeneric("setCategoryType")) 
 
 if (is.null(getGeneric("summary"))) setGeneric("summary", function(object) standardGeneric("summary"))
 if (is.null(getGeneric("show"))) setGeneric("show", function(object) standardGeneric("show"))
@@ -137,7 +137,7 @@ setMethod("setAnnLib", signature(object="GeneAnswers"), function(object, annLib)
 	}
 })
 
-setMethod("setCategoryType", signature(object="GeneAnswers"), function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend'))
+setMethod("setCategoryType", signature(object="GeneAnswers"), function(object, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH', 'User defiend'))
 {
 	type <- match.arg(type)
 	object@categoryType <- type

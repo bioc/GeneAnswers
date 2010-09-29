@@ -23,8 +23,8 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 	
 	if (categoryType == 'REACTOME.PATH') {
 		return(switch(annotationLib,
-			'org.At.tair.db'=516, 'org.Ce.eg.db'=627, 'org.Dm.eg.db'=686, 'org.EcK12.eg.db'=185, 'org.EcSakai.eg.db'=185, 'org.Gg.eg.db'=840, 'org.Hs.eg.db'=1019, 'org.Mm.eg.db'=900,  
-			'org.Pf.plasmo.db'=308, 'org.Rn.eg.db'=883, 'org.Sc.sgd.db'=473, NULL))
+			'org.At.tair.db'=2646, 'org.Ce.eg.db'=1909, 'org.Dm.eg.db'=3567, 'org.EcK12.eg.db'=175, 'org.EcSakai.eg.db'=175, 'org.Gg.eg.db'=3108, 'org.Hs.eg.db'=4416, 'org.Mm.eg.db'=5021,  
+			'org.Pf.plasmo.db'=390, 'org.Rn.eg.db'=4374, 'org.Sc.sgd.db'=714, NULL))
 	}
 	
 	return(switch(categoryType,

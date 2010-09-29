@@ -31,10 +31,18 @@
 		if ((GOCategory == 'ALL') | (GOCategory == 'MF')) filterGOIDs <- unique(c(filterGOIDs, 'GO:0003674'))
 		if (level > 1) {
 			for (i in 2:level) {                                                                              
-				if ((GOCategory == 'ALL') | (GOCategory == 'BP')) filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "BPCHILDREN"))))
-				if ((GOCategory == 'ALL') | (GOCategory == 'CC')) filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "CCCHILDREN"))))
-				if ((GOCategory == 'ALL') | (GOCategory == 'MF')) filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "MFCHILDREN"))))
-				filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)]) 
+				if ((GOCategory == 'ALL') | (GOCategory == 'BP')) {
+					filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "BPCHILDREN"))))
+					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
+				}
+				if ((GOCategory == 'ALL') | (GOCategory == 'CC')) filterGOIDs <- {
+					unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "CCCHILDREN"))))
+					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
+				}
+				if ((GOCategory == 'ALL') | (GOCategory == 'MF')) filterGOIDs <- {
+					unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "MFCHILDREN"))))
+					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
+				}
 			}
 		}
 	}
@@ -112,7 +120,7 @@
 	}
 }
 
-.drawTable <- function(dataMatrix, mar=c(1,1,5,8), addRowLabel=TRUE, cex.axis=c(1.1, 0.9), ...) {
+.drawTable <- function(dataMatrix, mar=c(1,1,5,8), addRowLabel=TRUE, cex.axis=c(1.1, 0.9)) {
 	if (is.null(rownames(dataMatrix)) | is.null(colnames(dataMatrix))) stop('rownames and/or colnames of input matrix are missing!')
 	oldsetting <- par('mar'=mar) 
 	#image(x=1:ncol(dataMatrix), y=1:nrow(dataMatrix), -t(dataMatrix), ylim=c((nrow(dataMatrix)+1),0), col=c('white','white'), axes=F, xlab='', ylab='', )
@@ -143,9 +151,10 @@
 # colorBar: determine whether plot the color bar in the separated window (In the current implementation, users have to the adjust the window to get a better view)
 # colorBarLabel: labels of color bar
 .heatmap.mds <- function(dataMatrix, sortBy=c('row', 'column', 'both', 'none'), rotate=FALSE, standardize=TRUE, colorMap='RdYlBu', mar=c(1,1,5,8),  
-	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), 
+	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, labelRight=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), 
 	colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap'),  ...)
 {
+	
 	if (colorMap[1] == 'GBR') {
 		library(Heatplus)
 		colorMap <- rev(RGBColVec(256))
@@ -262,7 +271,7 @@
 	}
 	
 	
-	if (mapType == 'table') .drawTable(dataMatrix, addRowLabel=addRowLabel, mar=mar, cex.axis=cex.axis, ...)
+	if (mapType == 'table') .drawTable(dataMatrix, addRowLabel=addRowLabel, mar=mar, cex.axis=cex.axis)
 	
 	else {
 		oldsetting <- par('mar'=mar)
@@ -275,7 +284,8 @@
 		#image(x=1:ncol(inputM), y=1:nrow(inputM), -t(inputM), ylim=c((nrow(inputM)+1),0), col=c('white','white'), axes=F, xlab='', ylab='', )
 		axis(3, at=1:ncol(dataMatrix), labels=colLabels, tick=F, las=2, cex.axis=cex.axis[1])
 		if (addRowLabel) {
-			axis(4, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])	
+			if (labelRight) axis(4, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
+			else axis(2, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])	
 		} else {
 			axis(4, at=1:nrow(dataMatrix), labels=rep('', length(rowLabels)), tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
 		}
@@ -406,7 +416,7 @@
 	return(unlist(temp)[GOIDs])
 }
  
-.colorMatch <- function(values, colorMap=NULL, matchMode=c('absolute', 'relative'), zeroColorIndex=NULL) {
+.colorMatch <- function(values, colorMap=NULL, matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, zeroPoint=0) {
 	matchMode <- match.arg(matchMode)
 	tempColor <- c()
 
@@ -422,14 +432,14 @@
 	if (matchMode == 'absolute') {
 		if (is.numeric(zeroColorIndex) & (length(zeroColorIndex) == 1)) {
 			if (length(unique(values) > 1) | ((zeroColorIndex < length(colorMap)) & (zeroColorIndex > 1))) {
-				tempColor <- c(tempColor, colorMapping(c(0, values[values >= 0]), colorMap[zeroColorIndex:length(colorMap)])[-1])
-				tempColor <- c(tempColor, colorMapping(c(0, values[values < 0]), colorMap[1:(zeroColorIndex-1)])[-1])
+				tempColor <- c(tempColor, colorMapping(c(zeroPoint, values[values >= zeroPoint]), colorMap[zeroColorIndex:length(colorMap)])[-1])
+				tempColor <- c(tempColor, colorMapping(c(zeroPoint, values[values < zeroPoint]), colorMap[1:(zeroColorIndex-1)])[-1])
 				outColor <- tempColor[as.character(values)]
 			} else {
 				if ((zeroColorIndex == length(colorMap)) | (zeroColorIndex == 1)) {
-					if (unique(values) == 0) outColor <- colorMap[zeroColorIndex]
+					if (unique(values) == zeroPoint) outColor <- colorMap[zeroColorIndex]
 					else {
-						if (unique(values) > 0) outColor <- colorMap[length(colorMap)]
+						if (unique(values) > zeroPoint) outColor <- colorMap[length(colorMap)]
 						else outColor <- colorMap[1]
 					}
 				names(outColor) <- as.character(values) 
@@ -454,7 +464,7 @@
 		else return(NULL)
 	} else {
 		options(warn=0)
-		stop('Only Entrez Gene or DOLite IDs are supported!')
+		stop('Only Entrez Gene or DOLITE IDs are supported!')
 	}
 }
 
@@ -639,7 +649,7 @@
 			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'DOLITE'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
-			'REACTOME.PATH'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'REACTOME.PATH'=paste('<a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'CABIO.PATH'=paste('<a href=', unlist(lapply(rowIDs[1:linkRowIDs], .caBIOLink)), '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>', sep=''),
 			'Entrez'=paste('<a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</a>',sep=''),
 			'Unknown'=rowIDs[1:linkRowIDs])
@@ -648,7 +658,7 @@
 			'GO'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>',  rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'KEGG'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'DOLITE'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a>', rowIDs[1:linkRowIDs], '</a>',sep=''),
-			'REACTOME.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a>', rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'REACTOME.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'CABIO.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=', unlist(lapply(rowIDs[1:linkRowIDs], .caBIOLink)), '>', rowIDs[1:linkRowIDs], '</a>',sep=''), 
 			'Entrez'=paste(geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</TD><TD><a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'Unknown'=rowIDs[1:linkRowIDs])
@@ -818,6 +828,7 @@
 						catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), ...) {
 	clusterMethod <- match.arg(clusterMethod)
 	catType <-match.arg(catType)
+	if (!is.matrix(dataMatrix)) dataMatrix <- matrix()
 	catsGenes <- lapply(rownames(dataMatrix), function(x, y) {return(unique(unlist(lapply(lapply(y, getGenesInCategory), function(m,n) {return(m[names(m) %in% n])}, x))))}, gAL)
 	names(catsGenes) <- rownames(dataMatrix) 
 	allGenes <- unique(unlist(catsGenes))
@@ -836,4 +847,40 @@
 	plot(as.dendrogram(hc), horiz=TRUE, xlab='Concepts', ylab=NULL, main=NULL, axes=FALSE, ann=FALSE)
 	par(op)
 	return(invisible(clusterM))
+}
+
+# graphAttr should be a 2 element list, each one is a dataframe, represents vertex or edge attributes, repectively
+.convertCytoscapeWeb <- function(graphAttr, htmlName=NULL,  fileSuffix=1, verbose=TRUE, destination=NULL, bgColor='#ffffff') {
+	if (is.null(htmlName)) cytoDir <- 'cytoscapeWebFiles'
+	else cytoDir <- paste(htmlName, 'cytoscapeWebFiles', sep='.')
+	if (dir.create(cytoDir, showWarnings=FALSE) | file.exists(cytoDir)) {
+		setwd(cytoDir)
+		if (verbose) print(paste('Generating ', paste('edges_', fileSuffix, '.txt', sep=''), sep=''))
+		write.table(graphAttr[['edge.attributes']][,c('NODES1', 'NODES2')], file=paste('edges_', fileSuffix, '.txt', sep=''), quote=FALSE, row.names=FALSE, sep='\t')
+		if (verbose) print(paste('Generating ', paste('edgesAttr_', fileSuffix, '.txt', sep=''), sep=''))
+		edgeAttrM <- cbind(paste(graphAttr[['edge.attributes']][,'NODES1'], '()', graphAttr[['edge.attributes']][,'NODES2']), graphAttr[['edge.attributes']][, c(3:dim(graphAttr[['edge.attributes']])[2])],stringsAsFactors = FALSE)
+		colnames(edgeAttrM)[1] <- c('EDGES')
+		write.table(edgeAttrM, file=paste('edgesAttr_', fileSuffix, '.txt', sep=''), quote=FALSE, row.names=FALSE, sep='\t')
+		if (verbose) print(paste('Generating ', paste('verticesAttr_', fileSuffix, '.txt', sep=''), sep=''))
+		write.table(graphAttr[['vertex.attributes']], file=paste('verticesAttr_', fileSuffix, '.txt', sep=''), quote=FALSE, row.names=FALSE, sep='\t')
+		setwd('..')
+		
+		if (file.exists('NetworkTransformer.jar')) {
+			originalWD <- getwd()
+			setwd(cytoDir)
+			system(paste('java -jar ../NetworkTransformer.jar', paste('edges_', fileSuffix, '.txt', sep=''), paste('edgesAttr_', fileSuffix, '.txt', sep=''), paste('verticesAttr_', fileSuffix, '.txt', sep=''), fileSuffix, substr(bgColor, 2, 7)))
+			if(!is.null(destination)) {
+				if (file.copy(paste('edges_', fileSuffix, '.js', sep=''), destination)) {
+					file.remove(paste('edges_', fileSuffix, '.js', sep=''))
+				} else {
+					setwd(originalWD)
+					stop('Javascript file ', paste('edges_', fileSuffix, '.js', sep=''), ' can not be moved! Working directory is reset to ', originalWD, ' , Aborting ...')
+				}
+			}
+			setwd('..')
+			return(invisible(paste('edges_', fileSuffix, '.js', sep='')))
+		} else {
+			stop('Necessary java program is missing, Aborting ...')
+		}
+	} else stop('Failure to create ', cytoDir, ' subdirectory! Aborting ...')
 }

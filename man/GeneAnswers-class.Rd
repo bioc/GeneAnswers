@@ -81,7 +81,7 @@
      \item{\code{setGenesInCategory(GeneAnswers, genesInCategory)}:}{Assign the genesInCategory slot of \code{GeneAnswers} object.}
      \item{\code{setGeneExprProfile(GeneAnswers, geneExprProfile)}:}{Assign the geneExprProfile slot of \code{GeneAnswers} object.}
      \item{\code{setAnnLib(GeneAnswers, annLib)}:}{Assign the annLib slot of \code{GeneAnswers} object.}
-     \item{\code{setCategoryType(GeneAnswers, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'User defiend'))}:}{Assign the categoryType slot of \code{GeneAnswers} object.}
+     \item{\code{setCategoryType(GeneAnswers, type=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH', 'User defiend'))}:}{Assign the categoryType slot of \code{GeneAnswers} object.}
      \item{\code{setEnrichmentInfo(GeneAnswers, enrichmentInfo)}:}{Assign the enrichmentInfo slot of \code{GeneAnswers} object.}
      \item{\code{summary(GeneAnswers)}:}{Briefly summarize the information of \code{GeneAnswers} object and show contents of \code{GeneAnswers} object.}
      \item{\code{show(GeneAnswers)}:}{Briefly show contents of \code{GeneAnswers} object.}

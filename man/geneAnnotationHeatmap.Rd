@@ -6,7 +6,7 @@
    Function to make a concept-gene cross tabulation
 }
 \usage{
-geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, colorMap = c("#000000", "#FFFFFF"), sortBy = "both", standardize.data = TRUE, colorMap.data = "GBR", sortBy.data = "row", mar = c(1, 1, 8, 6), cex.axis = c(0.8, 0.8), mapType = c("table", "heatmap"), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL)
+geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, colorMap = c("#000000", "#FFFFFF"), sortBy = "both", standardize.data = TRUE, colorMap.data = "GBR", showGeneMax = 200, sortBy.data = "row", mar = c(1, 1, 8, 6), cex.axis = c(0.8, 0.8), mapType = c("table", "heatmap"), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, co
   \item{sortBy}{ string to specify whether to sort the annotation matrix by row, column, both row and column or none of them   }
   \item{standardize.data}{ logic, specify whether to standardize the dataMatrix by row~~ }
   \item{colorMap.data}{ string to specify color map of the dataMatrix heatmap }
+  \item{showGeneMax}{ an integer, the maximum of gene number to show genes id or symbol on the heatmap}
   \item{sortBy.data}{ string to specify whether to sort the dataMatrix by row, column, both row and column or none of them }
   \item{mar}{ integer vector to speicify margin of the plot }
   \item{cex.axis}{ integer vector to specify the character size of row and column labels }

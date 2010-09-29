@@ -1,17 +1,17 @@
 \name{topDOLite}
 \alias{topDOLite}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Present top DOLite enrichment test information }
+\title{ Present top DOLITE enrichment test information }
 \description{
-  Function to present top DOLite enichmentInfo of given GeneAnswers instance.
+  Function to present top DOLITE enichmentInfo of given GeneAnswers instance.
 }
 \usage{
 topDOLite(x, catTerm = TRUE, keepID=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ a given GeneAnswers instance containing DOLite information }
-  \item{catTerm}{ logic value to determine whether mapping to DOLite terms or not }
+  \item{x}{ a given GeneAnswers instance containing DOLITE information }
+  \item{catTerm}{ logic value to determine whether mapping to DOLITE terms or not }
   \item{keepID}{ logic value to determine whether showing IDs or not}
   \item{\dots}{ other parameters to transfer to topCategory }
 }
@@ -22,7 +22,7 @@ topDOLite(x, catTerm = TRUE, keepID=TRUE, ...)
 \author{ Gang Feng, Pan Du and Simon Lin }
 \seealso{\code{\link{topCategory}}}
 \examples{
-# x is a GeneAnswers instance with DOLite test
+# x is a GeneAnswers instance with DOLITE test
 \dontrun{topDOLite(x, top=10)}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

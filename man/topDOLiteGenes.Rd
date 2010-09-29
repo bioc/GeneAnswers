@@ -1,17 +1,18 @@
 \name{topDOLiteGenes}
 \alias{topDOLiteGenes}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Present top DOLite enrichment test information with genes}
+\title{ Present top DOLITE enrichment test information with genes}
 \description{
-  Function to present top DOLite enichmentInfo of given GeneAnswers instance with genes. 
+  Function to present top DOLITE enichmentInfo of given GeneAnswers instance with genes. 
 }
 \usage{
-topDOLiteGenes(x, catTerm = TRUE, geneSymbol = TRUE, ...)
+topDOLiteGenes(x, catTerm = TRUE, keepID=TRUE, geneSymbol = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ a given GeneAnswers instance with DOLite test }
-  \item{catTerm}{ logic value to determine whether mapping DOLite IDs to DOLite terms }
+  \item{x}{ a given GeneAnswers instance with DOLITE test }
+  \item{catTerm}{ logic value to determine whether mapping DOLite IDs to DOLITE terms }
+  \item{keepID}{ logic, to determine whether keep DOLITE IDs}
   \item{geneSymbol}{ logic value to determine whether mapping gene Entrez IDs to gene symbols}
   \item{\dots}{ other parameters to transfer to topCategoryGenes }
 }

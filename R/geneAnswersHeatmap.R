@@ -1,7 +1,7 @@
 `geneAnswersHeatmap` <-
 function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, nameLength='all', ...) {
 	if (is.null(x@genesInCategory[showCats])) stop('specified categories can not be found in x@genesInCategory!')
-	if (is.null(x@geneExprProfile)) stop('Gene expression file is NULL!')
+	#if (is.null(x@geneExprProfile)) stop('Gene expression file is NULL!')
 	if (is.numeric(showCats)) {
 		if (!(all(showCats %in% c(1:dim(x@enrichmentInfo)[1])))) print('Some specified categories might not be statistical significant! Only show significant categories.')
 		showCats <- intersect(showCats, c(1:dim(x@enrichmentInfo)[1]))
@@ -12,16 +12,18 @@ function (x, showCats=c(1:5), catTerm=FALSE, geneSymbol=FALSE, catID=FALSE, name
 		} else stop('specified categories can not be recognized!')
 	}
 	newList <- x@genesInCategory[showCats]
-	newDataMatrix <- matrix(as.numeric(as.matrix(x@geneExprProfile[,2:(dim(x@geneExprProfile)[2])])), ncol=(dim(x@geneExprProfile)[2]-1))
-	colnames(newDataMatrix) <- colnames(x@geneExprProfile)[2:dim(x@geneExprProfile)[2]]
-	rownames(newDataMatrix) <- x@geneExprProfile[,1]
-	
+	if (is.null(x@geneExprProfile)) newDataMatrix <- NULL
+	else {
+		newDataMatrix <- matrix(as.numeric(as.matrix(x@geneExprProfile[,2:(dim(x@geneExprProfile)[2])])), ncol=(dim(x@geneExprProfile)[2]-1))
+		colnames(newDataMatrix) <- colnames(x@geneExprProfile)[2:dim(x@geneExprProfile)[2]]
+		rownames(newDataMatrix) <- x@geneExprProfile[,1]
+	}
 	if (geneSymbol) {
 		newList <- lapply(newList, getSymbols, x@annLib, missing='name')
-		rownames(newDataMatrix) <- getSymbols(rownames(newDataMatrix), x@annLib, missing='name')
+		if (!is.null(newDataMatrix)) rownames(newDataMatrix) <- getSymbols(rownames(newDataMatrix), x@annLib, missing='name')
 	}
 	if (catTerm) {
-		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLite', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
+		if (x@categoryType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH')) {
 	  		names(newList) <- getCategoryTerms(names(newList), x@categoryType, missing='name', nameLength=nameLength, addID=catID)
 		}else {
 		 	print('Slot categoryType is not recognized! No mapping ...')

@@ -6,19 +6,19 @@
 Integrated Interpretation of Genes
 }
 \description{
-GeneAnswers provide an integrated tool for given genes biological or medical interpretation. It includes statistical test of given genes and specified categories. 
+GeneAnswers provide an integrated tool for biological or medical interpretation of the given one or more groups of genes by means of statistical test. 
 }
 \details{
 \tabular{ll}{
 Package: \tab GeneAnswers\cr
 Type: \tab Package\cr
-Version: \tab 1.4.0\cr
-Date: \tab 2010-04-14\cr
+Version: \tab 1.6.0\cr
+Date: \tab 2010-10-14\cr
 License: \tab LGPL version 2 or newer \cr
 }
 }
 \author{
-Gang Feng, Pan Du and Simon Lin
+Gang Feng, Pan Du, Tian Xia, Warren Kibbe and Simon Lin
 
 
 Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.edu>
