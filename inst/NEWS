@@ -13,6 +13,9 @@ NEW FEATURES
     by the amount of genes in annotation library or the total annoted 
     genes in the given species.
 
+    o Add gene annotation summarization functions. 
+	Please check geneFunctionSummarize.pdf for more details.
+	
 
 CHANGES IN VERSION 1.4
 ----------------------

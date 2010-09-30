@@ -1,9 +1,10 @@
 Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
-Version: 1.5.7
-Date: 2010-9-29
+Version: 1.5.8
+Date: 2010-9-30
 Depends: R (>= 2.10.0), igraph, RCurl, annotate, Biobase (>= 1.12.0), methods, XML, RSQLite, MASS, rgl, Heatplus, RColorBrewer 
+Imports: graph, Rgraphviz, RBGL, annotate
 Suggests: GO.db, KEGG.db, biomaRt, AnnotationDbi, org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db 
 Author: Gang Feng, Pan Du, Tian Xia, Warren Kibbe and Simon Lin
 Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.edu>

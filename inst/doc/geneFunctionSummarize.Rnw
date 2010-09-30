@@ -1,0 +1,142 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{ Summarize gene annotations based on collective ontology annotations}
+%\VignetteKeywords{Ontology analysis}
+%\VignetteDepends{GeneAnswers}
+%\VignettePackage{GeneAnswers}
+
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+
+\SweaveOpts{keep.source=TRUE}
+
+\author{Pan Du$^\ddagger$\footnote{dupan@northwestern.edu}, Gang Feng$^\ddagger$\footnote{g-feng@northwestern.edu},  Warren A. Kibbe$^\ddagger$\footnote{wakibbe@northwestern.edu}, Simon Lin$^\ddagger$\footnote{s-lin2@northwestern.edu}}
+\begin{document}
+
+\setkeys{Gin}{width=1\textwidth} 
+
+\title{Summarize gene annotations based on collective ontology annotations}
+\maketitle
+\begin{center}$^\ddagger$The Biomedical Informatics Center \\ Northwestern University, Chicago, IL, 60611, USA
+\end{center}
+
+\tableofcontents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+As computational and high throughput analyses have been widely used in interpreting gene functions, the number of gene annotations and resultant metadata describing the conditions for each annotation has increased dramatically. To standardize these annotations, genes are usually annotated by associating with standard ontology terms. Since the number of these annotations have increased, interpreting the major biological roles of a given gene and gene product based on these ontology terms has become increasingly complex.
+
+
+We proposed a statistic test to estimate the enrichment of ontology terms associated with a gene. These ontology terms are then ranked by annotation scores defined based on enrichment p-values. A miniSet of ontology terms is finally created to summarize the major functions associated with these ranked ontology terms, and this miniSet can be graphed as an annotation flashcard. We use Disease Ontology (DO) as the example to show the effectiveness of the functions.
+
+
+Our evaluation results show that this method is robust (adding random assignment of 40\% of the overall annotations does not significant perturb the result set with high annotation scores) and accurate (on average about 80\% of summarized top miniSet annotations match with the existing publication records). The summarized annotations are much easier for researchers and curators to interpret and curate. Applying miniSet annotations to the functional enrichment analysis of a public gene list results in a more concise and biologically relevant analysis. This quantitative annotation method can be extended to any well-constructed ontology. Please check the reference paper [1] for more details. 
+
+
+\section{Methods}
+
+Figure \ref{fig:flowChart_summarization} shows the steps of gene function summarization starting from the annotation evidence (GeneRIF statements) to the final annotation flashcard. We have used the gene PEBP1 as an example. As described in [2], we first mapped GeneRIFs statements to Disease Ontology terms using the MMTx program [3] developed by NLM to build the association statements between a gene and a disease ontology term. Then we tested the enrichment of individual ontology terms by mapping GeneRIF associated ontology terms to more general terms (walking 'up the graph' of ontology terms) based on the ontology hierarchical structure. Annotation scores were calculated based on the enrichment p-values. To summarize the significantly enriched ontology terms, a miniSet annotation was further built based on the annotation scores and ontology structure. These summarized annotations are graphed in an annotation flashcard.
+
+\begin{figure}
+\includegraphics{flowChart_summarization}
+\caption{An example of the input data format}
+\label{fig:flowChart_summarization}
+\end{figure}
+
+
+\subsection{Major functions of gene function summarization}
+
+The \Rpackage{GeneAnswers} package implemented functions shown in Figure \ref{fig:flowChart_summarization}. Function \Rfunction{geneFunSummarize} summarize gene functions (annotations) based collective annotation evidences associated with ontology terms. Basically, it tests the enrichment (using hypergeometric test) of all associated ontology terms of the gene and ranks these related ontology terms based on their statistical significance (starting from the most significant one). Function \Rfunction{simplifyGeneFunSummary} simplifies the significant ontology terms to a mini-set, which includes the non-overlapping most significant terms and some other ontology terms, which have direct gene mapping but not included in the significant ontology terms. Function \Rfunction{plotGeneFunSummary} plots ontology graphs of the summarized gene annotation (ontologies), which is return by function \Rfunction{geneFunSummarize}. For the convenience of customize the plot of ontology DAG, we added another function \Rfunction{plotGraph} to plot and render a graphNEL object. If the user processes the function summarization of many genes in batch. The results can be saved as a tab-seperated text file using function \Rfunction{saveGeneFunSummary}. 
+
+
+\section{Example dataset}
+
+The \Rpackage{GeneAnswers} package includes a Disease Ontology related data file "DO.rda", which includes five datasets:
+
+	DO.graph.gene: a graphNEL object, which shows the ontology relations of DO
+	
+	DO.graph.closure.gene: a graphNEL object, whose edges represent the link between a DO term and its offspring ontology terms. Only the DO terms with gene mappings were included.
+	
+	DO2gene.map: a list show the mapping from DOIDs to genes
+	
+	gene2DO.map: a list show the mapping from genes to DOIDs
+	
+	DO.terms: a named character vector. Its names are DOIDs and elements are DO.terms
+
+<<Loading required libraries, eval=T>>=
+rm(list=ls())
+library(GeneAnswers)
+## load the DO data file, which includes several data sets.
+data(DO)
+## show the datasets included in DO.rda file
+ls()
+@
+
+\section{Examples of summarizing gene annotation and plot the annotation flashcard}
+
+Here we shows a simple example of summarizing the annotations of a particular gene, PEBP1 (Entrez Gene ID: 5037). The gene should be specified using "Entrez Gene ID". Figure \ref{fig:flashcard} shows the summarized gene annotation based on Disease Ontology.
+
+<<Summarize  the annotations of a particular gene, eval=T>>=
+# summarize the gene function
+geneSummary <- geneFunSummarize('5037', gene2DO.map, DO.graph.closure.gene)
+# simplify the summarized annotations to miniSet
+geneSummary.sim <- simplifyGeneFunSummary(geneSummary, DO.graph.closure.gene, p.value.th=10^-5)
+# print the miniSet
+geneSummary.sim
+@
+
+\begin{figure}
+\centering
+<<geneFlashcard, fig=true, width=8, height=6, quiet=T, echo=F>>=
+# plot the summarized annotation as a flashcard.
+plotGeneFunSummary(geneSummary, onto.graph=DO.graph.gene, onto.graph.closure=DO.graph.closure.gene, ID2Name=DO.terms, p.value.th=0.0001, miniSetPvalue=10^-5, saveImage=FALSE)
+@
+\caption{Plot of summarized annotation of gene PEBP1}
+\label{fig:flashcard}
+\end{figure}            
+
+
+Users can also process the gene function summarization in batch. The following code processes all genes in DO database.
+<<Summarize  the annotations of all genes in DO database, eval=F>>=
+# retrieve all genes in the DO database from gene2DO.map list
+allGenes <- names(gene2DO.map) 
+length(allGenes)
+# summarize all genes in a batch
+geneSummary.all <- geneFunSummarize(allGenes, gene2DO.map, DO.graph.closure.gene, fdr.adjust='fdr')
+# simplify the summarized annotation as the miniSet
+sim.geneSummary.d.all <- simplifyGeneFunSummary(geneSummary.all, DO.graph.closure.gene, allOntoID.direct=names(DO2gene.direct), p.value.th=10^-5)
+# save the summarized annotations in a tab-separated text file.
+saveGeneFunSummary(geneSummary.all, simplifyInfo=sim.geneSummary.d.all, ID2Name=DO.terms, fileName="geneSummarization_all.xls")
+@
+
+
+\section{Session Info}
+<<sessionInfo, results=tex, print=TRUE>>=
+toLatex(sessionInfo())
+@ 
+
+
+
+\section{References}
+
+1. Pan Du, Simon M. Lin, Gang Feng, Warren A. Kibbe, "GeneRIFcompendiate: Ranked gene annotations using collective GeneRIF associations and ontology terms", (under review)
+
+2. Osborne, J.D., Flatow, J., Holko, M., Lin, S.M., Kibbe, W.A., Zhu, L.J., Danila, M.I., Feng, G. and Chisholm, R.L. (2009) Annotating the human genome with Disease Ontology, BMC Genomics, 10 Suppl 1, S6.
+
+3. Aronson, A.R. (2001) Effective mapping of biomedical text to the UMLS Metathesau-rus: the MetaMap program, Proc AMIA Symp, 17-21.
+
+
+%\bibliographystyle{plainnat}
+%\bibliography{GeneAnswers}
+
+
+\end{document}
