@@ -6,7 +6,7 @@
   A function to generate specified Concept-Gene Tabulates
 }
 \usage{
-geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, catID=FALSE, nameLength='all', ...)
+geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, catID=FALSE, nameLength='all', showAllGenes=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,7 +15,8 @@ geneAnswersHeatmap(x, showCats = c(1:5), catTerm = FALSE, geneSymbol = FALSE, ca
   \item{catTerm}{ a logic value to specify whether mapping category IDs to category names }
   \item{geneSymbol}{ a logic value to specify whether mapping gene IDs to gene symbols }
   \item{catID}{ a logic value to specify whether show category IDs when catTerm is set to TRUE }
-  \item{nameLength}{ show how many first letters for long term names, 'all' for full name} 
+  \item{nameLength}{ show how many first letters for long term names, 'all' for full name}
+  \item{showAllGenes}{logic, show all genes in the heatmap or not} 
   \item{\dots}{ other parameters used by geneAnnotationHeatmap }
 }
 \details{
