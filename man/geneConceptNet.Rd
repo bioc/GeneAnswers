@@ -6,7 +6,7 @@
   Function to generate concept-gene network based on given list.
 }
 \usage{
-geneConceptNet(inputList, lengthOfRoots=NULL, inputValue = NULL, centroidSize = "geneNum", output = c("fixed", "interactive", "none"), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE)
+geneConceptNet(inputList, lengthOfRoots=NULL, inputValue = NULL, centroidSize = "geneNum", output = c("fixed", "interactive", "none"), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE, symmetry=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,6 +20,7 @@ geneConceptNet(inputList, lengthOfRoots=NULL, inputValue = NULL, centroidSize = 
   \item{matchMode}{ the mode of values matching colors, valid only if inputValue is not NULL, see details}
   \item{zeroColorIndex}{ index of color corresponding to zero, see details}
   \item{verbose}{ logic, determine whether show messages}
+  \item{symmetry}{ logic, determine whether positive and negative values use the same color level.}
 }
 \details{
   The color of gene nodes could be specified by inputValue. Its length should be same as the total number of unique genes in inputList. There are two type of color matching methods. 'absolute' means, given zeroColorIndex that is color index in the colorMap for value 0, any value more than 0 will be matched to color between zeroColorIndex and the last one in colorMap based on the ratio of the value tothe maximum of the inputValue, while the value less than 0 will be matched to color between the first color in colorMap and zeroColorIndex, also based on the ratio of the value to the minimum of the inputValue. 'relative' means, set the first and last colors in colorMap to minimum and maximum of the inputValue, respectively, then any value between them will be mapped. If colorMap is set to NULL, the default color scheme will be applied. If the matching method is 'absolute', the color of 0 or the median of inputValue for 'relative' method, is set by bgColor, default value is '#ffffff' (white). The most positive value is represented as '#ff0000' (red), '#00ff00' (green) for the most negative value. 

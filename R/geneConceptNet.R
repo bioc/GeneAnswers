@@ -1,5 +1,5 @@
 `geneConceptNet` <-
-function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum', output=c('fixed','interactive', 'none'), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE) {
+function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum', output=c('fixed','interactive', 'none'), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE, symmetry=TRUE) {
 	require(igraph)
 	output <- match.arg(output)
 	matchMode <- match.arg(matchMode)
@@ -35,6 +35,17 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 						}
 						colorMap <- conceptCol(colorLevel)
 					} else {
+						#zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
+						#conceptCol <- colorRampPalette(c('#00ff00',bgColor))                  
+						#colorMap <- conceptCol(zeroColorIndex)
+						#conceptCol <- colorRampPalette(c(bgColor,'#ff0000'))
+						#colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1)) 
+						if (symmetry) {
+							tempNames <- names(inputValue)
+							inputValue <- c(-max(abs(as.numeric(inputValue))), -min(abs(as.numeric(inputValue))), as.numeric(inputValue), 
+														min(abs(as.numeric(inputValue))), max(abs(as.numeric(inputValue))))
+							names(inputValue) <- c('negativeMax', 'negativeMin', tempNames, 'positiveMin', 'positiveMax')
+						}
 						zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
 						conceptCol <- colorRampPalette(c('#00ff00',bgColor))                  
 						colorMap <- conceptCol(zeroColorIndex)
@@ -45,6 +56,10 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 			}
 			colorValues <- .colorMatch(as.numeric(inputValue), colorMap=colorMap, matchMode=matchMode, zeroColorIndex=zeroColorIndex)
 			names(colorValues) <- names(inputValue)
+			if (symmetry) {
+				inputValue <- rev(rev(inputValue)[-1:-2])[-1:-2]
+				colorValues <- rev(rev(colorValues)[-1:-2])[-1:-2]
+			}
 			V(g)[nodes[intersect(names(nodes), names(colorValues))]]$color <- colorValues[intersect(names(nodes), names(colorValues))]
    	} else {
 			stop('input values do not match input list or input values are not numeric!!!')
