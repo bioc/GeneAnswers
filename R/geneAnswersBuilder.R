@@ -112,9 +112,9 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 	}
 	x@pvalueT <- pvalueT
 	if (FDR.correction) {
-		fullResult <- fullResult[fullResult[, 'fdr p value'] < pvalueT,]
+		fullResult <- fullResult[fullResult[, 'fdr p value'] <= pvalueT,]
 	} else {
-		fullResult <- fullResult[fullResult[, 'p value'] < pvalueT, 1:(dim(fullResult)[2]-1)]
+		fullResult <- fullResult[fullResult[, 'p value'] <= pvalueT, 1:(dim(fullResult)[2]-1)]
 	}
 	x@enrichmentInfo <- fullResult
 #	x@genesInCategory <- x@genesInCategory[rownames(x@enrichmentInfo)] 

@@ -431,7 +431,7 @@ topGOGenes(x,  orderby='pvalue')
 ## print top KEGG categories sorted by gene numbers and sort genes by fold changes 
 topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
 ## print and save top 10 DOLites information 
-topDOLiteGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
+topDOLITEGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
 @
 
 
@@ -528,7 +528,7 @@ geneAnswersHeatmap(u1)
 
 <<homogene conversation,  echo=T, eval=T>>=  
 ## output top information
-topDOLiteGenes(u, geneSymbol=FALSE, catTerm=FALSE, orderby='pvalue', top=6, topGenes='ALL', genesOrderBy='pValue', file=TRUE)  
+topDOLITEGenes(u, geneSymbol=FALSE, catTerm=FALSE, orderby='pvalue', top=6, topGenes='ALL', genesOrderBy='pValue', file=TRUE)  
 @
 
 \section{Session Info}
