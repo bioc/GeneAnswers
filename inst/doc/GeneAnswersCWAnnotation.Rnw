@@ -1,0 +1,143 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{GeneAnswers web-based visualization module}
+%\VignetteKeywords{Cytoscape web, Network, Network visualization using Cytoscape web}
+%\VignetteDepends{GeneAnswers, annotate, Biobase}
+%\VignettePackage{GeneAnswers}
+
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+
+
+\author{Tian Xia$^\ddagger$\footnote{tianxia@northwestern.edu}, Gilbert Feng$^\ddagger$\footnote{g-feng@northwestern.edu},}
+\begin{document}
+
+\setkeys{Gin}{width=1\textwidth} 
+
+\title{GeneAnswers web-based visualization module }
+\maketitle
+\begin{center}$^\ddagger$Robert H. Lurie Comprehensive Cancer Center \\ Northwestern University, Chicago, IL, 60611, USA
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+The GeneAnswers provides an efficient web-based visualization module based on Cytoscape web application and Flash.  
+The module is able to visualize resulting gene-ontology network produced by GeneAnswers analytic modules in a webpage. 
+The module transforms output network data produced by R into xgmml and javascript format files. Using cytoscape web, it visualizes the network in webpage.
+It also provides a variety of functions for manipulating network and controlling visual style of networks, such as node size, node color, edge width and so on.  
+
+
+\section{Input}
+The followings are input files and arguments of NetworkTransformer:
+
+	a.	Network file. The file is comprised of two columns of node ID. Each row represents an edge between two nodes.
+	
+	b.	Node Attribute file. The file is comprised of several columns. 
+	    The first column is node ID. The first row is all kinds of visual attributes names user want to pass to the program to control visual style of nodes (For available attributes and name format, please refer to Appendix A).
+		The rest of columns are values of the visual attributes for every node. Please see Figure \ref{nodeAttrFileFormat}.
+		
+	c.	Edge Attribute file. The file is similar with node attribute file but the first column is edge ID and it follows format: "edgeID1 () edgeID2".
+	(For available attributes and name format, please refer to Appendix B).
+	
+	d.	Network id. It is unique index suffix in output file name in case user need to create multiple network files. This is argument for network index, please use numeric value.
+	
+	e.	Network background color. This is argument for controlling background color of network, please input color in \#FFFFFF format. 	
+	
+\begin{figure}
+\includegraphics{nodeAttrFileFormat}
+\caption{An example node attribute file. The file shows three node attributes: NODE\_FILL\_COLOR, NODE\_SIZE, NODE\_LABEL\_COLOR, NODE\_BORDER\_COLOR. The file is tab delimiated}
+\label{nodeAttrFileFormat}
+\end{figure}
+	
+
+\section{Call Cytoscape network transformer}
+The Cytoscape network transformer takes advantage of Cytoscape [1] function to transform input files into two formats: one is xgmml network format, the other is javascript formate file. 
+The transformer is provided in NetworkTransformer.jar. User can run it simply in the way in command console:
+
+java -jar networkfile edgeattributefile nodeattributefile networkid networkbackgroundcolor
+
+eg. java -jar network.txt edgeattri.txt nodeattr.txt 1 \#00FFAA
+
+(Installed Java is required to run transformer.)
+\section{Visualize the network file in webpage using Cytoscape web}
+After run the transformer jar, user will get two network files in xgmml and javascript formats. 
+The Javascript file is used by Cytoscape web application to visualize the network in webpage 
+(For details, please refer our template source code and documents on http://cytoscapeweb.cytoscape.org/[2]). 
+The xgmml file is produced in xgmml format, a standrard network xml fortmat. It is widely accepted by many biological applications. 
+Therefore, with the file, user can also analyze the network in the other applications. 
+
+This is a case example: 
+
+http://projects.nubic.northwestern.edu/GeneAnswers/xiatian/KEGGtest.html\_1.html
+
+(The Flash is required and if user run the Cytoscape web locally you may need to change the security setting. 
+
+Please refer to http://cytoscapeweb.cytoscape.org/tutorial for details.)
+
+
+\section{References}
+1. Shannon, P., et al., Cytoscape: a software environment for integrated models of biomolecular interaction networks. Genome Res, 2003. 13(11): p. 2498-504.
+2. Cytoscape web: http://cytoscapeweb.cytoscape.org/
+
+
+\section{Appendix A: Node Attributes}
+
+NODE\_BORDER\_COLOR
+
+NODE\_BORDER\_OPACITY            
+
+NODE\_FILL\_COLOR 
+
+NODE\_FONT\_SIZE 
+
+NODE\_HEIGHT 
+
+NODE\_LABEL\_COLOR 
+
+NODE\_LABEL\_OPACITY 
+
+NODE\_LABEL\_WIDTH 
+ 
+NODE\_LINE\_WIDTH 
+ 
+NODE\_LINETYPE 
+ 
+NODE\_OPACITY 
+ 
+NODE\_SIZE 
+
+NODE\_WIDTH 
+
+\section{Appendix A: Edge Attributes}
+
+EDGE\_COLOR 
+  
+EDGE\_LINE\_WIDTH 
+ 
+EDGE\_LINETYPE 
+  
+EDGE\_OPACITY 
+  
+EDGE\_SRCARROW\_COLOR 
+
+EDGE\_SRCARROW\_OPACITY 
+  
+EDGE\_TGTARROW\_COLOR 
+
+EDGE\_TGTARROW\_OPACITY 
+ 
+%\bibliographystyle{plainnat}
+%\bibliography{GeneAnswers}
+
+
+\end{document}
