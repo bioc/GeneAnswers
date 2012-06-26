@@ -15,7 +15,7 @@ function(catGenesList, centroidSize=NULL, output=c('fixed','interactive')) {
 		}
 	}
 	
-	g <- igraph::graph(edgeMatrix, n = length(nodes), direct = FALSE)
+	g <- igraph0::graph(edgeMatrix, n = length(nodes), direct = FALSE)
 	E(g)$color <- "#9999ff"
 	widthValues <- edgeWidth/length(unique(unlist(catGenesList)))
 	scaledWidth <- scale(widthValues, scale=(max(widthValues)-min(widthValues)))

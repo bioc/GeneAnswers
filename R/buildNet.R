@@ -166,14 +166,14 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	g <- tempG[[1]]
 	if (verbose) {
 		if (directed) {
-			tempIn <- igraph::degree(g, mode='in')
-			tempOut <- igraph::degree(g, mode='out')
+			tempIn <- igraph0::degree(g, mode='in')
+			tempOut <- igraph0::degree(g, mode='out')
 			names(tempOut) <- c(1:length(tempOut))
 			possibleRoots <- tempOut[which(tempIn == min(tempIn))]
 	   		print(paste('For the given directed graph, the node ', paste(as.character(as.numeric(names(which(possibleRoots == max(possibleRoots)))) - 1), collapse=' or '),' might be the root.', sep=''))
 	   	}
 	   	else {
-	   		print(paste('For the given undirected graph, the node ', (which.max(igraph::degree(g)) - 1),' might be the root.', sep=''))
+	   		print(paste('For the given undirected graph, the node ', (which.max(igraph0::degree(g)) - 1),' might be the root.', sep=''))
 	   	}
 	}
 	
@@ -239,15 +239,15 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	} 
 	if (selfClosure) {
 		layerStr <- list(tempG[[2]][names(tempG[[2]]) %in% graphIDs])
-		parentLayer <- igraph::neighborhood(g,0, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
+		parentLayer <- igraph0::neighborhood(g,0, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
 	}
 	else {
 		layerStr <- list(c(0:(temp[1]-1)))
-		parentLayer <- igraph::neighborhood(g,0, nodes=0:(temp[1]-1))
+		parentLayer <- igraph0::neighborhood(g,0, nodes=0:(temp[1]-1))
 	}
 	for (i in 1:layers) {
-		if (selfClosure) totalLayer <- igraph::neighborhood(g,i, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
-		else totalLayer <- igraph::neighborhood(g,i,nodes=0:(temp[1]-1))
+		if (selfClosure) totalLayer <- igraph0::neighborhood(g,i, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
+		else totalLayer <- igraph0::neighborhood(g,i,nodes=0:(temp[1]-1))
 		currentLayer <- exclude(totalLayer, parentLayer)
 		currentLayer <- lapply(currentLayer, function(x, y) {return(x[!(x %in% y)])}, unique(unlist(layerStr)))
 		tempStr <- unique(unlist(currentLayer))
