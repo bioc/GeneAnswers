@@ -79,7 +79,7 @@
 #}
 
 .makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE) {
-	require(igraph)
+	require(igraph0)
 	if (openFile) {
 		edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
 		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
