@@ -1,6 +1,6 @@
 `geneConceptNet` <-
 function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum', output=c('fixed','interactive', 'none'), colorMap=NULL, bgColor='#ffffff', matchMode=c('absolute', 'relative'), zeroColorIndex=NULL, verbose=FALSE, symmetry=TRUE) {
-	require(igraph)
+	require(igraph0)
 	output <- match.arg(output)
 	matchMode <- match.arg(matchMode)
 	
