@@ -1,28 +1,31 @@
 `categoryNet` <- 
 function(catGenesList, centroidSize=NULL, output=c('fixed','interactive')) {
 	output <- match.arg(output)  
-	nodes <- c(0:(length(catGenesList)-1))
-	names(nodes) <- names(catGenesList)
-	edgeMatrix <- c()
+	if ((length(catGenesList) == 1) | is.null(unique(unlist(catGenesList))) | all(is.na(unique(unlist(catGenesList))))) stop('the given category(s) can not be build a network, Aborting ... !')
+	edgesMatrix <- c()
 	edgeWidth <- c()
-	monoNodes <- c(1:length(nodes)) - 1
-	for (i in 1:(length(catGenesList) - 1)) {
-		for (j in (i+1):length(catGenesList)) {
-			if (length(intersect(catGenesList[[i]], catGenesList[[j]])) > 0) {
-				edgeMatrix <- c(edgeMatrix, c((i-1), (j-1)))
-				edgeWidth <- c(edgeWidth, length(intersect(catGenesList[[i]], catGenesList[[j]])))
-			} 
-		}
+	for (i in 1:(length(catGenesList)-1)) {
+		edgesMatrix <- rbind(edgesMatrix, cbind(rep(names(catGenesList)[i], length(names(catGenesList)[-1:-i])), names(catGenesList)[-1:-i])) 
+		edgeWidth <- c(edgeWidth, sapply(lapply(catGenesList[c(-1:-i)], intersect, catGenesList[[i]]), length))
 	}
 	
-	g <- igraph0::graph(edgeMatrix, n = length(nodes), direct = FALSE)
+	# remove the edges and nodes without sharing anything
+	connection <- which(edgeWidth > 0)
+	edgesMatrix <- edgesMatrix[connection,]
+	edgeWidth <- edgeWidth[connection]
+	
+	g <- igraph::graph.edgelist(edgesMatrix, direct = FALSE)
+	connectedNodes <- unique(as.vector(edgesMatrix))
+	if (length(connectedNodes) < length(catGenesList)) {
+		g <- g + vertices(names(catGenesList)[!(names(catGenesList) %in% connectedNodes)])
+	}
 	E(g)$color <- "#9999ff"
-	widthValues <- edgeWidth/length(unique(unlist(catGenesList)))
+	widthValues <- edgeWidth/length(unique(unlist(connectedNodes)))
 	scaledWidth <- scale(widthValues, scale=(max(widthValues)-min(widthValues)))
 	E(g)$width <- as.integer((scaledWidth - min(scaledWidth)) * 11) + 1
 	E(g)$label <- as.character(edgeWidth)
 	V(g)$color <- "#ffd900"
-	V(g)$label <- names(nodes)
+	V(g)$label <- V(g)$name
 	if (is.null(centroidSize)) V(g)$size <- 10
 	else {
 		if (is.numeric(centroidSize) & (length(centroidSize) == length(catGenesList))) V(g)$size <- centroidSize
