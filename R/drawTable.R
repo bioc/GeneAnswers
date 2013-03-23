@@ -1,6 +1,6 @@
 `drawTable` <-
 function(dataMatrix, topCat=10, heatMap=TRUE, matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), methodOfCluster=c('mds', 'sort'), mar=c(1,5,5,8), addRowLabel=TRUE, cex.axis=c(1.1, 0.9), 
-		reverseOfCluster=FALSE, xGridLine=FALSE,  colorBar=TRUE, newWindow=TRUE, endOfColoBar=c('1', 'Minimum of p values'), ...) {
+		reverseOfCluster=FALSE, xGridLine=FALSE,  colorBar=TRUE, newWindow=TRUE, endOfColBar=c('> 0.01', 'Minimum of p values'), heatMapColor=c('#00ff00','#ffffff'), canvasWidth=NULL, canvasHeight=NULL, ...) {
 	if (!is.null(clusterTable))  {
 		clusterTable <- match.arg(clusterTable)
 		methodOfCluster <- match.arg(methodOfCluster)
@@ -48,14 +48,16 @@ function(dataMatrix, topCat=10, heatMap=TRUE, matrixOfHeatmap=NULL, clusterTable
 	}
 
 	if (heatMap) {
-		conceptCol <- colorRampPalette(c('#00ff00','#ffffff'))
+		conceptCol <- colorRampPalette(heatMapColor)
 		colorLevel <- 32
 	}
 	
 	if (is.null(rownames(dataMatrix)) | is.null(colnames(dataMatrix))) stop('rownames and/or colnames of input matrix are missing!')
 	
 	if (newWindow) {
-		x11(width=2*(dim(dataMatrix)[2])*ceiling(max(nchar(as.character(dataMatrix)))/5), height=dim(dataMatrix)[1]/3, title=tableTitle)
+		if (is.null(canvasWidth)) canvasWidth <- 2*(dim(dataMatrix)[2])*ceiling(max(nchar(as.character(dataMatrix)))/5)
+		if (is.null(canvasHeight)) canvasHeight <- dim(dataMatrix)[1]/3
+		x11(width=canvasWidth, height=canvasHeight, title=tableTitle)
 	}
 	oldsetting <- par('mar'=mar)
 	if (is.null(matrixOfHeatmap)) image(x=1:ncol(dataMatrix), y=1:nrow(dataMatrix), -t(matrix(0, nrow=nrow(dataMatrix), ncol=ncol(dataMatrix)) ), col=c('white','white'), axes=F, xlab='', ylab='', )
@@ -84,8 +86,10 @@ function(dataMatrix, topCat=10, heatMap=TRUE, matrixOfHeatmap=NULL, clusterTable
 	if (!is.null(matrixOfHeatmap)) {
 		matrixOfHeatmapIndex <- which(matrixOfHeatmap > 0, arr.ind=TRUE)
 		text(matrixOfHeatmapIndex[,2], (dim(dataMatrix)[1] - matrixOfHeatmapIndex[,1] + 1), label=dataMatrix[matrixOfHeatmapIndex], col='red', cex=3/log(nrow(dataMatrix)), font=4)
-		matrixOfHeatmapIndex <- which(matrixOfHeatmap[c(1:(dim(matrixOfHeatmap)[1]-1)),] == 0, arr.ind=TRUE)
-  		text(matrixOfHeatmapIndex[,2], (dim(dataMatrix)[1] - matrixOfHeatmapIndex[,1] + 1), label=dataMatrix[matrixOfHeatmapIndex], col='black', cex=3/log(nrow(dataMatrix)), font=1)
+		if (topCat <= (nrow(matrixOfHeatmap) - 2)) {
+			matrixOfHeatmapIndex <- which(matrixOfHeatmap[c(1:(dim(matrixOfHeatmap)[1]-1)),] == 0, arr.ind=TRUE)
+	  		text(matrixOfHeatmapIndex[,2], (dim(dataMatrix)[1] - matrixOfHeatmapIndex[,1] + 1), label=dataMatrix[matrixOfHeatmapIndex], col='black', cex=3/log(nrow(dataMatrix)), font=1)
+		}
 	} else {
 		for (i in 1:dim(dataMatrix)[2]) {
 			text(rep(i, length=dim(dataMatrix)[2]), c(2:dim(dataMatrix)[1]), label=rev(dataMatrix[1:(dim(dataMatrix)[1]-1),i]), col='black', cex=3/log(nrow(dataMatrix)))
@@ -94,19 +98,25 @@ function(dataMatrix, topCat=10, heatMap=TRUE, matrixOfHeatmap=NULL, clusterTable
 	text(c(1:dim(dataMatrix)[2]), rep(1, length=dim(dataMatrix)[2]), label= dataMatrix[dim(dataMatrix)[1],], col='black', cex=3/log(nrow(dataMatrix)), font=4)
 	par(oldsetting)
 
-	if(colorBar & heatMap) {
+	if(colorBar & heatMap & !is.null(matrixOfHeatmap)) {
 		x11(width=2.5, title="Color Bar") 
 		oldsetting <- par('mar'=c(3,2,3,10))
 		image(1, c(1:colorLevel), matrix(c(1:colorLevel), 1, colorLevel), col=(rev(conceptCol(colorLevel))), axes=F, xlab='', ylab='')
 		par(las = 1)
 		ruler <- rep('', length=colorLevel)
-		ruler[1] <- endOfColoBar[1]
-		ruler[colorLevel] <- endOfColoBar[2]
-		minPvalue <- min(originalIndexMatrix) 
+		minPvalue <- min(originalIndexMatrix)
+		if (!is.null(endOfColBar)) {
+			ruler[1] <- endOfColBar[1]
+			if (length(endOfColBar) > 1)  ruler[colorLevel] <- endOfColBar[2]
+			else ruler[colorLevel] <- as.character(signif(minPvalue, digits=3))
+		} else {
+			ruler[1] <- "> 0.01"
+			ruler[colorLevel] <- as.character(signif(minPvalue, digits=3))
+		}
 		ruler[colorLevel/2] <- as.character(signif(10^(-(sqrt(-log10(minPvalue))/2)^2), digits=3))
 		ruler[colorLevel/4] <- as.character(signif(10^(-(sqrt(-log10(minPvalue))/4)^2), digits=3))
 		ruler[3 * colorLevel/4] <- as.character(signif(10^(-(3 * sqrt(-log10(minPvalue))/4)^2), digits=3))
-		axis(4, at = c(1:colorLevel), labels = ruler, tick=FALSE) 
+		axis(4, at = c(1:colorLevel), labels = ruler, tick=FALSE, cex.axis=3/log(nrow(dataMatrix))) 
         box()
         las <- 0
 		par(oldsetting)

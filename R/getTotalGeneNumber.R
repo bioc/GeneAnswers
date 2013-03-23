@@ -4,6 +4,7 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 							'org.Ss.eg.db', 'org.Xl.eg.db', 'org.At.tair.db', 'org.Pf.plasmo.db', 'org.Sc.sgd.db')) {
 	categoryType <- toupper(categoryType)
 	annotationLib <- match.arg(annotationLib) 
+	require(annotate)
 	require(annotationLib, character.only=TRUE)
 	libname <- sub('\\.db', '', annotationLib)
 	idType <- switch(sub('org.*[:.:]', '', libname), 'eg'='EG', 'tair'='TAIR', 'ORF')
@@ -22,9 +23,19 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 	}
 	
 	if (categoryType == 'REACTOME.PATH') {
-		return(switch(annotationLib,
-			'org.At.tair.db'=2646, 'org.Ce.eg.db'=1909, 'org.Dm.eg.db'=3567, 'org.EcK12.eg.db'=175, 'org.EcSakai.eg.db'=175, 'org.Gg.eg.db'=3108, 'org.Hs.eg.db'=4416, 'org.Mm.eg.db'=5021,  
-			'org.Pf.plasmo.db'=390, 'org.Rn.eg.db'=4374, 'org.Sc.sgd.db'=714, NULL))
+		species = switch(annotationLib,
+			'org.Hs.eg.db'='Homo sapiens: ',
+			'org.Mm.eg.db'='Mus musculus: ',
+			'org.Rn.eg.db'='Rattus norvegicus: ')
+		if (is.null(species)) stop('The current version does not support the given species. Aborting ...')
+		# calculate the total gene numbers
+		pathways <- toTable(reactomePATHNAME2ID)
+		pathwaysSelectedSpecies <- pathways[grep(species, iconv(pathways$path_name)), ]
+		return(length(unique(unlist(lookUp(as.character(pathwaysSelectedSpecies[,'DB_ID']), 'reactome', 'PATHID2EXTID')))))
+		
+#		return(switch(annotationLib,
+#			'org.At.tair.db'=2646, 'org.Ce.eg.db'=1909, 'org.Dm.eg.db'=3567, 'org.EcK12.eg.db'=175, 'org.EcSakai.eg.db'=175, 'org.Gg.eg.db'=3108, 'org.Hs.eg.db'=8863, 'org.Mm.eg.db'=5039,  
+#			'org.Pf.plasmo.db'=390, 'org.Rn.eg.db'=3809, 'org.Sc.sgd.db'=714, NULL))
 	}
 	
 	return(switch(categoryType,

@@ -108,7 +108,7 @@ setMethod("setGenesInCategory", signature(object="GeneAnswers"), function(object
 setMethod("setEnrichmentInfo", signature(object="GeneAnswers"), function(object, enrichmentInfo)
 {
 	if (is.data.frame(enrichmentInfo) | is.matrix(enrichmentInfo)) {
-		object@genrichmentInfo <- as.data.frame(enrichmentInfo)
+		object@enrichmentInfo <- as.data.frame(enrichmentInfo)
 		return(object)
 	} else {
 		stop('Input is not a list! No value is set')
@@ -119,7 +119,7 @@ setMethod("setEnrichmentInfo", signature(object="GeneAnswers"), function(object,
 setMethod("setGeneExprProfile", signature(object="GeneAnswers"), function(object, geneExprProfile)
 {
 	if (is.data.frame(geneExprProfile) | is.matrix(geneExprProfile)) {
-		object@ggeneExprProfile <- geneExprProfile
+		object@geneExprProfile <- geneExprProfile
 		return(object)
 	} else {
 		stop('Input is not a data frame or matrix! No value is set')

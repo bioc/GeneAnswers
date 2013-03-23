@@ -64,13 +64,13 @@ function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChan
 		}
 	} 
 	
-	extendIA <- function(IA) {
-		if (dim(IA)[2] > 2) tempM <- cbind(IA[,2], IA[,1], IA[,3:dim(IA)[2]])
-		else tempM <- cbind(IA[,2], IA[,1])
-		colnames(tempM) <- colnames(IA)
-		tempM <- rbind(IA, tempM)[,1:2]
-		return(tempM[!(duplicated(tempM)),])
-	}
+	#extendIA <- function(IA) {
+	#	if (dim(IA)[2] > 2) tempM <- cbind(IA[,2], IA[,1], IA[,3:dim(IA)[2]])
+	#	else tempM <- cbind(IA[,2], IA[,1])
+	#	colnames(tempM) <- colnames(IA)
+	#	tempM <- rbind(IA, tempM)[,1:2]
+	#	return(tempM[!(duplicated(tempM)),])
+	#}
 	
 	if (geneLayer > 1) {
 		if (is.null(x@annLib)) {
@@ -82,10 +82,10 @@ function(x, colorValueColumn=NULL, centroidSize=c('pvalue', 'geneNum', 'foldChan
 				'org.Rn.eg.db'=data('RnIALite', package='GeneAnswers'),
 				'org.Dm.eg.db'=data('DmIALite', package='GeneAnswers'))
 			edgeM <- switch(x@annLib,
-				'org.Hs.eg.db'=extendIA(HsIALite),
-		   		'org.Mm.eg.db'=extendIA(MmIALite),
-				'org.Rn.eg.db'=extendIA(RnIALite),
-				'org.Dm.eg.db'=extendIA(DmIALite))
+				'org.Hs.eg.db'=HsIALite[,1:2],
+		   		'org.Mm.eg.db'=MmIALite[,1:2],
+				'org.Rn.eg.db'=RnIALite[,1:2],
+				'org.Dm.eg.db'=DmIALite[,1:2])
 		}
 		IAgenes <- getMultiLayerGraphIDs(unique(unlist(inputList)), idType='GeneInteraction', edgeM=edgeM, layers=(geneLayer-1), filterGraphIDs=x@geneInput[,1], filterLayer=1)
 		IAgenes <- IAgenes[-1:-2]

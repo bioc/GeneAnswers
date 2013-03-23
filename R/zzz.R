@@ -78,47 +78,89 @@
 #	}
 #}
 
-.makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE) {
+#.makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE) {
+#	require(igraph0)
+#	if (openFile) {
+#		edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
+#		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
+#	}
+#	originalNodes <- unique(as.vector(edgesMatrix))
+#	nodes <- rep(0:(length(originalNodes)-1))
+#	names(nodes) <- as.character(originalNodes)
+#	newEdges <- matrix(nodes[as.character(edgesMatrix[,1])])
+#	newEdges <- cbind(newEdges, nodes[as.character(edgesMatrix[,2])])
+#	if (reverse) {
+#		newEdges <- cbind(newEdges[,2], newEdges[,1])
+#	}
+#	g <- graph.edgelist(newEdges, directed=directed) 
+#	return(c(list(g), list(nodes)))
+#}
+
+
+#.list2graph <- function (inputList, verbose=TRUE, directed=FALSE, ...) {
+#	if (!(all(!(is.null(names(inputList)))))) stop('Names of inputlist shoule not contain NULL!')
+#	if (verbose) print('Removing element containing NULL')
+#	inputList <- inputList[which(sapply(inputList, length) != 0)]
+#	column1 <- c()
+#	if (verbose) print('Removing NA')
+#	removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
+#	tempList <- lapply(inputList, removeNA) 
+#	tempList <- tempList[which(sapply(tempList, length) != 0)]
+#	if (length(tempList) > 0) {
+#		for (i in 1:length(tempList)) {
+#			column1 <- c(column1, rep(names(tempList)[i], length(tempList[[i]])))
+#		}
+#		edgeMatrix <- matrix(column1)
+#		edgeMatrix <- cbind(edgeMatrix, unlist(tempList))
+#		edgeMatrix <- edgeMatrix[!(duplicated(edgeMatrix)),]
+#		if (!is.matrix(edgeMatrix)) edgeMatrix <- matrix(edgeMatrix, ncol=2)
+#		return(.makeGraph(edgesMatrix=edgeMatrix, directed=directed, ...))
+#	} else {
+#		stop('list is empty!')
+#	}
+#}
+
+
+# .makeGraph will convert a edgesMatrix to an igraph instance with the following features:
+# the vertices sequece is column order, which means the 1st column elements is followed 
+# by the 2nd column elements as well as the only one for each element will in vertices.
+# Reverse will switch the edge directions for directed edge graph, but the vertices order
+# never changes. If the edgesMatrix has unique rowname for each row, these rownames will
+# be the edge names for the returned igraph instance.
+.makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE, ...) {
 	require(igraph0)
 	if (openFile) {
-		edgesMatrix <- as.matrix(read.table(fileName, sep='\t'))
+		edgesMatrix <- as.matrix(read.table(fileName, ...))
 		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
 	}
-	originalNodes <- unique(as.vector(edgesMatrix))
-	nodes <- rep(0:(length(originalNodes)-1))
-	names(nodes) <- as.character(originalNodes)
-	newEdges <- matrix(nodes[as.character(edgesMatrix[,1])])
-	newEdges <- cbind(newEdges, nodes[as.character(edgesMatrix[,2])])
-	if (reverse) {
-		newEdges <- cbind(newEdges[,2], newEdges[,1])
-	}
-	g <- graph.edgelist(newEdges, directed=directed) 
-	return(c(list(g), list(nodes)))
+	if (is.null(edgesMatrix)) stop('The given edge matrix is NULL, aborting ... !!!')
+   	edgesNames <- rownames(edgesMatrix)
+	
+	# Since the default vertices is ordered by row, the following lines convert the
+	# vertices to column order.
+	#----------------------------------------------------------------------------------
+	tempElements <- unique(as.vector(edgesMatrix))
+	tempMapping <- c(1:length(tempElements))
+	names(tempMapping) <- tempElements
+	tempEdges <- apply(edgesMatrix, 2,function(x,y) return(y[x]), tempMapping)
+	if (reverse) g <- graph.edgelist(cbind(tempEdges[,2], tempEdges[,1]), directed=directed)
+	else g <- graph.edgelist(tempEdges, directed=directed)
+	V(g)$name <- tempElements
+	#----------------------------------------------------------------------------------
+	if (!is.null(edgesNames)) E(g)$name <- edgesNames
+   	return(g)
 }
 
 
 .list2graph <- function (inputList, verbose=TRUE, directed=FALSE, ...) {
-	if (!(all(!(is.null(names(inputList)))))) stop('Names of inputlist shoule not contain NULL!')
-	if (verbose) print('Removing element containing NULL')
-	inputList <- inputList[which(sapply(inputList, length) != 0)]
-	column1 <- c()
-	if (verbose) print('Removing NA')
-	removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
-	tempList <- lapply(inputList, removeNA) 
-	tempList <- tempList[which(sapply(tempList, length) != 0)]
-	if (length(tempList) > 0) {
-		for (i in 1:length(tempList)) {
-			column1 <- c(column1, rep(names(tempList)[i], length(tempList[[i]])))
-		}
-		edgeMatrix <- matrix(column1)
-		edgeMatrix <- cbind(edgeMatrix, unlist(tempList))
-		edgeMatrix <- edgeMatrix[!(duplicated(edgeMatrix)),]
-		if (!is.matrix(edgeMatrix)) edgeMatrix <- matrix(edgeMatrix, ncol=2)
-		return(.makeGraph(edgesMatrix=edgeMatrix, directed=directed, ...))
+	edgesMatrix <- .list2matrix(inputList, verbose=verbose, removeNA=TRUE)
+	if (is.null(edgesMatrix)) {
+		return(NULL)
 	} else {
-		stop('list is empty!')
+		return(.makeGraph(edgesMatrix=edgesMatrix, directed=directed, ...)) 
 	}
 }
+
 
 .drawTable <- function(dataMatrix, mar=c(1,1,5,8), addRowLabel=TRUE, cex.axis=c(1.1, 0.9)) {
 	if (is.null(rownames(dataMatrix)) | is.null(colnames(dataMatrix))) stop('rownames and/or colnames of input matrix are missing!')
@@ -404,9 +446,12 @@
     # parse resulting XML into a tree to be returned to user
     result.xml <- try(xmlTreeParse(file=query, isURL=TRUE))
     #entrezIDs <- as.numeric(xmlSApply(xmlRoot(result.xml)[	["IdList"]], xmlValue))
-	entrezIDs <- xmlSApply(xmlRoot(result.xml)[["IdList"]], xmlValue)
-    names(entrezIDs) <- rep(term, length(entrezIDs))
-    return(entrezIDs)
+	if (class(result.xml[1]) == "try-error") return (NULL)
+	else {
+		entrezIDs <- xmlSApply(xmlRoot(result.xml)[["IdList"]], xmlValue)
+	    names(entrezIDs) <- rep(term, length(entrezIDs))
+	    return(entrezIDs)
+	}
 }
 
 .getGOTerms <- function(GOIDs) {
@@ -452,12 +497,16 @@
 	return(outColor) 
 }
 
-.getSingleGraphIDs <- function(graphID, edgeM, filterGraphIDs=NULL, UP=TRUE) {
+.getSingleGraphIDs <- function(graphID, edgeM, filterGraphIDs=NULL, directed=TRUE, UP=TRUE) {
 	if (!is.character(graphID)) graphID <- as.character(graphID)
 	options(warn=-1)
-	if (!is.na(as.character(graphID))) {
-		if (UP) temp <- as.character(edgeM[as.character(edgeM[,1]) %in% graphID,2])
-		else temp <- as.character(edgeM[as.character(edgeM[,2]) %in% graphID,1])
+	if (all(!is.na(as.character(graphID)))) {
+		if (directed) {
+			if (UP) temp <- as.character(edgeM[as.character(edgeM[,1]) %in% graphID,2])
+			else temp <- as.character(edgeM[as.character(edgeM[,2]) %in% graphID,1])
+		} else {
+			temp <- c(as.character(edgeM[as.character(edgeM[,1]) %in% graphID,2]), as.character(edgeM[as.character(edgeM[,2]) %in% graphID,1]))
+		}
 		if (!is.null(filterGraphIDs)) temp <- intersect(temp, as.character(filterGraphIDs))
 		options(warn=0)
 		if (length(temp) > 0) return(unique(temp[!(temp %in% NA)]))
@@ -465,6 +514,7 @@
 	} else {
 		options(warn=0)
 		stop('Only Entrez Gene or DOLITE IDs are supported!')
+		return(NULL)
 	}
 }
 
@@ -499,54 +549,81 @@
 	}
 }
 
+
 .list2matrix <- function(inputList, verbose=TRUE, removeNA=TRUE) {
-	if (!(all(!(is.null(names(inputList)))))) stop('Names of inputlist shoule not contain NULL!')
-	if (verbose) print('Removing element containing NULL')
-	inputList <- inputList[which(sapply(inputList, length) != 0)]
-	column1 <- c()
-	tempList <- inputList
-	if (verbose & removeNA) {
-		print('Removing NA')
-		removeNA <- function(x) { x <- x[!(x %in% NA)]; return(as.character(unique(x)))}
-		tempList <- lapply(inputList, removeNA) 
-		tempList <- tempList[which(sapply(tempList, length) != 0)]
+	if (!is.list(inputList)) stop('The input is not a list. Aborting ...')
+	if (!(all(!(is.null(names(inputList)))))) {
+		print('Names of the inputlist shoule not contain NULL!')
+		return(NULL)
 	}
-	if (length(tempList) > 0) {
-		for (i in 1:length(tempList)) {
-			column1 <- c(column1, rep(names(tempList)[i], length(tempList[[i]])))
+	if (verbose) print('Removing NULL element ...')
+	inputList <- inputList[which(sapply(inputList, length) != 0)]
+	
+	if (removeNA) {
+		if (verbose) print('Removing NA ..., including NA in names of the input list')
+		inputList <- inputList[!is.na(names(inputList))]
+		inputList <- lapply(inputList, function(x) return(x[!is.na(x)]))
+		inputList <- inputList[which(sapply(inputList, length) != 0)]
+	}
+
+	if (length(inputList) > 0) {
+		if (verbose) print('Converting to a matrix ...')
+		inputListLength <- sapply(inputList, length)
+		outputMatrix <- matrix(unlist(lapply(names(inputList), function(x, y) return(rep(x,y[x])), inputListLength)))
+		names(inputList) <- NULL
+		temp <- unlist(inputList)
+		outputMatrix <- cbind(outputMatrix, temp)
+		if (is.null(names(temp))) {
+			rownames(outputMatrix) <- NULL
+			outputMatrix <- outputMatrix[!(duplicated(outputMatrix)),]
+		} else {
+			rownames(outputMatrix) <- names(temp)
+			outputMatrix <- outputMatrix[!(duplicated(cbind(outputMatrix, rownames(outputMatrix)))),]
 		}
-		edgeMatrix <- matrix(column1)
-		edgeMatrix <- cbind(edgeMatrix, unlist(tempList))
-		edgeMatrix <- edgeMatrix[!(duplicated(edgeMatrix)),]
-		if (!is.matrix(edgeMatrix)) edgeMatrix <- matrix(edgeMatrix, ncol=2)
-		rownames(edgeMatrix) <- NULL
-		return(edgeMatrix)
+		if (!is.matrix(outputMatrix)) return (t(matrix(outputMatrix)))
+		else return(outputMatrix)
 	} else {
-		print('list is empty!')
+		print('The input list, probably after removing NA(s), is empty!')
 		return(NULL)
 	}
 }
 
 
 .matrix2list <- function(inputMatrix, verbose=TRUE, removeNA=TRUE) {
-	if (is.null(inputMatrix)) stop('matrix is NULL!')
-	if (verbose & removeNA) {
-		print('Removing NA')
-		inputMatrix <- inputMatrix[!(is.na(inputMatrix[,1]) | is.na(inputMatrix[,2])) ,]
-		if (!is.matrix(inputMatrix)) inputMatrix <- matrix(inputMatrix, ncol=2)
-	}
-	if (dim(inputMatrix)[1] > 0) {
-		if (!is.matrix(inputMatrix)) {
-			inputMatrix <- matrix(inputMatrix, ncol=2)
+	if (!is.matrix(inputMatrix)) stop('The input is not a matrix. Aborting ...')
+	naList <- NULL
+	if (removeNA) {
+		if (verbose) print('Removing NA ...')
+		nonNAIndex <- which(!(is.na(inputMatrix[,1]) | is.na(inputMatrix[,2])))
+		if (length(nonNAIndex) == 0) return(NULL)
+		if (length(nonNAIndex) == 1) {
+			if (verbose) print('Converting to a list ...')
+			outputList <- list(inputMatrix[nonNAIndex,2])
+			names(outputList) <- inputMatrix[nonNAIndex,1]
+			names(outputList[[1]]) <- rownames(inputMatrix)[nonNAIndex]
+			return(outputList)
+		} else {
+			inputMatrix <- inputMatrix[nonNAIndex,]
 		}
-		newTempList <- as.list(inputMatrix[,2])
-		names(newTempList) <- inputMatrix[,1]
-		tempNames <- unique(inputMatrix[,1])
-		names(tempNames) <- tempNames
-		outputList <- lapply(tempNames, function(x, y) {return(unique(c(unlist(y[names(y) %in% x]))))}, newTempList)
-		return(outputList)
 	} else {
-		print('matrix is empty!')
+		naIndex <- which(is.na(inputMatrix[,1]))
+		if (length(naIndex) > 0) {
+			naList <- list(inputMatrix[naIndex, 2])
+			names(naList) <- NA
+			if (length(naIndex) == 1) names(naList[[1]]) <- rownames(inputMatrix)[naIndex]
+		}
+	}
+	
+	if (dim(inputMatrix)[1] > 0) {
+		if (verbose) print('Converting to a list ...')
+		outputList <- tapply(inputMatrix[,2], inputMatrix[,1], function(i)i, simplify=FALSE)
+		listNames <- names(outputList)
+		dim(outputList) <- NULL
+		names(outputList) <- listNames
+		if (!is.null(naList)) outputList <- c(outputList, naList)
+		return(outputList) 
+	} else {
+		if (verbose) print('The input matrix, probably after removing NA(s), is empty!')                     
 		return(NULL) 
 	}
 }
@@ -646,7 +723,7 @@
 	}
 	if (IDCols == 0) {
 		hyperLinkPrefix <- switch(catType,
-			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'DOLITE'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'REACTOME.PATH'=paste('<a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
@@ -655,7 +732,7 @@
 			'Unknown'=rowIDs[1:linkRowIDs])
 	} else {
 		hyperLinkPrefix <- switch(catType,
-			'GO'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=', rowIDs[1:linkRowIDs], '>',  rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'GO'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', rowIDs[1:linkRowIDs], '>',  rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'KEGG'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'DOLITE'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'REACTOME.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', rowIDs[1:linkRowIDs], '</a>',sep=''),
@@ -883,4 +960,27 @@
 			stop('Necessary java program is missing, Aborting ...')
 		}
 	} else stop('Failure to create ', cytoDir, ' subdirectory! Aborting ...')
+}
+
+#remove undirected graph duplicated edgelist (names of edgelist are left-side nodes, and elements are right-side nodes). The original edge names will be lost, so the original edge names should be handled before run this function. 
+.removeDuplicatedEdge <- function(inputEdgeList) {
+   	removeDuplicates <- function(x,y) {
+		searchName <- unique(names(x))
+		searchIndex <- which(x < searchName)
+		otherIndex <- which(x >= searchName) 
+		if (length(searchIndex) != 0) {
+		    temp <- x[searchIndex]
+			checkDuplicates <- function(p, q, r) {
+				if (r %in% q[[p]]) return(FALSE)
+				else return(TRUE)
+			}
+			return(x[sort(c(searchIndex[sapply(temp, checkDuplicates, y, searchName)], otherIndex))])
+		} else return(x)
+	}
+	tempMatrix <- .list2matrix(inputEdgeList, verbose=FALSE)
+	rownames(tempMatrix) <- tempMatrix[,1]
+	tempList <- .matrix2list(tempMatrix, verbose=FALSE)
+	tempList <- lapply(tempList[sort(names(tempList))], removeDuplicates, tempList)[names(inputEdgeList)]
+	result <- tempList[which(sapply(tempList, length) > 0)]
+	return(lapply(result, function(x) {names(x) <- NULL; return(x)}))
 }

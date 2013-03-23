@@ -4,7 +4,7 @@ function(x, catTerm=TRUE, keepID=TRUE, geneSymbol=TRUE, ...) {
 	if (catTerm) {
 		if (keepID) {
 			rownames(x@enrichmentInfo) <- paste(unlist(getcaBIOPATHTerms(rownames(x@enrichmentInfo))), '::', rownames(x@enrichmentInfo), sep='') 
-			names(x@genesInCatCABIOegory) <- paste(unlist(getcaBIOPATHTerms(names(x@genesInCategory))), '::', names(x@genesInCategory), sep='')
+			names(x@genesInCategory) <- paste(unlist(getcaBIOPATHTerms(names(x@genesInCategory))), '::', names(x@genesInCategory), sep='')
 		} else {
 			rownames(x@enrichmentInfo) <- getcaBIOPATHTerms(rownames(x@enrichmentInfo))
 			names(x@genesInCategory) <- getcaBIOPATHTerms(names(x@genesInCategory))

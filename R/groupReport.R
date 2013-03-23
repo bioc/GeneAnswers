@@ -222,7 +222,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 					##else  tempConceptFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
 					tempCrossTableFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '_CrossTable.png', sep='')
 					if (interactive) {
-						graphInfo <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor)
+						graphInfo <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
 						#else graphInfo <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn, output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
 						#oldColNames <- colnames(graphInfo[[2]])
 						graphInfo[[2]] <- cbind(graphInfo[[2]], rep('#666666', dim(graphInfo[[2]])[1]), graphInfo[[2]][, 'NODE_FILL_COLOR'])
@@ -244,7 +244,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 						tempConceptFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '.png', sep='')
 						setwd(paste(fileName, '.files', sep=''))
 						png(filename=tempConceptFileName, width=1000, height=1000, bg=bgColor)
-						geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor)
+						geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
 					   	#else geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn, output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
 		   				dev.off()
 						png(filename=tempCrossTableFileName, width=1000, height=1500, bg=bgColor)

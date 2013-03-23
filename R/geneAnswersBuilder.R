@@ -46,7 +46,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'GO.MF'=getGOList(geneIDs, annotationLib, GOCat='MF', ...),
 					'DOLITE'=DOLite,
 					'KEGG'= getPATHList(geneIDs, annotationLib),
-					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs, annotationLib),
+					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs),
 					'CABIO.PATH'=getcaBIOPATHList(geneIDs))
 					x@annLib <- annotationLib
 					x@categoryType <- toupper(categoryType)
