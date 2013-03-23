@@ -1,7 +1,7 @@
 `buildNet` <- 
 function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0, 
  					annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), output=c('interactive', 'fixed'), netMode=c('layer', 'connection'),
-					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE, steric=FALSE, 
+					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE,  
 					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...) {
 	netMode <- match.arg(netMode)
 	annLib <- match.arg(annLib)
@@ -37,6 +37,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 	}
 	graphIDs <- unique(as.character(unlist(graphIDs)))
+	if (is.null(graphIDs)) stop('There is no given nodes, Aborting ...!')
 	if (NA %in% graphIDs) {
 		print('Warning: IDs contain NA! Removing NA from IDs')
 		root <- graphIDs[!(graphIDs %in% NA)]
@@ -59,13 +60,13 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		ecolor <- c('#6600ff', rep('#ff9900', (layers-1)))
 	}
 	
-	extendIA <- function(IA) {
-		if (dim(IA)[2] > 2) tempM <- cbind(IA[,2], IA[,1], IA[,3:dim(IA)[2]])
-		else tempM <- cbind(IA[,2], IA[,1])
-		colnames(tempM) <- colnames(IA)
-		tempM <- rbind(IA, tempM)[,1:2]
-		return(tempM[!(duplicated(tempM)),])
-	}
+	#extendIA <- function(IA) {
+	#	if (dim(IA)[2] > 2) tempM <- cbind(IA[,2], IA[,1], IA[,3:dim(IA)[2]])
+	#	else tempM <- cbind(IA[,2], IA[,1])
+	#	colnames(tempM) <- colnames(IA)
+	#	tempM <- rbind(IA, tempM)[,1:2]
+	#	return(tempM[!(duplicated(tempM)),])
+	#}
 	if (!all(idType %in% c('GO', 'GO.BP', 'GO.CC', 'GO.MF'))) {
 		if (idType == 'GeneInteraction') {
 			if (annLib == 'customized') {
@@ -82,10 +83,10 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 					'org.Rn.eg.db'=data('RnIALite', package='GeneAnswers'),
 					'org.Dm.eg.db'=data('DmIALite', package='GeneAnswers'))
 				edgeM <- switch(annLib,
-					'org.Hs.eg.db'=extendIA(HsIALite),
-			   		'org.Mm.eg.db'=extendIA(MmIALite),
-					'org.Rn.eg.db'=extendIA(RnIALite),
-					'org.Dm.eg.db'=extendIA(DmIALite))
+					'org.Hs.eg.db'=HsIALite[,1:2],
+			   		'org.Mm.eg.db'=MmIALite[,1:2],
+					'org.Rn.eg.db'=RnIALite[,1:2],
+					'org.Dm.eg.db'=DmIALite[,1:2])
 			}
 		} else {
 			if (is.null(edgeM)) stop("Customized database is not available!")
@@ -114,12 +115,16 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 				inputList <- upInputList
 				UP=TRUE
 			} else {
+				#reset inputlist 
 				if (!is.null(upInputList[[2]])) {
 					downInputList <- inputList
 					inputList[[1]] <- TRUE
 					inputList[[2]] <- c(upInputList[[2]], downInputList[[2]])
 					tempUpM <- .list2matrix(upInputList[-1:-2], verbose=FALSE)
-					inputList <- c(inputList[1:2], .matrix2list(cbind(tempUpM[,2], tempUpM[,1]),  verbose=FALSE), downInputList[-1:-2])
+					tempDownM <- .list2matrix(downInputList[-1:-2], verbose=FALSE)
+					tempAllM <- rbind(cbind(tempUpM[,2], tempUpM[,1]), tempDownM)
+					tempAllM <- tempAllM[!duplicated(tempAllM),]
+					inputList <- c(inputList[1:2], .matrix2list(tempAllM,  verbose=FALSE))
 				}
 			}
 		}
@@ -131,7 +136,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 
 	selfClosure <- inputList[[1]]
 	inputList <- inputList[2:length(inputList)] 
-	returnResult <- inputList[2:length(inputList)]
+	#returnResult <- inputList[2:length(inputList)]
     if (is.null(unlist(inputList[2:length(inputList)]))) {
 		print('All nodes are not connected! Aborting ...')
 		return(NULL)
@@ -161,19 +166,19 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 	} 
 	
-	
-	tempG <- .list2graph(inputList[2:length(inputList)], directed=directed, verbose=verbose, reverse=UP)
-	g <- tempG[[1]]
+	#inputList[2:length(inputList)] <- lapply(inputList[2:length(inputList)], function(x) {names(x) <- NULL; return(x)})
+	g <- .list2graph(inputList[2:length(inputList)], directed=directed, verbose=verbose, reverse=UP)
+	#g <- tempG
 	if (verbose) {
 		if (directed) {
-			tempIn <- igraph0::degree(g, mode='in')
-			tempOut <- igraph0::degree(g, mode='out')
+			tempIn <- igraph::degree(g, mode='in')
+			tempOut <- igraph::degree(g, mode='out')
 			names(tempOut) <- c(1:length(tempOut))
 			possibleRoots <- tempOut[which(tempIn == min(tempIn))]
-	   		print(paste('For the given directed graph, the node ', paste(as.character(as.numeric(names(which(possibleRoots == max(possibleRoots)))) - 1), collapse=' or '),' might be the root.', sep=''))
+	   		print(paste('For the given directed graph, the node ', paste(as.character(as.numeric(names(which(possibleRoots == max(possibleRoots))))), collapse=' or '),' might be the root.', sep=''))
 	   	}
 	   	else {
-	   		print(paste('For the given undirected graph, the node ', (which.max(igraph0::degree(g)) - 1),' might be the root.', sep=''))
+	   		print(paste('For the given undirected graph, the node ', (which.max(igraph::degree(g))),' might be the root.', sep=''))
 	   	}
 	}
 	
@@ -181,8 +186,8 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	if (filter){
 		if (showModeForNodes == 'nodes') {
 			numberOfCol = dim(filterGraphIDs)[2]
-			filterGraphIDs <- matrix(filterGraphIDs[filterGraphIDs[,1] %in% unique(c(names(tempG[[2]]), graphIDs)),], ncol=numberOfCol)
-	        tempFGraphIDs <- fGraphIDs[rownames(fGraphIDs) %in% unique(c(names(tempG[[2]]), graphIDs)),]
+			filterGraphIDs <- matrix(filterGraphIDs[filterGraphIDs[,1] %in% unique(c(V(g)$name, graphIDs)),], ncol=numberOfCol)
+	        tempFGraphIDs <- fGraphIDs[rownames(fGraphIDs) %in% unique(c(V(g)$name, graphIDs)),]
 			fGraphIDs <- matrix(tempFGraphIDs, ncol=1)
 			rownames(fGraphIDs) <- names(tempFGraphIDs)
 		}
@@ -227,6 +232,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	else E(g)$color <- '#ff9900'
 	E(g)$width <- 3
 	V(g)$color <- "#ffffff"
+	#V(g)$size <- 5
 	
 	exclude <- function(x, y) {
 		result <- list()
@@ -238,16 +244,16 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 	} 
 	if (selfClosure) {
-		layerStr <- list(tempG[[2]][names(tempG[[2]]) %in% graphIDs])
-		parentLayer <- igraph0::neighborhood(g,0, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
+		layerStr <- list(which(V(g)$name %in% graphIDs))
+		parentLayer <- igraph::neighborhood(g,0, nodes=which(V(g)$name %in% graphIDs))
 	}
 	else {
-		layerStr <- list(c(0:(temp[1]-1)))
-		parentLayer <- igraph0::neighborhood(g,0, nodes=0:(temp[1]-1))
+		layerStr <- list(c(1:temp[1]))
+		parentLayer <- igraph::neighborhood(g,0, nodes=1:temp[1])
 	}
 	for (i in 1:layers) {
-		if (selfClosure) totalLayer <- igraph0::neighborhood(g,i, nodes=tempG[[2]][names(tempG[[2]]) %in% graphIDs])
-		else totalLayer <- igraph0::neighborhood(g,i,nodes=0:(temp[1]-1))
+		if (selfClosure) totalLayer <- igraph::neighborhood(g,i, nodes=which(V(g)$name %in% graphIDs))
+		else totalLayer <- igraph::neighborhood(g,i,nodes=1:temp[1])
 		currentLayer <- exclude(totalLayer, parentLayer)
 		currentLayer <- lapply(currentLayer, function(x, y) {return(x[!(x %in% y)])}, unique(unlist(layerStr)))
 		tempStr <- unique(unlist(currentLayer))
@@ -260,58 +266,56 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 	}
 	
     layers <- min(layers, i)
-	V(g)[tempG[[2]][names(tempG[[2]]) %in% graphIDs]]$size <- vsize[1]
+	V(g)[V(g)$name %in% graphIDs]$size <- vsize[1]
 	if (layers > 0) {
 		for (i in 1:layers) {
 			E(g)[V(g)[layerStr[[i]]] %--% V(g)[layerStr[[i+1]]]]$color <- ecolor[i]
 			V(g)[layerStr[[i+1]]]$size <- vsize[i+1]
 		}
 	}
-	if (filter) V(g)[tempG[[2]][names(tempG[[2]]) %in% rownames(fGraphIDs)]]$color <- fGraphIDs[names(tempG[[2]][names(tempG[[2]]) %in% rownames(fGraphIDs)]),1]
 
-	if (label) verticesLabel <- names(tempG[[2]])
+	if (filter) V(g)[which(V(g)$name %in% rownames(fGraphIDs))]$color <- fGraphIDs[V(g)[which(V(g)$name %in% rownames(fGraphIDs))]$name,1]
+
+	if (label) verticesLabel <- V(g)$name
 	else {
-		verticesLabel <- rep('', length(tempG[[2]]))
-		verticesLabel[(tempG[[2]][names(tempG[[2]]) %in% graphIDs] + 1)] <- names(tempG[[2]])[(tempG[[2]][names(tempG[[2]]) %in% graphIDs] + 1)]
+		verticesLabel <- rep('', length(V(g)$name))
+		verticesLabel[which(V(g)$name %in% graphIDs)] <- V(g)$name[which(V(g)$name %in% graphIDs)]
 	}	
 	
-	E(g)[tempG[[2]][names(tempG[[2]]) %in% graphIDs] %--% tempG[[2]][names(tempG[[2]]) %in% graphIDs]]$color <- ecolor[1]
+	E(g)[(get.edges(g,E(g))[,1] %in% which(V(g)$name %in% graphIDs)) & (get.edges(g,E(g))[,2] %in% which(V(g)$name %in% graphIDs))]$color <- ecolor[1]
 	
-	if (!all(graphIDs %in% names(tempG[[2]]))) {
-		singleNodes <- graphIDs[!(graphIDs %in% names(tempG[[2]]))]
-		g <- add.vertices(g, length(singleNodes))
-		tempNodes <- length(tempG[[2]]) + c(1:length(singleNodes)) - 1
-		names(tempNodes) <- singleNodes
-		tempG[[2]] <- c(tempG[[2]], tempNodes)
-		V(g)[tempNodes]$size <- vsize[1]
-		V(g)[tempNodes]$color <- '#ffffff'
-		if (filter) V(g)[tempNodes[rownames(fGraphIDs)[rownames(fGraphIDs) %in% singleNodes]]]$color <- fGraphIDs[rownames(fGraphIDs) %in% singleNodes,1]
+	if (!all(graphIDs %in% V(g)$name)) {
+		singleNodes <- graphIDs[!(graphIDs %in% V(g)$name)]
+		g <- g + vertices(singleNodes)
+  		V(g)[V(g)$name %in% singleNodes]$size <- vsize[1]
+		V(g)[V(g)$name %in% singleNodes]$color <- '#ffffff'
+		if (filter) V(g)[which(V(g)$name %in% rownames(fGraphIDs))]$color <- fGraphIDs[V(g)[which(V(g)$name %in% rownames(fGraphIDs))]$name,1]
 		verticesLabel <- c(verticesLabel, singleNodes)
 	}
 	
 	if (filter) {
 		if (dim(fGraphIDs)[2] == 2) {
-			fNodes <- intersect(names(tempG[[2]]), rownames(fGraphIDs))
-			V(g)[tempG[[2]][fNodes]]$size <- 5*sqrt(abs(as.numeric(fGraphIDs[fNodes, 2])))
+			fNodes <- intersect(V(g)$name, rownames(fGraphIDs))
+			V(g)[fNodes]$size <- 5*sqrt(abs(as.numeric(fGraphIDs[fNodes, 2])))
 		}
 	}
 	
 	nodeFrameColor <- rep('black', length(V(g)))
-	nodeFrameColor[tempG[[2]][names(tempG[[2]]) %in% graphIDs]+1] <- 'yellow'
+	nodeFrameColor[which(V(g)$name %in% graphIDs)] <- 'yellow'
 	V(g)$label = verticesLabel
 	V(g)$label.color = labelColor
 	V(g)$frame.color = nodeFrameColor 
 	if (output == 'interactive') {
-		tkplot(g, vertex.label.font=2, vertex.label=verticesLabel, vertex.label.color=labelColor, vertex.label.cex=labelSize, vertex.frame.color=nodeFrameColor, edge.loop.angle=-90, layout=layout.fruchterman.reingold.grid, canvas.width=800, canvas.height=600)
+		tkplot(g, vertex.label.font=2, vertex.label=verticesLabel, vertex.label.color=labelColor, vertex.label.cex=labelSize, vertex.frame.color=nodeFrameColor, edge.loop.angle=-90, layout=layout.sugiyama(g)$layout, canvas.width=800, canvas.height=600)
 	} else {
-		plot(g, vertex.label.font=2, vertex.label=verticesLabel, vertex.label.color=labelColor, vertex.label.cex=labelSize, vertex.frame.color=nodeFrameColor, edge.loop.angle=-90, layout=layout.fruchterman.reingold.grid)
+		plot(g, vertex.label.font=2, vertex.label=verticesLabel, vertex.label.color=labelColor, vertex.label.cex=labelSize, vertex.frame.color=nodeFrameColor, edge.loop.angle=-90, layout=layout.sugiyama(g)$layout)
 	}
 		
-	if (steric) {
-		require(rgl)
-		bg3d('#555555')
-		coordinateM <- layout.fruchterman.reingold(g, dim=3)
-		rglplot(g, vertex.label.font=2, vertex.size=(V(g)$size)/2, vertex.color=V(g)$color, vertex.label=verticesLabel, vertex.label.color='#aaaaaa', vertex.label.cex=4, vertex.label.dist=0.25, edge.width=1, layout=coordinateM)
-	}
-	return(invisible(c('igraph'=list(g), 'verticesLabel'=list(verticesLabel), 'labelColor'=list(labelColor), 'labelSize'=list(labelSize), 'nodeFrameColor'=list(nodeFrameColor), returnResult)))
+#	if (steric) {
+#		require(rgl)
+#		bg3d('#555555')
+#		coordinateM <- layout.fruchterman.reingold(g, dim=3)
+#		rglplot(g, vertex.label.font=2, vertex.size=(V(g)$size)/2, vertex.color=V(g)$color, vertex.label=verticesLabel, vertex.label.color='#aaaaaa', vertex.label.cex=4, vertex.label.dist=0.25, edge.width=1, layout=coordinateM)
+#	}
+	return(invisible(g))
 }
