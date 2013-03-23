@@ -35,12 +35,12 @@
 					filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "BPCHILDREN"))))
 					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
 				}
-				if ((GOCategory == 'ALL') | (GOCategory == 'CC')) filterGOIDs <- {
-					unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "CCCHILDREN"))))
+				if ((GOCategory == 'ALL') | (GOCategory == 'CC')) {
+					filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "CCCHILDREN"))))
 					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
 				}
-				if ((GOCategory == 'ALL') | (GOCategory == 'MF')) filterGOIDs <- {
-					unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "MFCHILDREN"))))
+				if ((GOCategory == 'ALL') | (GOCategory == 'MF')) {
+					filterGOIDs <- unique(c(filterGOIDs, unlist(lookUp(filterGOIDs, "GO", "MFCHILDREN"))))
 					filterGOIDs <- unique(filterGOIDs[!(filterGOIDs %in% NA)])
 				}
 			}
@@ -128,7 +128,7 @@
 # never changes. If the edgesMatrix has unique rowname for each row, these rownames will
 # be the edge names for the returned igraph instance.
 .makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE, ...) {
-	require(igraph0)
+	require(igraph)
 	if (openFile) {
 		edgesMatrix <- as.matrix(read.table(fileName, ...))
 		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
