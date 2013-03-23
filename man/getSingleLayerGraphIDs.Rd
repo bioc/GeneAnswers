@@ -6,7 +6,7 @@
   A function to retrieve direct interacted nodes for given IDs and interaction Matrix with specified filtered IDs.
 }
 \usage{
-getSingleLayerGraphIDs(graphIDs, edgeM, remove=TRUE, filterGraphIDs=NULL, UP=TRUE)
+getSingleLayerGraphIDs(graphIDs, edgeM, remove=TRUE, filterGraphIDs=NULL, directed=FALSE, UP=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,6 +14,7 @@ getSingleLayerGraphIDs(graphIDs, edgeM, remove=TRUE, filterGraphIDs=NULL, UP=TRU
   \item{edgeM}{ a 2-column Matrix representing connectionship  }
   \item{remove}{ logic, remove the non-connection graphIDs in the return values}
   \item{filterGraphIDs}{ a chacater vector for filtered IDs}
+  \item{directed}{ logic, the network is a directed or not}
   \item{UP}{ logic, determine search Parents or Children. Only valid for directed relation.}
 }
 \details{

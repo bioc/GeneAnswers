@@ -6,11 +6,11 @@
   Function to map given REACTOME PATH_DB IDs to Pathway names.
 }
 \usage{
-getREACTOMEPATHTerms(pathDBIDs, allowNA=TRUE)
+getREACTOMEPATHTerms(pathIDs, allowNA=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{pathDBIDs}{ a REACTOME PATH_DB IDs vector }
+  \item{pathIDs}{ a REACTOME PATHWAY IDs vector }
   \item{allowNA}{ logic, to determine whether change unrecognized term names or not}
 }
 \value{

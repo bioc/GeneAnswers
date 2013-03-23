@@ -8,7 +8,7 @@
 \usage{
 buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 'Customized'), edgeM=NULL, layers=1, filterGraphIDs=NULL, filterLayer=0,
  					annLib=c('org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'org.Dm.eg.db', 'customized'), output=c('interactive', 'fixed'), netMode=c('layer', 'connection'),
-					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE, steric=FALSE, 
+					vertexSize = NULL, edgeColor = NULL, colorMap=NULL, zeroColorIndex=NULL, matchMode=c('absolute', 'relative'),  label=TRUE,  
 					directed=FALSE, direction=c('up', 'down', 'both'), showModeForNodes=c('nodes', 'filters'), verbose=TRUE, readable=TRUE, labelSize=1, labelColor='#666666',  ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -28,7 +28,6 @@ buildNet(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
   \item{zeroColorIndex}{ index of color corresponding to zero, see details}
   \item{matchMode}{ the mode of values matching colors, valid only if inputValue is not NULL, see details}
   \item{label}{ logic, specify whether put labels for non-given nodes in the network. }
-  \item{steric}{ logic, specify whether show 3D network. Because of igraph limited support for 3D, this function is just for fun!}
   \item{directed}{ logic, the network is a directed or not}
   \item{direction}{ search direction, it could be 'up', 'down' and 'both'. Valid for directed network only.}
   \item{showModeForNodes}{ type, the show mode for nodes on the network, only valid if filterGraphIDs is not NULL, see details}
@@ -69,7 +68,7 @@ example(GeneAnswers)
 filterM <- cbind(rownames(getEnrichmentInfo(x)), -log2(getEnrichmentInfo(x)[,7]), getEnrichmentInfo(x)[,1])
 
 \dontrun{buildNet(rownames(getEnrichmentInfo(x))[6:9], layers=5, filterGraphIDs=filterM, filterLayer=3, directed=TRUE, output='fixed')}
-\dontrun{buildNet(rownames(getEnrichmentInfo(x))[242:244], layers=2, filterGraphIDs=filterM, filterLayer=1, directed=TRUE, output='fixed', netMode='connection', direction='down')}
+\dontrun{buildNet(rownames(getEnrichmentInfo(x))[200:204], layers=2, filterGraphIDs=filterM, filterLayer=1, directed=TRUE, output='fixed', netMode='connection', direction='down')}
 \dontrun{buildNet(rownames(getEnrichmentInfo(x))[6:9], layers=3, filterGraphIDs=filterM[,1:2], filterLayer=3, directed=TRUE, output='fixed', netMode='connection')}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

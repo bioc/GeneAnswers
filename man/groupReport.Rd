@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Generate a multigroup Concepts-genes analysis report }
 \description{
-  Function to generate a html format top multigroup Concepts-genes analysis report based on a given GeneAnswers instance list.
+  Function to generate a html format top multigroup Concepts-genes analysis report based on a given GeneAnswers instance list. Currently, this function only works at Mac platform.
 }
 \usage{
 groupReport(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), catTerm=TRUE,
