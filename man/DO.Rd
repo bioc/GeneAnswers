@@ -29,9 +29,6 @@ The data file "DO.rda" includes five datasets:
 
 }
 
-\references{
-
-}
 \examples{
 data(DO)
 
