@@ -1,7 +1,7 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{GeneAnswers}
 %\VignetteKeywords{GeneAnswers, genelist, Microarray preprocessing}
-%\VignetteDepends{GeneAnswers, annotate, igraph0, AnnotationDbi, GO.db, KEGG.db, biomaRt, RCurl, XML}
+%\VignetteDepends{GeneAnswers, annotate, igraph, AnnotationDbi, GO.db, KEGG.db, biomaRt, RCurl, XML}
 %\VignettePackage{GeneAnswers}
 
 \documentclass[a4paper]{article}
