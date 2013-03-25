@@ -49,7 +49,7 @@ are applied color for genes based on the same column name if the length is one. 
 data(sampleGroupsData)
 gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.1, verbose=FALSE)
 output<- getConceptTable(gAKEGGL, catTerm=FALSE, items='geneNum')
-groupReport(output[[1]], gAKEGGL,  matrixOfHeatmap=output[[2]], clusterTable=NULL, fileName='KEGGtest.html',  catType='KEGG', colorValueColumn=colnames(sampleGroupsData[[1]])[-1]) 
+\dontrun{groupReport(output[[1]], gAKEGGL,  matrixOfHeatmap=output[[2]], clusterTable=NULL, fileName='KEGGtest.html',  catType='KEGG', colorValueColumn=colnames(sampleGroupsData[[1]])[-1])} 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
