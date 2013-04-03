@@ -1,7 +1,7 @@
 Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
-Version: 2.2.0
+Version: 2.3.0
 Date: 2013-4-1
 Depends: R (>= 2.10.0), igraph, RCurl, annotate, Biobase (>= 1.12.0), methods, XML, RSQLite, MASS, Heatplus, RColorBrewer 
 Imports: RBGL, annotate
