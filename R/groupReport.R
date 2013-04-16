@@ -222,12 +222,12 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 					##else  tempConceptFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
 					tempCrossTableFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '_CrossTable.png', sep='')
 					if (interactive) {
-						graphInfo <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
-						#else graphInfo <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn, output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
-						#oldColNames <- colnames(graphInfo[[2]])
-						graphInfo[[2]] <- cbind(graphInfo[[2]], rep('#666666', dim(graphInfo[[2]])[1]), graphInfo[[2]][, 'NODE_FILL_COLOR'])
-						colnames(graphInfo[[2]])[4:5] <- c('NODE_LABEL_COLOR', 'NODE_BORDER_COLOR')
-						.convertCytoscapeWeb(graphInfo[2:3], htmlName=fileName, fileSuffix=(i-2), verbose=TRUE, destination=paste('../',fileName, '.files', sep=''), bgColor=bgColor)
+						g <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
+						graphInfo <- c('vertex.attributes'=list(as.data.frame(cbind('NODES'=V(g)$label, 'NODE_FILL_COLOR'=V(g)$color, 'NODE_SIZE'=3*V(g)$size, 
+																'NODE_LABEL_COLOR'=rep('#666666', vcount(g)), 'NODE_BORDER_COLOR'=V(g)$color), stringsAsFactors =FALSE)), 
+										'edge.attributes'=list(as.data.frame(cbind(get.edgelist(g), 'EDGE_COLOR'=E(g)$color, 'EDGE_LINE_WIDTH'=E(g)$width), stringsAsFactors =FALSE)))
+						colnames(graphInfo[['edge.attributes']])[1:2] <- c('NODES1', 'NODES2')
+   						.convertCytoscapeWeb(graphInfo, htmlName=fileName, fileSuffix=(i-2), verbose=TRUE, destination=paste('../',fileName, '.files', sep=''), bgColor=bgColor)
 						setwd(paste(fileName, '.files', sep=''))
 						png(filename=tempCrossTableFileName, width=1000, height=1500, bg=bgColor)
 						if (is.null(getGeneExprProfile(gAList[[i-2]]))) geneAnswersHeatmap(gAList[[i-2]], showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, nameLength=nameLength, catID=TRUE, sortBy='column', 
