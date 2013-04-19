@@ -222,7 +222,8 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 					##else  tempConceptFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
 					tempCrossTableFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '_CrossTable.png', sep='')
 					if (interactive) {
-						g <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
+						g <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, 
+													bgColor=bgColor, symmetry=FALSE)
 						graphInfo <- c('vertex.attributes'=list(as.data.frame(cbind('NODES'=V(g)$label, 'NODE_FILL_COLOR'=V(g)$color, 'NODE_SIZE'=3*V(g)$size, 
 																'NODE_LABEL_COLOR'=rep('#666666', vcount(g)), 'NODE_BORDER_COLOR'=V(g)$color), stringsAsFactors =FALSE)), 
 										'edge.attributes'=list(as.data.frame(cbind(get.edgelist(g), 'EDGE_COLOR'=E(g)$color, 'EDGE_LINE_WIDTH'=E(g)$width), stringsAsFactors =FALSE)))
