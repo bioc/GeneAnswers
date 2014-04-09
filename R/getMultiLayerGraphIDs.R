@@ -29,7 +29,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			else stop('The given idType is not supported!')
 		}
 		
-		if (!directed) {
+		if (!directed && !is.null(temp)) {
 			temp <- .removeDuplicatedEdge(temp)
 			if (length(layersLength) > 0)  {
 				l <- layersLength[length(layersLength)]
@@ -47,7 +47,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 		}
 		
 		
-		if (!is.null(filterGraphIDs) & !is.null(temp)) {
+		if (!is.null(filterGraphIDs) && !is.null(temp)) {
 			tempCM <- .list2matrix(temp, verbose=FALSE)
 			tempSCNodes <- as.character(tempCM[tempCM[,1] == tempCM[,2], 1])
 			tempNCNodes <- as.character(tempCM[!(tempCM[,1] == tempCM[,2]), ])
@@ -57,7 +57,7 @@ function(graphIDs, idType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'GeneInteraction', 
 			}
 		}
 		
-		if ((i == filterLayer) & (length(tempGraphIDs) > length(temp))) {
+		if ((i == filterLayer) && (length(tempGraphIDs) > length(temp))) {
 		    j <- filterLayer - 1
 			tempList <- temp
 			tempMultiLayerGraphIDs <- c()
