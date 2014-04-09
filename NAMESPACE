@@ -1,12 +1,17 @@
-import(tools)
 import(methods)
 import(stats)
 import(utils)
+import(XML)                       # not sure what correct imports are
+import(RCurl)                     # not sure what correct imports are
+import(Biobase)                   # not sure what correct imports are
+import(RSQLite)                   # not sure what correct imports are
+import(igraph)                    # not sure what correct imports are
 
 importFrom(RBGL, transitive.closure, sp.between)
-importFrom(annotate, lookUp, getSYMBOL)
-
-
+import(annotate)
+importFrom(MASS, isoMDS)
+importFrom(RColorBrewer, brewer.pal)
+importFrom(Heatplus, RGBColVec)
 
 exportClasses("GeneAnswers")
 exportMethods("getGeneInput", "getTestType", "getPValueT", "getGenesInCategory", "getGeneExprProfile", "getAnnLib", "getCategoryType", "getEnrichmentInfo", "setGeneInput", "setTestType", "setPValueT", "setGeneExprProfile", "setAnnLib", "setCategoryType", "setGenesInCategory", "setEnrichmentInfo")

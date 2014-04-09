@@ -3,13 +3,8 @@ function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000
 			sortBy.data='row', mar=c(1,1,8,6), cex.axis=c(0.8, 0.8), mapType=c('table', 'heatmap'), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL) {
 	mapType <- match.arg(mapType) 
 	if (colorMap.data[1] == 'GBR') {
-		require(Heatplus)
 		colorMap.data <- rev(RGBColVec(256))
-	} else {
-		require(RColorBrewer)
-	}
-	require(MASS)
-	
+	}	
 	allProbe <- unique(unlist(annotationList))
 	if (!is.null(dataMatrix)) {
 		allProbe <- intersect(allProbe, rownames(dataMatrix))

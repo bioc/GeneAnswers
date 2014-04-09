@@ -9,7 +9,6 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 			stop('TotalGeneNumber should be NULL or numeric or one of anopheles, arabidopsis, bovine, worm, canine, fly, zebrafish, ecolistraink12, ecolistrainsakai, chicken, human, mouse, rhesus, malaria, chimp, rat, yeast, pig and xenopus! Abort GeneAnswers Building ...')
 	}
 	x <- new("GeneAnswers")
-	require(annotate)
 	if (is.vector(geneInput) | is.data.frame(geneInput) | is.matrix(geneInput)) {
 		if (is.vector(geneInput)) {
 			geneIDs <- as.character(geneInput)

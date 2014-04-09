@@ -1,9 +1,4 @@
 .onLoad <- function(libname, pkgname) {
-	if(.Platform$OS.type == "windows" && require(Biobase) && interactive()
-        && .Platform$GUI ==  "Rgui") {
-        addVigs2WinMenu("GeneAnswers")
-    }
-
     #if (.Platform$OS.type == "unix" && (.Platform$GUI %in% c("X11", "Tk", "GNOME"))) {
 	#	quartz <- function(...) X11(...)
 	#}
@@ -128,7 +123,6 @@
 # never changes. If the edgesMatrix has unique rowname for each row, these rownames will
 # be the edge names for the returned igraph instance.
 .makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE, ...) {
-	require(igraph)
 	if (openFile) {
 		edgesMatrix <- as.matrix(read.table(fileName, ...))
 		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
@@ -198,12 +192,8 @@
 {
 	
 	if (colorMap[1] == 'GBR') {
-		library(Heatplus)
 		colorMap <- rev(RGBColVec(256))
-	} else {
-		require(RColorBrewer)
-	}
-	require(MASS)
+	} else
 	sortBy <- match.arg(sortBy)
 	reverseSort <- match.arg(reverseSort)
 	sort <- TRUE
@@ -406,7 +396,6 @@
 }
 
 .searchEntrezTerm <- function(term, baseUrl="http://eutils.ncbi.nlm.nih.gov/entrez/eutils/", species=c('human', 'rat', 'mouse', 'fly')) {
-	require(XML)
 	species <- match.arg(species)
 	species = switch(species,
 		'human'='Homo sapiens',
@@ -808,7 +797,6 @@
 #kernal xml query function
 .getcaBIOIDInfo <- function(xmlLink, IDinfo=c('indirect', 'direct', 'path', 'geneNumber')) {
 	IDinfo <- match.arg(IDinfo)
-	require(XML)
 	root <- xmlChildren(xmlRoot(try(xmlTreeParse(file=URLencode(xmlLink), isURL=TRUE))))
 	if ('queryResponse' %in% names(root)) {
 		level1 <- xmlChildren(root[['queryResponse']])

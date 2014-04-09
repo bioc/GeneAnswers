@@ -4,7 +4,6 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 							'org.Ss.eg.db', 'org.Xl.eg.db', 'org.At.tair.db', 'org.Pf.plasmo.db', 'org.Sc.sgd.db')) {
 	categoryType <- toupper(categoryType)
 	annotationLib <- match.arg(annotationLib) 
-	require(annotate)
 	require(annotationLib, character.only=TRUE)
 	libname <- sub('\\.db', '', annotationLib)
 	idType <- switch(sub('org.*[:.:]', '', libname), 'eg'='EG', 'tair'='TAIR', 'ORF')
