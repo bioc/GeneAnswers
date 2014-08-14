@@ -1,4 +1,9 @@
 .onLoad <- function(libname, pkgname) {
+	if(.Platform$OS.type == "windows" && require(Biobase) && interactive()
+        && .Platform$GUI ==  "Rgui") {
+        addVigs2WinMenu("GeneAnswers")
+    }
+
     #if (.Platform$OS.type == "unix" && (.Platform$GUI %in% c("X11", "Tk", "GNOME"))) {
 	#	quartz <- function(...) X11(...)
 	#}
@@ -123,6 +128,7 @@
 # never changes. If the edgesMatrix has unique rowname for each row, these rownames will
 # be the edge names for the returned igraph instance.
 .makeGraph <- function (edgesMatrix=NULL, directed=FALSE, openFile=FALSE, fileName=NULL, reverse=FALSE, ...) {
+	require(igraph)
 	if (openFile) {
 		edgesMatrix <- as.matrix(read.table(fileName, ...))
 		if (dim(edgesMatrix)[2] != 2) stop('Edge matrix should contain only 2 columns!')
@@ -188,13 +194,18 @@
 # colorBarLabel: labels of color bar
 .heatmap.mds <- function(dataMatrix, sortBy=c('row', 'column', 'both', 'none'), rotate=FALSE, standardize=TRUE, colorMap='RdYlBu', mar=c(1,1,5,8),  
 	cex.axis=c(0.9, 0.9), maxQuantile=0.99, maxVal=NULL, symmetry=FALSE, addRowLabel=TRUE, labelRight=TRUE, rm.unannotate=TRUE, reverseSort=c('none', 'row', 'column', 'both'), 
-	colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap'),  ...)
+	colorBar=FALSE, colorBarLabel=NULL, mapType=c('table', 'heatmap', 'none'),  ...)
 {
 	
 	if (colorMap[1] == 'GBR') {
+		library(Heatplus)
 		colorMap <- rev(RGBColVec(256))
-	} else
+	} else {
+		require(RColorBrewer)
+	}
+	require(MASS)
 	sortBy <- match.arg(sortBy)
+	mapType <- match.arg(mapType)
 	reverseSort <- match.arg(reverseSort)
 	sort <- TRUE
 	if (sortBy == 'none') sort <- FALSE
@@ -303,59 +314,60 @@
 	}
 	
 	
-	if (mapType == 'table') .drawTable(dataMatrix, addRowLabel=addRowLabel, mar=mar, cex.axis=cex.axis)
-	
-	else {
-		oldsetting <- par('mar'=mar)
-		if (symmetry) {
-			maxV <- max(abs(range(dataMatrix)))
-			maxVal <- c(-maxV, maxV)
-			image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', zlim=maxVal, ...)
-		}
-		else image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', ...)  
-		#image(x=1:ncol(inputM), y=1:nrow(inputM), -t(inputM), ylim=c((nrow(inputM)+1),0), col=c('white','white'), axes=F, xlab='', ylab='', )
-		axis(3, at=1:ncol(dataMatrix), labels=colLabels, tick=F, las=2, cex.axis=cex.axis[1])
-		if (addRowLabel) {
-			if (labelRight) axis(4, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
-			else axis(2, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])	
-		} else {
-			axis(4, at=1:nrow(dataMatrix), labels=rep('', length(rowLabels)), tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
-		}
-		box()
-		
-		if (colorBar) {
-			deviceNo <- dev.cur()	
-			x11()
-			par(mar=c(2,2,3,5))
-			color <- seq(maxVal[1], maxVal[2], length=length(colorMap))
-			colorBar <- t(matrix(rep(color,2), ncol=2))
-			image(1:nrow(colorBar), 1:ncol(colorBar), colorBar, col=colorMap, axes=F, xlab="")
-			if (relative) {
-				if (is.null(colorBarLabel)) {
-					colorBarLabel <- c('low', 'high')
-				}
-				axis(4, at = c(1.5, length(colorMap)-0.5), labels=colorBarLabel, tick=F)			
+	if (mapType != 'none') {
+		if (mapType == 'table') .drawTable(dataMatrix, addRowLabel=addRowLabel, mar=mar, cex.axis=cex.axis)
+		else {
+			oldsetting <- par('mar'=mar)
+			if (symmetry) {
+				maxV <- max(abs(range(dataMatrix)))
+				maxVal <- c(-maxV, maxV)
+				image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', zlim=maxVal, ...)
+			}
+			else image(1:ncol(dataMatrix), 1:nrow(dataMatrix), t(dataMatrix), col=colorMap, axes=F, xlab='', ylab='', ...)  
+			#image(x=1:ncol(inputM), y=1:nrow(inputM), -t(inputM), ylim=c((nrow(inputM)+1),0), col=c('white','white'), axes=F, xlab='', ylab='', )
+			axis(3, at=1:ncol(dataMatrix), labels=colLabels, tick=F, las=2, cex.axis=cex.axis[1])
+			if (addRowLabel) {
+				if (labelRight) axis(4, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
+				else axis(2, at=1:nrow(dataMatrix), labels=rowLabels, tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])	
 			} else {
-				if (is.null(colorBarLabel)) {
-					colorBarLabel <- seq(dataRange[1], dataRange[2], length=7)
-				}
-				if (is.numeric(colorBarLabel)) 
-					colorBarLabel <- round(colorBarLabel,2)
-				if (!is.null(maxVal)) {
-					if (colorBarLabel[1] == -round(maxVal[1], 2)) {
-						colorBarLabel[1] <- paste('-', round(maxVal, 2), '<')
-					}
-					if (colorBarLabel[length(colorBarLabel)] == round(maxVal[1], 2)) {
-						colorBarLabel[length(colorBarLabel)] <- paste('>', round(maxVal, 2))
-					}
-				}
-				axis(4, at = seq(1, length(colorMap), length=length(colorBarLabel)), labels=colorBarLabel)		
+				axis(4, at=1:nrow(dataMatrix), labels=rep('', length(rowLabels)), tick=F, las=2, cex.axis=cex.axis[length(cex.axis)])
 			}
 			box()
-			dev.set(deviceNo)
-		}
 
-		par(oldsetting)
+			if (colorBar) {
+				deviceNo <- dev.cur()	
+				x11()
+				par(mar=c(2,2,3,5))
+				color <- seq(maxVal[1], maxVal[2], length=length(colorMap))
+				colorBar <- t(matrix(rep(color,2), ncol=2))
+				image(1:nrow(colorBar), 1:ncol(colorBar), colorBar, col=colorMap, axes=F, xlab="")
+				if (relative) {
+					if (is.null(colorBarLabel)) {
+						colorBarLabel <- c('low', 'high')
+					}
+					axis(4, at = c(1.5, length(colorMap)-0.5), labels=colorBarLabel, tick=F)			
+				} else {
+					if (is.null(colorBarLabel)) {
+						colorBarLabel <- seq(dataRange[1], dataRange[2], length=7)
+					}
+					if (is.numeric(colorBarLabel)) 
+						colorBarLabel <- round(colorBarLabel,2)
+					if (!is.null(maxVal)) {
+						if (colorBarLabel[1] == -round(maxVal[1], 2)) {
+							colorBarLabel[1] <- paste('-', round(maxVal, 2), '<')
+						}
+						if (colorBarLabel[length(colorBarLabel)] == round(maxVal[1], 2)) {
+							colorBarLabel[length(colorBarLabel)] <- paste('>', round(maxVal, 2))
+						}
+					}
+					axis(4, at = seq(1, length(colorMap), length=length(colorBarLabel)), labels=colorBarLabel)		
+				}
+				box()
+				dev.set(deviceNo)
+			}
+
+			par(oldsetting)
+		}
 	}
 	return(invisible(ind.order))
 }
@@ -396,6 +408,7 @@
 }
 
 .searchEntrezTerm <- function(term, baseUrl="http://eutils.ncbi.nlm.nih.gov/entrez/eutils/", species=c('human', 'rat', 'mouse', 'fly')) {
+	require(XML)
 	species <- match.arg(species)
 	species = switch(species,
 		'human'='Homo sapiens',
@@ -593,6 +606,7 @@
 			return(outputList)
 		} else {
 			inputMatrix <- inputMatrix[nonNAIndex,]
+			indexName <- inputMatrix[!duplicated(inputMatrix[,1]),1] 
 		}
 	} else {
 		naIndex <- which(is.na(inputMatrix[,1]))
@@ -610,7 +624,8 @@
 		dim(outputList) <- NULL
 		names(outputList) <- listNames
 		if (!is.null(naList)) outputList <- c(outputList, naList)
-		return(outputList) 
+		if (removeNA) return(outputList[indexName])
+		else return(outputList) 
 	} else {
 		if (verbose) print('The input matrix, probably after removing NA(s), is empty!')                     
 		return(NULL) 
@@ -715,7 +730,7 @@
 			'GO'=paste('<a href=http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'KEGG'=paste('<a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'DOLITE'=paste('<a>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
-			'REACTOME.PATH'=paste('<a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
+			'REACTOME.PATH'=paste('<a href=http://www.reactome.org/PathwayBrowser/#DIAGRAM=', rowIDs[1:linkRowIDs], '&>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>',sep=''),
 			'CABIO.PATH'=paste('<a href=', unlist(lapply(rowIDs[1:linkRowIDs], .caBIOLink)), '>', getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</a>', sep=''),
 			'Entrez'=paste('<a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</a>',sep=''),
 			'Unknown'=rowIDs[1:linkRowIDs])
@@ -724,7 +739,7 @@
 			'GO'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', rowIDs[1:linkRowIDs], '>',  rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'KEGG'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.genome.jp/dbget-bin/www_bget?ko', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'DOLITE'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a>', rowIDs[1:linkRowIDs], '</a>',sep=''),
-			'REACTOME.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.reactome.org/cgi-bin/eventbrowser?DB=gk_current&ID=', rowIDs[1:linkRowIDs], '&>', rowIDs[1:linkRowIDs], '</a>',sep=''),
+			'REACTOME.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=http://www.reactome.org/PathwayBrowser/#DIAGRAM=', rowIDs[1:linkRowIDs], '&>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'CABIO.PATH'=paste(getCategoryTerms(rowIDs[1:linkRowIDs], catType=catType, missing='keep'), '</TD><TD><a href=', unlist(lapply(rowIDs[1:linkRowIDs], .caBIOLink)), '>', rowIDs[1:linkRowIDs], '</a>',sep=''), 
 			'Entrez'=paste(geneMapping(rowIDs[1:linkRowIDs], species, info='SYMBOL'), '</TD><TD><a href=http://www.ncbi.nlm.nih.gov/sites/entrez?Db=gene&Cmd=ShowDetailView&TermToSearch=', rowIDs[1:linkRowIDs], '>', rowIDs[1:linkRowIDs], '</a>',sep=''),
 			'Unknown'=rowIDs[1:linkRowIDs])
@@ -797,6 +812,7 @@
 #kernal xml query function
 .getcaBIOIDInfo <- function(xmlLink, IDinfo=c('indirect', 'direct', 'path', 'geneNumber')) {
 	IDinfo <- match.arg(IDinfo)
+	require(XML)
 	root <- xmlChildren(xmlRoot(try(xmlTreeParse(file=URLencode(xmlLink), isURL=TRUE))))
 	if ('queryResponse' %in% names(root)) {
 		level1 <- xmlChildren(root[['queryResponse']])
