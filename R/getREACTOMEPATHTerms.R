@@ -3,7 +3,7 @@ function(pathIDs, allowNA=TRUE) {
 	if (length(pathIDs) == 0) return(NULL)
 	require(reactome.db)
 	#pathIDs <- gsub('[^\\d]', '', pathIDs, perl=TRUE)
-	pathName <- lookUp(pathIDs, 'reactome', 'PATHID2NAME') 
+	pathName <- lapply(lookUp(pathIDs, 'reactome', 'PATHID2NAME'), paste, collapse='|') 
 	if (allowNA) return(pathName[pathIDs])
 	else {
 		temp <- pathName[pathIDs]
