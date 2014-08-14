@@ -905,7 +905,7 @@
 }
 
 #generate concepts relationship for given concepts.
-.catsCluster <- function(dataMatrix, gAL, clusterMethod=c("ward", "single", "complete", "average", "mcquitty", "median", "centroid"), catTerm=TRUE, 
+.catsCluster <- function(dataMatrix, gAL, clusterMethod=c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"), catTerm=TRUE, 
 						catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), ...) {
 	clusterMethod <- match.arg(clusterMethod)
 	catType <-match.arg(catType)
