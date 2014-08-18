@@ -3,6 +3,7 @@ function(pathIDs, allowNA=TRUE) {
 	if (length(pathIDs) == 0) return(NULL)
 	require(reactome.db)
 	#pathIDs <- gsub('[^\\d]', '', pathIDs, perl=TRUE)
+	# merge the function name from different species
 	pathName <- lapply(lookUp(pathIDs, 'reactome', 'PATHID2NAME'), function(x) return(paste(unique(sapply(strsplit(x, ': '), function(y) y[2])), collapse='|'))) 
 	if (allowNA) return(pathName[pathIDs])
 	else {
