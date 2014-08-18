@@ -961,7 +961,7 @@
 			setwd('..')
 			return(invisible(paste('edges_', fileSuffix, '.js', sep='')))
 		} else {
-			stop('Necessary java program is missing, Aborting ...')
+			stop('The Java program is missing, Aborting ...')
 		}
 	} else stop('Failure to create ', cytoDir, ' subdirectory! Aborting ...')
 }
