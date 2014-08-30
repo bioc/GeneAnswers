@@ -199,7 +199,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 				if (catType == 'GO') tempConceptsRelationFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-1]]), '.png', sep='')
 				else tempConceptsRelationFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
 				setwd(paste(fileName, '.files', sep=''))
-				png(filename=tempConceptsRelationFileName, width=1000, height=1000, bg='#ffffcc')
+				png(filename=tempConceptsRelationFileName, width=1000, height=1000, bg=bgColor)
 				if (is.matrix(dataMatrix[c(1:(dim(dataMatrix)[1]-1)),]))  {
 					.catsCluster(dataMatrix[c(1:(dim(dataMatrix)[1]-1)),], gAList, catType=catType, nameLength=nameLength, addID=addID)
 				} else {
