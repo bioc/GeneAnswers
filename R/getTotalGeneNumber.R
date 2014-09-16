@@ -1,5 +1,5 @@
 `getTotalGeneNumber` <- 
-function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH', 'CABIO.PATH'), known=TRUE, annotationLib=c('org.Ag.eg.db', 'org.Bt.eg.db', 'org.Ce.eg.db', 'org.Cf.eg.db', 'org.Dm.eg.db', 
+function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REACTOME.PATH'), known=TRUE, annotationLib=c('org.Ag.eg.db', 'org.Bt.eg.db', 'org.Ce.eg.db', 'org.Cf.eg.db', 'org.Dm.eg.db', 
 							'org.Dr.eg.db', 'org.EcK12.eg.db', 'org.EcSakai.eg.db', 'org.Gg.eg.db', 'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Mmu.eg.db', 'org.Pt.eg.db', 'org.Rn.eg.db', 
 							'org.Ss.eg.db', 'org.Xl.eg.db', 'org.At.tair.db', 'org.Pf.plasmo.db', 'org.Sc.sgd.db')) {
 	categoryType <- toupper(categoryType)
@@ -14,11 +14,12 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 	   else stop('DOLite is only designed for human! No data for other species ...')
 	}
 	
-	if (categoryType == 'CABIO.PATH') {
-		return(switch(annotationLib,
-			'org.Hs.eg.db'=.getcaBIOIDInfo('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=gov.nih.nci.cabio.domain.Gene&gov.nih.nci.cabio.domain.Pathway[@name=h_*]', IDinfo='geneNumber'), 
-			'org.Mm.eg.db'=.getcaBIOIDInfo('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=gov.nih.nci.cabio.domain.Gene&gov.nih.nci.cabio.domain.Pathway[@name=m_*]', IDinfo='geneNumber'),  
-			NULL))
+	if (categoryType == 'CABIO.PATH') { 
+		stop("Due to termination of caBig, this function is removed in this version!")
+#		return(switch(annotationLib,
+#			'org.Hs.eg.db'=.getcaBIOIDInfo('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=gov.nih.nci.cabio.domain.Gene&gov.nih.nci.cabio.domain.Pathway[@name=h_*]', IDinfo='geneNumber'), 
+#			'org.Mm.eg.db'=.getcaBIOIDInfo('http://cabioapi.nci.nih.gov/cabio43/GetXML?query=gov.nih.nci.cabio.domain.Gene&gov.nih.nci.cabio.domain.Pathway[@name=m_*]', IDinfo='geneNumber'),  
+#			NULL))
 	}
 	
 	if (categoryType == 'REACTOME.PATH') {

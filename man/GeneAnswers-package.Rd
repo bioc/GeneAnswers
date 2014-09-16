@@ -18,17 +18,19 @@ License: \tab LGPL version 2 or newer \cr
 }
 }
 \author{
-Gang Feng, Pan Du, Tian Xia, Warren Kibbe and Simon Lin
+Gang Feng, Lei Huang, Pan Du, Tian Xia, Xishu Wang, Jing, Wen, Warren Kibbe and Simon Lin
 
 
-Maintainer: Gang Feng <g-feng@northwestern.edu> and Pan Du <dupan@northwestern.edu>
+Maintainer: Gang Feng <g-feng@northwestern.edu> and Lei Huang <lhuang7@uchicago.edu>
 }
 \references{
-1.	Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10
+1. Feng G, Shaw P, Rosen ST, Lin SM and Kibbe WA, “Using the Bioconductor GeneAnswers Package to Interpret Gene Lists.” Methods Mol Biol. 2012 802:101-12.
 
-2. Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
+2.	Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10
 
-3. Osborne, J.D., Flatow, J., Holko, M., Lin, S.M., Kibbe, W.A., Zhu, L.J., Danila, M.I., Feng, G. and Chisholm, R.L., Annotating the human genome with Disease Ontology. BMC Genomics. 2009 Jul 7;10 Suppl 1:S6.
+3. Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
+
+4. Osborne, J.D., Flatow, J., Holko, M., Lin, S.M., Kibbe, W.A., Zhu, L.J., Danila, M.I., Feng, G. and Chisholm, R.L., Annotating the human genome with Disease Ontology. BMC Genomics. 2009 Jul 7;10 Suppl 1:S6.
 }
 \examples{
 data('humanExpr')

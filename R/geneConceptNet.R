@@ -27,10 +27,10 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 					if (all(as.numeric(inputValue) > 0) | all(as.numeric(inputValue) < 0)) {
 						if (all(as.numeric(inputValue) > 0)) {
 							zeroColorIndex <- 1
-							conceptCol <- colorRampPalette(c(bgColor,'#ff0000'))
+							conceptCol <- colorRampPalette(c(bgColor,'#ff3333'))
 						} else {
 							zeroColorIndex <- colorLevel
-							conceptCol <- colorRampPalette(c('#00ff00',bgColor))
+							conceptCol <- colorRampPalette(c('#3333ff',bgColor))
 						}
 						colorMap <- conceptCol(colorLevel)
 						symmetry <- FALSE
@@ -47,9 +47,9 @@ function(inputList, lengthOfRoots=NULL, inputValue=NULL, centroidSize='geneNum',
 							names(inputValue) <- c('negativeMax', 'negativeMin', tempNames, 'positiveMin', 'positiveMax')
 						}
 						zeroColorIndex <- 1 + ceiling(abs(min(as.numeric(inputValue))) * (colorLevel-1) / (max(as.numeric(inputValue))-min(as.numeric(inputValue))))
-						conceptCol <- colorRampPalette(c('#00ff00',bgColor))                  
+						conceptCol <- colorRampPalette(c('#3333ff',bgColor))                  
 						colorMap <- conceptCol(zeroColorIndex)
-						conceptCol <- colorRampPalette(c(bgColor,'#ff0000'))
+						conceptCol <- colorRampPalette(c(bgColor,'#ff3333'))
 						colorMap <- c(colorMap, conceptCol(colorLevel-zeroColorIndex + 1))
 					}
 				} 

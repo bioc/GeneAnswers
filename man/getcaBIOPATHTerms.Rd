@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Get Pathway names of given REACTOME PATH_DB IDs }
 \description{
-  Function to map given caBIO pathway IDs to Pathway names.
+  Function to map given caBIO pathway IDs to Pathway names. This function is not supported starting this version due to the termination of the caBig project.
 }
 \usage{
 getcaBIOPATHTerms(caBIOPATHIDs)

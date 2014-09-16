@@ -1,9 +1,16 @@
 `geneAnnotationHeatmap` <-
-function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000', '#FFFFFF'), sortBy='both', standardize.data=TRUE, colorMap.data='GBR', showGeneMax=200, 
+function(annotationList, dataMatrix=NULL, addGeneLabel=TRUE, colorMap=c('#000000', '#FFFFFF'), sortBy='both', standardize.data=TRUE, colorMap.data='default', showGeneMax=200, 
 			sortBy.data='row', mar=c(1,1,8,6), cex.axis=c(0.8, 0.8), mapType=c('table', 'heatmap'), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL) {
 	mapType <- match.arg(mapType) 
-	if (colorMap.data[1] == 'GBR') {
-		colorMap.data <- rev(RGBColVec(256))
+	suppressPackageStartupMessages(require(MASS))
+	suppressPackageStartupMessages(require(Heatplus))
+	seqColor <- c('BrBG', 'PiYG', 'PRGn', 'PuOr', 'RdBu', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral')
+	if (length(colorMap.data) == 1) {
+		if (tolower(colorMap.data[1]) == 'default') {
+			colorMap.data <- .defaultHeatmapColors(ncols=256)
+		} else {
+			if (colorMap.data %in% seqColor) colorMap.data <- colorRampPalette(rev(brewer.pal(11, colorMap)))(256)
+		}
 	}	
 	allProbe <- unique(unlist(annotationList))
 	if (!is.null(dataMatrix)) {

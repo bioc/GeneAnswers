@@ -21,7 +21,7 @@ geneAnswersReadable(x, catTerm = TRUE, geneSymbol = TRUE, strict = FALSE, verbos
 \details{
   Conversion could stop if NA is introduced and strict is set to TRUE.
   There are three types of parameters for variable 'missing'. 'name' means the NA mapping values are replaced by their names. 'keep' means all of NA values are kept. 'remove' means all of NA values are removed.
-  Occationally, Reactome uses the same name for species-mixed pathways based on in vivo and in vitro experiments, so we highly recommend to set addID as TRUE for Reactome and caBIO test.
+  Occationally, Reactome uses the same name for species-mixed pathways based on in vivo and in vitro experiments, so we highly recommend to set addID as TRUE for Reactome test.
 }
 \value{
   return a GeneAnswers instance with category names and/or gene symbols.

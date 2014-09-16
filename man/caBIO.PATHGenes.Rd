@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Present top CABIO.PATH enrichment test information with genes}
 \description{
-  Function to present top CABIO.PATH enichmentInfo of given GeneAnswers instance with genes. 
+  Function to present top CABIO.PATH enichmentInfo of given GeneAnswers instance with genes. This function is not supported starting this version due to the termination of the caBig project.
 }
 \usage{
 topcaBIO.PATHGenes(x, catTerm = TRUE, keepID=TRUE, geneSymbol = TRUE, ...)

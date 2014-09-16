@@ -46,7 +46,7 @@ function(geneInput, annotationLib, categoryType=NULL, testType=c('hyperG', 'none
 					'DOLITE'=DOLite,
 					'KEGG'= getPATHList(geneIDs, annotationLib),
 					'REACTOME.PATH'=getREACTOMEPATHList(geneIDs),
-					'CABIO.PATH'=getcaBIOPATHList(geneIDs))
+					'CABIO.PATH'=stop("Due to termination of caBig, this function is removed in this version!"))
 					x@annLib <- annotationLib
 					x@categoryType <- toupper(categoryType)
 			} else {

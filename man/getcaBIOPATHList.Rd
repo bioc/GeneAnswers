@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Retrieve caBIO path categories containing given genes }
 \description{
-  Function to retrieve caBIO pathway IDss containing the given genes.
+  Function to retrieve caBIO pathway IDss containing the given genes. This function is not supported starting this version due to the termination of the caBig project.
 }
 \usage{
 getcaBIOPATHList(lls)

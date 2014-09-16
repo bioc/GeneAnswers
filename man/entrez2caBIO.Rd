@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ map Entrez gene IDs to caBIO gene IDs}
 \description{
-  Function to map the given Entrez gene IDs to the caBIO gene IDs.
+  Function to map the given Entrez gene IDs to the caBIO gene IDs. This function is not supported starting this version due to the termination of the caBig project.
 }
 \usage{
 entrez2caBIO(lls)
