@@ -6,7 +6,7 @@
    Function to make a concept-gene cross tabulation
 }
 \usage{
-geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, colorMap = c("#000000", "#FFFFFF"), sortBy = "both", standardize.data = TRUE, colorMap.data = "GBR", showGeneMax = 200, sortBy.data = "row", mar = c(1, 1, 8, 6), cex.axis = c(0.8, 0.8), mapType = c("table", "heatmap"), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL)
+geneAnnotationHeatmap(annotationList, dataMatrix = NULL, addGeneLabel = TRUE, colorMap = c("#000000", "#FFFFFF"), sortBy = "both", standardize.data = TRUE, colorMap.data = "default", showGeneMax = 200, sortBy.data = "row", mar = c(1, 1, 8, 6), cex.axis = c(0.8, 0.8), mapType = c("table", "heatmap"), displayAll=FALSE, symmetry=FALSE, colorBar=FALSE, colorBarLabel=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
