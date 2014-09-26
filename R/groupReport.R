@@ -4,7 +4,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 		annLib=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), nameLength=94, addID=TRUE, interactive=FALSE, bgColor='#ffffff', keepCytoscapeFiles=TRUE, ...) { 
 	catType <-match.arg(catType)
 	annLib <- match.arg(annLib)
-	
+
 	showCats <- c(1:topCat)
 	
 	k <- 0
@@ -221,6 +221,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 					##if (catType == 'GO') tempConceptFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '.png', sep='') 
 					##else  tempConceptFileName <- paste(tableNames[i], '_', catType, '.png', sep='')
 					tempCrossTableFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '_CrossTable.png', sep='')
+					tempWordleFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '_Wordle.png', sep='')
 					if (interactive) {
 						g <- geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='none', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, colorMap=NULL, bgColor=bgColor, symmetry=FALSE)
 						graphInfo <- c('vertex.attributes'=list(as.data.frame(cbind('NODES'=V(g)$label, 'NODE_FILL_COLOR'=V(g)$color, 'NODE_SIZE'=3*V(g)$size, 
@@ -229,6 +230,7 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 						colnames(graphInfo[['edge.attributes']])[1:2] <- c('NODES1', 'NODES2')
    						.convertCytoscapeWeb(graphInfo, htmlName=fileName, fileSuffix=(i-2), verbose=TRUE, destination=paste('../',fileName, '.files', sep=''), bgColor=bgColor)
 						setwd(paste(fileName, '.files', sep=''))
+						#getListGIF()
 						png(filename=tempCrossTableFileName, width=1000, height=1500, bg=bgColor)
 						if (is.null(getGeneExprProfile(gAList[[i-2]]))) geneAnswersHeatmap(gAList[[i-2]], showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, nameLength=nameLength, catID=TRUE, sortBy='column', 
 														colorMap=c(rgb(255-col2rgb(bgColor)[1], 255-col2rgb(bgColor)[2], 255-col2rgb(bgColor)[3], maxColorValue=255), bgColor), mapType='heatmap')

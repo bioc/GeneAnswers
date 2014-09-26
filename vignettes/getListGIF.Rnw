@@ -1,0 +1,100 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{GeneAnswers web-based visualization module}
+%\VignetteKeywords{Cytoscape web, Network, Network visualization using Cytoscape web}
+%\VignetteDepends{GeneAnswers, annotate, Biobase}
+%\VignettePackage{GeneAnswers}
+
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath,pstricks}
+% With MikTeX 2.9, using pstricks also requires using auto-pst-pdf or running
+% pdflatex will fail. Note that using auto-pst-pdf requires to set environment
+% variable MIKTEX_ENABLEWRITE18=t on Windows, and to set shell_escape = t in
+% texmf.cnf for Tex Live on Unix/Linux/Mac.
+\usepackage{auto-pst-pdf}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+
+
+\author{Lei Huang$^\ddagger$\footnote{lhuang7@uchicago.edu}, Gilbert Feng$^\ddagger$\footnote{g-feng@northwestern.edu},}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\setkeys{Gin}{width=1\textwidth} 
+
+\title{getListGIF module }
+\maketitle
+\begin{center}$^\ddagger$Center for Research Informatics \\ University of Chicago, Chicago, IL, 60637, USA
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\texttt{getListGIF} is a utility function to interact with ListGIF web server (\url{http://listgif.nubic.northwestern.edu}). ListGIF provides a comprehensive analysis solution to identify the overrepresented biomedical concepts from a list of query genes. It combines Tag cloud, Wordle-like graph to present the analysis results to the end-user [1][2]. ListGIF assumes the co-occurring functional annotation terms of many genes from a list can reveal some common features of the genes [2]. The hypergeometric test is performed to identify the enriched Gene Reference Into Function (GeneRIF) and Gene Ontology (GO) terms. To reduce the bias that unbalanced GeneRIF distribution among genes might introduce to the result, both gene level and GeneRIF level analysis are provided. Result is rendered as a word-cloud like graph for easy viewing.
+
+
+\section{Description}
+
+
+The followings are requirement for input query gene list and arguments of \texttt{getListGIF}:
+\begin{description}
+  \item \emph{glist}: This should be a character vector consisting of gene symbols in query
+  \item \emph{output}: Optional. User can specify the name and location of the output word cloud png file; otherwise the file name from ListGIF web server is used and the output file is saved in current working directory.
+  \item \emph{background}: This is the argument for the output word cloud png file background. Only white and black are supported. Default is white.
+  \item \emph{type}: This is the argument for the analysis which ListGIF can perform on the query gene list. User can specify either \texttt{genelevel}, \texttt{riflevel} or \texttt{goterm} enrichment analysis. 
+  \begin{itemize}
+  \item \emph{genelevel}: Gene level enrichment analysis
+  \item \emph{riflevel}: GeneRIF level enrichment analysis. Warning: this option may take long depending on the length of the query gene list
+  \item \emph{goterm}: GO term enrichment analysis
+\end{itemize}
+\end{description}
+
+	
+\section{Example}
+The following is an example to obtain the ListGIF word-cloud graph for gene list: MRPS35, NBL1, PSMD14, PGK1, SMC4, SLC16A1 and CAV1.
+
+<<glist,eval=FALSE>>=
+glist <- c("MRPS35","NBL1","PSMD14","PGK1","SMC4","SLC16A1","CAV1")
+@
+To get the graph at gene level (Figure~\ref{fig:one}):
+<<genelevel,eval=FALSE>>=
+getListGIF(glist=glist, output="tmp.png", background="white", type="genelevel")
+@
+
+To get the graph at GeneRIF level (note this may take a considerable amount of time on ListGIF web server):
+<<riflevel,eval=FALSE>>=
+getListGIF(glist=glist, output="tmp.png", background="white", type="riflevel")
+@
+
+To get the graph for enriched GO terms:
+<<go,eval=FALSE>>=
+getListGIF(glist=glist, output="tmp.png", background="white", type="goterm")
+@
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4in]{tmp.png}
+\caption{An example of ListGIF word-cloud graph. The query genes are MRPS35, NBL1, PSMD14, PGK1, SMC4, SLC16A1 and CAV1.}
+\label{fig:one}
+\end{center}
+\end{figure}
+
+
+\section{References}
+1. Wen, J., Wang X., Kibbe, W., Lin S., Lu, H., 'Visual Annotation of the Gene Database', Conf Proc IEEE Eng Med Biol Soc. 2009;2009:4175-7\\
+2. Wen, J., 'Visual Annotation of Gene List with Functional Enrichment', MS Thesis, University of Illinois at Chicago (2012) \url{http://hdl.handle.net/10027/9072}
+
+ 
+%\bibliographystyle{plainnat}
+%\bibliography{GeneAnswers}
+
+
+\end{document}

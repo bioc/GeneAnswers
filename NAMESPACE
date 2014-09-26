@@ -1,20 +1,20 @@
 import(methods)
 import(stats)
 import(utils)
-import(XML)                       # not sure what correct imports are
-import(RCurl)                     # not sure what correct imports are
-import(Biobase)                   # not sure what correct imports are
-import(RSQLite)                   # not sure what correct imports are
-import(igraph)                    # not sure what correct imports are
-
-importFrom(RBGL, transitive.closure, sp.between)
+import(XML)                       
+import(RCurl)                     
+import(Biobase)                   
+import(RSQLite)                   
+import(igraph)
 import(annotate)
+importFrom(RBGL, transitive.closure, sp.between)
 importFrom(MASS, isoMDS)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(Heatplus, RGBColVec)
+importFrom(downloader, download) 
 
 exportClasses("GeneAnswers")
 exportMethods("getGeneInput", "getTestType", "getPValueT", "getGenesInCategory", "getGeneExprProfile", "getAnnLib", "getCategoryType", "getEnrichmentInfo", "setGeneInput", "setTestType", "setPValueT", "setGeneExprProfile", "setAnnLib", "setCategoryType", "setGenesInCategory", "setEnrichmentInfo")
 
-export("categoryNet", "chartPlots", "drawTable", "geneAnnotationHeatmap", "geneAnswersBuilder", "geneAnswersChartPlots", "geneAnswersConceptNet", "geneAnswersConcepts", "geneAnswersHeatmap", "geneAnswersHomoMapping", "geneAnswersReadable", "geneAnswersSort", "geneConceptNet", "getCategoryList", "getCategoryTerms", "getConceptTable", "getDOLiteTerms", "getGOList", "getHomoGeneIDs", "getPATHList", "getPATHTerms", "getSymbols", "groupReport", "searchEntrez", "topCategory", "topCategoryGenes", "topDOLITE", "topDOLITEGenes", "topGO", "topGOGenes", "topPATH", "topPATHGenes", "topREACTOME.PATH", "topREACTOME.PATHGenes", "topcaBIO.PATH", "topcaBIO.PATHGenes", "geneAnswersConceptRelation", "getConnectedGraph", "getMultiLayerGraphIDs", "getSingleLayerGraphIDs", "getNextGOIDs", "buildNet", "getTotalGeneNumber", "getREACTOMEPATHList", "getREACTOMEPATHTerms", "getcaBIOPATHList", "getcaBIOPATHTerms", "entrez2caBIO", "caBIO2entrez")
+export("categoryNet", "chartPlots", "drawTable", "geneAnnotationHeatmap", "geneAnswersBuilder", "geneAnswersChartPlots", "geneAnswersConceptNet", "geneAnswersConcepts", "geneAnswersHeatmap", "geneAnswersHomoMapping", "geneAnswersReadable", "geneAnswersSort", "geneConceptNet", "getCategoryList", "getCategoryTerms", "getConceptTable", "getDOLiteTerms", "getGOList", "getHomoGeneIDs", "getPATHList", "getPATHTerms", "getSymbols", "groupReport", "getListGIF", "searchEntrez", "topCategory", "topCategoryGenes", "topDOLITE", "topDOLITEGenes", "topGO", "topGOGenes", "topPATH", "topPATHGenes", "topREACTOME.PATH", "topREACTOME.PATHGenes", "topcaBIO.PATH", "topcaBIO.PATHGenes", "geneAnswersConceptRelation", "getConnectedGraph", "getMultiLayerGraphIDs", "getSingleLayerGraphIDs", "getNextGOIDs", "buildNet", "getTotalGeneNumber", "getREACTOMEPATHList", "getREACTOMEPATHTerms", "getcaBIOPATHList", "getcaBIOPATHTerms", "entrez2caBIO", "caBIO2entrez")
 

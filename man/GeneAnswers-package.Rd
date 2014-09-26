@@ -24,7 +24,7 @@ Gang Feng, Lei Huang, Pan Du, Tian Xia, Xishu Wang, Jing, Wen, Warren Kibbe and 
 Maintainer: Gang Feng <g-feng@northwestern.edu> and Lei Huang <lhuang7@uchicago.edu>
 }
 \references{
-1. Feng G, Shaw P, Rosen ST, Lin SM and Kibbe WA, “Using the Bioconductor GeneAnswers Package to Interpret Gene Lists.” Methods Mol Biol. 2012 802:101-12.
+1. Feng G, Shaw P, Rosen ST, Lin SM and Kibbe WA, 'Using the Bioconductor GeneAnswers Package to Interpret Gene Lists.' Methods Mol Biol. 2012 802:101-12.
 
 2.	Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10
 
