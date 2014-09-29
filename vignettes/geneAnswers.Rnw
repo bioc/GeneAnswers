@@ -127,12 +127,13 @@ We have four GeneAnswers objects, x, y, z and w, containing the statistical test
 
 \Rpackage{GeneAnswers} package also provides a function {\it searchEntrez} to retrieve Entrez genes for given keywords by Entrez XML query. National Center for Biotechnology Information (NCBI) provides many powerful online query systems. One of them is Entrez Programming Utilities (eUtils). Users can query NCBI databases by simple keywords logical operations based on XML protocol. This is very helpful to find potential or interested biological functions or pathways. Hence, the retrieved information can be considered as a customized annotation library to test whether the given genes are relative to interested keywords. Here is a case to build a customized GeneAnswers instance.
 <<build customized GeneAnswers,  echo=T, eval=T>>=  
-keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
-entrezIDList <- searchEntrez(keywordsList) 
-q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
-class(q)
-getAnnLib(q)
-getCategoryType(q)
+## before running the following codes, make sure that you can connect the internet.
+##keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
+##entrezIDList <- searchEntrez(keywordsList) 
+##q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+##class(q)
+##getAnnLib(q)
+##getCategoryType(q)
 @
 
 Customized GeneAnswers instances have NULL at annLib slot and "User defiend" in categoryType slot.
@@ -146,8 +147,9 @@ xx <- geneAnswersReadable(x)
 yy <- geneAnswersReadable(y, verbose=FALSE)
 zz <- geneAnswersReadable(z, verbose=FALSE)
 ww <- geneAnswersReadable(w, verbose=FALSE)
-q <- setAnnLib(q, 'org.Hs.eg.db')
-qq <- geneAnswersReadable(q, catTerm=FALSE) 
+## before running the following codes, make sure that you can connect the internet.
+##q <- setAnnLib(q, 'org.Hs.eg.db')
+##qq <- geneAnswersReadable(q, catTerm=FALSE) 
 @
 
 Since function {\it geneAnswersReadable} implements mapping based on annotation database  in slot annLib, we assign 'org.Hs.eg.db' to customized GeneAnswers instance annLib slot at first for make it readable.
@@ -367,12 +369,14 @@ geneAnswersHeatmap(zzz, mapType='heatmap')
 \end{figure}
 
 <<generate customized GO-gene cross tabulation, echo=F, eval=F>>=
+## before running the following codes, make sure that you can connect the internet.
 geneAnswersHeatmap(qq)
 @
 
 \begin{figure}
 \centering
 <<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
+## before running the following codes, make sure that you can connect the internet.
 geneAnswersHeatmap(qq)
 @
 \caption{Customized GO-gene cross tabulation}
