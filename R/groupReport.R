@@ -1,7 +1,7 @@
 `groupReport` <- 
 function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrixOfHeatmap=NULL, clusterTable=c('geneNum', 'pvalue', NULL), catTerm=TRUE, 
 		fileName = "multiConceptsGenes.html", title='Multigroup Genes Concepts Analysis', catType=c('GO', 'KEGG', 'DOLITE', 'REACTOME.PATH', 'CABIO.PATH', 'Unknown'), reverseOfCluster=FALSE,  colorValueColumn = NULL, 
-		annLib=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), nameLength=94, addID=TRUE, interactive=FALSE, bgColor='#ffffff', keepCytoscapeFiles=TRUE, ...) { 
+		annLib=c('org.Hs.eg.db', 'org.Rn.eg.db', 'org.Mm.eg.db', 'org.Dm.eg.db'), nameLength=94, addID=TRUE, interactive=FALSE, bgColor='#ffffff', keepCytoscapeFiles=TRUE, wordleOn=FALSE, ...) { 
 	catType <-match.arg(catType)
 	annLib <- match.arg(annLib)
 
@@ -230,7 +230,11 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 						colnames(graphInfo[['edge.attributes']])[1:2] <- c('NODES1', 'NODES2')
    						.convertCytoscapeWeb(graphInfo, htmlName=fileName, fileSuffix=(i-2), verbose=TRUE, destination=paste('../',fileName, '.files', sep=''), bgColor=bgColor)
 						setwd(paste(fileName, '.files', sep=''))
-						#getListGIF()
+						if (wordleOn) {
+							geneSymbols <- unique(unlist(lookUp(getGeneInput(gAList[[i-2]])[,1], gsub("\\.db$", "", getAnnLib(gAList[[i-2]])), "SYMBOL")))
+							geneSymbols <- geneSymbols[!is.na(geneSymbols)]
+							getListGIF(glist=geneSymbols, output=tempWordleFileName)
+						}
 						png(filename=tempCrossTableFileName, width=1000, height=1500, bg=bgColor)
 						if (is.null(getGeneExprProfile(gAList[[i-2]]))) geneAnswersHeatmap(gAList[[i-2]], showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, nameLength=nameLength, catID=TRUE, sortBy='column', 
 														colorMap=c(rgb(255-col2rgb(bgColor)[1], 255-col2rgb(bgColor)[2], 255-col2rgb(bgColor)[3], maxColorValue=255), bgColor), mapType='heatmap')
@@ -240,11 +244,17 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 		   				dev.off()
 						setwd('..')
 						cat(paste('<H2 align=center><font face="courier" size="2"><A name="', paste('h-', i, sep=''), '">', tableNames[i], "</a></font></H2>", sep=''), file = outFile, sep = "\n") 
+						if (wordleOn) cat('<center><IMG src="', paste(fileName, '.files', sep=''), '/', tempWordleFileName, '"></center>\n<p></p>\n<p></p>\n', file = outFile, sep="")
 						cat('<body><center><div id="cytoscapeweb',(i-2), '" style="width:1000px;height:1000px;">Cytoscape Web will replace the contents of this div with your graph.</div></center></body>\n', file = outFile, sep="")
 						cat('<center><IMG src="', paste(fileName, '.files', sep=''), '/', tempCrossTableFileName, '"></center>\n', file = outFile, sep="")
 					} else {
 						tempConceptFileName <- paste(tableNames[i], '_', getCategoryType(gAList[[i-2]]), '.png', sep='')
 						setwd(paste(fileName, '.files', sep=''))
+						if (wordleOn) {
+							geneSymbols <- unique(unlist(lookUp(getGeneInput(gAList[[i-2]])[,1], gsub("\\.db$", "", getAnnLib(gAList[[i-2]])), "SYMBOL")))
+							geneSymbols <- geneSymbols[!is.na(geneSymbols)]
+							getListGIF(glist=geneSymbols, output=tempWordleFileName)
+						}
 						png(filename=tempConceptFileName, width=1000, height=1000, bg=bgColor)
 						geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn[i-2], output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE, bgColor=bgColor, symmetry=FALSE)
 					   	#else geneAnswersConceptNet(gAList[[i-2]], centroidSize='pvalue', colorValueColumn = colorValueColumn, output='fixed', showCats=drawCats, catTerm=catTerm, geneSymbol=TRUE)
@@ -258,9 +268,9 @@ function(dataMatrix, gAList, topCat=10, methodOfCluster=c('mds', 'sort'), matrix
 		   				dev.off()
 						setwd('..') 
 						cat(paste('<H2 align=center><font face="courier" size="2"><A name="', paste('h-', i, sep=''), '">', tableNames[i], "</a></font></H2>", sep=''), file = outFile, sep = "\n") 
+						if (wordleOn) cat('<center><IMG src="', paste(fileName, '.files', sep=''), '/', tempWordleFileName, '"></center>\n<p></p>\n<p></p>\n', file = outFile, sep="")
 						cat('<center><IMG src="', paste(fileName, '.files', sep=''), '/', tempConceptFileName, '"></center>\n', file = outFile, sep="")
 						cat('<center><IMG src="', paste(fileName, '.files', sep=''), '/', tempCrossTableFileName, '"></center>\n', file = outFile, sep="")
-						
 					}
 				} else {
 					print('Given categories are not statistical significant!!! No category is selected!')

@@ -1,4 +1,6 @@
 `getListGIF` <- function(glist=glist, output=NULL, background=c("white", "black"), type=c("genelevel", "riflevel", "goterm")) {
+	background <- match.arg(background)
+	type <- match.arg(type)
 	if (is.null(glist)) stop('Please provide a list of gene symbols')
 	if (!is.vector(glist)){
 		if(is.list(glist)){
