@@ -61,21 +61,21 @@ The followings are requirement for input query gene list and arguments of \textt
 The following is an example to obtain the ListGIF word-cloud graph for gene list: MRPS35, NBL1, PSMD14, PGK1, SMC4, SLC16A1 and CAV1.
 
 <<glist,eval=FALSE>>=
-glist <- c("MRPS35","NBL1","PSMD14","PGK1","SMC4","SLC16A1","CAV1")
+#glist <- c("MRPS35","NBL1","PSMD14","PGK1","SMC4","SLC16A1","CAV1")
 @
 To get the graph at gene level (Figure~\ref{fig:one}):
 <<genelevel,eval=FALSE>>=
-getListGIF(glist=glist, output="tmp.png", background="white", type="genelevel")
+#getListGIF(glist=glist, output="tmp.png", background="white", type="genelevel")
 @
 
 To get the graph at GeneRIF level (note this may take a considerable amount of time on ListGIF web server):
 <<riflevel,eval=FALSE>>=
-getListGIF(glist=glist, output="tmp.png", background="white", type="riflevel")
+#getListGIF(glist=glist, output="tmp.png", background="white", type="riflevel")
 @
 
 To get the graph for enriched GO terms:
 <<go,eval=FALSE>>=
-getListGIF(glist=glist, output="tmp.png", background="white", type="goterm")
+#getListGIF(glist=glist, output="tmp.png", background="white", type="goterm")
 @
 
 
