@@ -370,14 +370,14 @@ geneAnswersHeatmap(zzz, mapType='heatmap')
 
 <<generate customized GO-gene cross tabulation, echo=F, eval=F>>=
 ## before running the following codes, make sure that you can connect the internet.
-geneAnswersHeatmap(qq)
+#geneAnswersHeatmap(qq)
 @
 
 \begin{figure}
 \centering
 <<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
 ## before running the following codes, make sure that you can connect the internet.
-geneAnswersHeatmap(qq)
+#geneAnswersHeatmap(qq)
 @
 \caption{Customized GO-gene cross tabulation}
 \label{fig: Customized GO-gene cross tabulation}
