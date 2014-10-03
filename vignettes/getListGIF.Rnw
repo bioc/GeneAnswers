@@ -22,7 +22,7 @@
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 
 
-\author{Lei Huang$^\ddagger$\footnote{lhuang7@uchicago.edu}, Xishu Wang$^\ddagger$\footnote{wangxishu@gmail.com}, Jing Wen$^\ddagger$\footnote{vivannawj@gmail.com}, Gang Feng$^\ddagger$\footnote{g-feng@northwestern.edu}}
+\author{Lei Huang$^\ddagger$\footnote{lhuang7@uchicago.edu}, Xishu Wang$\footnote{wangxishu@gmail.com}, Jing Wen$\footnote{vivannawj@gmail.com}, Gang Feng$\footnote{g-feng@northwestern.edu}}
 \begin{document}
 \setkeys{Gin}{width=1\textwidth} 
 

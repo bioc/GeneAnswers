@@ -32,7 +32,7 @@
 \begin{center}$^\ddagger$Northwestern University Biomedical Informatics Center \\ Northwestern University, Chicago, IL, 60611, USA
 \end{center}
 
-\tableofcontents
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Overview of GeneAnswers}
