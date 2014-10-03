@@ -21,7 +21,6 @@
 \newcommand{\Rclass}[1]{{\textit{#1}}}
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 
-\SweaveOpts{keep.source=TRUE}
 
 \author{Gang Feng$^\ddagger$\footnote{g-feng (at) northwestern.edu}, Pan Du$^\ddagger$\footnote{dupan (at) northwestern.edu}, Warren A. Kibbe$^\ddagger$\footnote{wakibbe (at) northwestern.edu}, Simon Lin$^\ddagger$\footnote{s-lin2 (at) northwestern.edu}}
 \begin{document}

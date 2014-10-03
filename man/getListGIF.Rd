@@ -39,7 +39,7 @@ Lei Huang
 \seealso{ \code{\link{help}}}
 \examples{
 glist <- c("MRPS35","NBL1","PSMD14","PGK1","SMC4","SLC16A1","CAV1")
-getListGIF(glist=glist)
+\dontrun{getListGIF(glist=glist)}
 \dontrun{getListGIF(glist=glist, output="tmp2.png", background="black", type="riflevel")}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

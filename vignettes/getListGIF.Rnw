@@ -24,8 +24,6 @@
 
 \author{Lei Huang$^\ddagger$\footnote{lhuang7@uchicago.edu}, Xishu Wang$^\ddagger$\footnote{wangxishu@gmail.com}, Jing Wen$^\ddagger$\footnote{vivannawj@gmail.com}, Gang Feng$^\ddagger$\footnote{g-feng@northwestern.edu}}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
-
 \setkeys{Gin}{width=1\textwidth} 
 
 \title{getListGIF module }
