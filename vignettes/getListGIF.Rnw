@@ -22,20 +22,22 @@
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 
 
-\author{Lei Huang$^\ddagger$\footnote{lhuang7@uchicago.edu}, Xishu Wang$\footnote{wangxishu@gmail.com}, Jing Wen$\footnote{vivannawj@gmail.com}, Gang Feng$\footnote{g-feng@northwestern.edu}}
+\author{Lei Huang$\footnote{lhuang7@uchicago.edu}, \text{ \textnormal{Xishu Wang}}$\footnote{wangxishu@gmail.com}, \text{ \textnormal{Jing Wen}}$\footnote{vivannawj@gmail.com}, \text{ \textnormal{Gang Feng}}$\footnote{g-feng@northwestern.edu}}
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \setkeys{Gin}{width=1\textwidth} 
 
 \title{getListGIF module }
 \maketitle
-\begin{center}$^\ddagger$Center for Research Informatics \\ University of Chicago, Chicago, IL, 60637, USA
+\begin{center}$^*$Center for Research Informatics, University of Chicago, Chicago, IL 60637, USA\\
+$^\S$Northwestern University Clinical and Translational Sciences Institute, Chicago, IL 60611, USA\\
 \end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
-\texttt{getListGIF} is a utility function to interact with ListGIF web server (\url{http://listgif.nubic.northwestern.edu}). ListGIF provides a comprehensive analysis solution to identify the overrepresented biomedical concepts from a list of query genes. It combines Tag cloud, Wordle-like graph to present the analysis results to the end-user [1][2]. ListGIF assumes the co-occurring functional annotation terms of many genes from a list can reveal some common features of the genes [2]. The hypergeometric test is performed to identify the enriched Gene Reference Into Function (GeneRIF) and Gene Ontology (GO) terms. To reduce the bias that unbalanced GeneRIF distribution among genes might introduce to the result, both gene level and GeneRIF level analysis are provided. Result is rendered as a word-cloud like graph for easy viewing.
+\texttt{getListGIF} is a utility function to interact with ListGIF web server (\url{http://listgif.nubic.northwestern.edu}). ListGIF provides a comprehensive analysis solution to identify the overrepresented biomedical concepts from a list of query genes. It combines Tag cloud, Wordle-like graph to present the analysis results to the end-user [1][2]. ListGIF assumes the co-occurring functional annotation terms of many genes from a list can reveal some common features of the genes [2]. The hypergeometric test is performed to identify the enriched Gene Reference Into Function (GeneRIF) and Gene Ontology (GO) terms. To reduce the bias that unbalanced GeneRIF distribution among genes might introduce to the result, both gene level and GeneRIF level analysis are provided. Result is rendered as a ``word cloud''-like graph for easy viewing.
 
 
 \section{Description}
@@ -45,18 +47,18 @@ The followings are requirement for input query gene list and arguments of \textt
 \begin{description}
   \item \emph{glist}: This should be a character vector consisting of gene symbols in query
   \item \emph{output}: Optional. User can specify the name and location of the output word cloud png file; otherwise the file name from ListGIF web server is used and the output file is saved in current working directory.
-  \item \emph{background}: This is the argument for the output word cloud png file background. Only white and black are supported. Default is white.
-  \item \emph{type}: This is the argument for the analysis which ListGIF can perform on the query gene list. User can specify either \texttt{genelevel}, \texttt{riflevel} or \texttt{goterm} enrichment analysis. 
+  \item \emph{background}: This argument specifies the background of the output word cloud png file. Only \texttt{white} and \texttt{black} are supported. Default is \texttt{white}.
+  \item \emph{type}: This argument specifies which ListGIF analysis can be performed on the query gene list. User can specify either \texttt{genelevel}, \texttt{riflevel} or \texttt{goterm} enrichment analysis. 
   \begin{itemize}
-  \item \emph{genelevel}: Gene level enrichment analysis
-  \item \emph{riflevel}: GeneRIF level enrichment analysis. Warning: this option may take long depending on the length of the query gene list
-  \item \emph{goterm}: GO term enrichment analysis
+  \item \emph{genelevel}: Gene level enrichment analysis.
+  \item \emph{riflevel}: GeneRIF level enrichment analysis. Warning: this option may take long depending on the length of the query gene list.
+  \item \emph{goterm}: GO term enrichment analysis.
 \end{itemize}
 \end{description}
 
 	
 \section{Example}
-The following is an example to obtain the ListGIF word-cloud graph for gene list: MRPS35, NBL1, PSMD14, PGK1, SMC4, SLC16A1 and CAV1.
+The following is an example to generate the ListGIF word cloud graph for gene list: MRPS35, NBL1, PSMD14, PGK1, SMC4, SLC16A1 and CAV1.
 
 <<glist,eval=FALSE>>=
 #glist <- c("MRPS35","NBL1","PSMD14","PGK1","SMC4","SLC16A1","CAV1")
@@ -87,8 +89,8 @@ To get the graph for enriched GO terms:
 
 
 \section{References}
-1. Wen, J., Wang X., Kibbe, W., Lin S., Lu, H., 'Visual Annotation of the Gene Database', Conf Proc IEEE Eng Med Biol Soc. 2009;2009:4175-7\\
-2. Wen, J., 'Visual Annotation of Gene List with Functional Enrichment', MS Thesis, University of Illinois at Chicago (2012) \url{http://hdl.handle.net/10027/9072}
+1.Wen, J., Wang X., Kibbe, W., Lin S., Lu, H., ``Visual Annotation of the Gene Database'', Conf Proc IEEE Eng Med Biol Soc. 2009;2009:4175-7\\
+2.Wen, J., ``Visual Annotation of Gene List with Functional Enrichment'', MS Thesis, University of Illinois at Chicago (2012) \url{http://hdl.handle.net/10027/9072}
 
  
 %\bibliographystyle{plainnat}
