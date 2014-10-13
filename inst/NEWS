@@ -1,12 +1,12 @@
-CHANGES IN VERSION 2.1.0
+CHANGES IN VERSION 2.8.0
 ----------------------
 
 NEW FEATURES
 
     o New function getListGIF is added to interact with ListGIF web server 
-    (http://listgif.nubic.northwestern.edu). ListGIF provides a comprehensive 
-    analysis solution to identify the overrepresented biomedical concepts from 
-    a list of query genes. Result is rendered as a wordle.
+    (http://listgif.nubic.northwestern.edu). ListGIF provides a quick analysis 
+    solution to identify the overrepresented biomedical concepts from a list 
+    of query genes. Result is rendered as a wordle.
 
 BUG FIXES
 
