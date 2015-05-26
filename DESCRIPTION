@@ -1,15 +1,18 @@
 Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
-Version: 2.11.0
+Version: 2.11.1
 Date: 2014-10-1
-Depends: R (>= 3.0.0), igraph, RCurl, annotate, Biobase (>= 1.12.0), methods, XML, RSQLite, MASS, Heatplus, RColorBrewer 
+Depends: R (>= 3.0.0), igraph, RCurl, annotate, Biobase (>= 1.12.0),
+        methods, XML, RSQLite, MASS, Heatplus, RColorBrewer
 Imports: RBGL, annotate, downloader
-Suggests: GO.db, KEGG.db, reactome.db, biomaRt, AnnotationDbi, org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db, graph 
+Suggests: GO.db, KEGG.db, reactome.db, biomaRt, AnnotationDbi,
+        org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db, graph
 Author: Lei Huang, Gang Feng, Pan Du, Tian Xia, Xishu Wang, Jing, Wen, Warren Kibbe and Simon Lin
-Maintainer: Lei Huang <lhuang7@uchicago.edu> and Gang Feng <gilbertfeng@gmail.edu>
+Maintainer: Lei Huang <lhuang7@uchicago.edu> and Gang Feng <gilbertfeng@gmail.com>
 Description: GeneAnswers provides an integrated tool for biological or medical interpretation of the given one or more groups of genes by means of statistical test.
 License: LGPL (>= 2)
-biocViews: Infrastructure, DataRepresentation, Visualization, GraphsAndNetworks 
+biocViews: Infrastructure, DataRepresentation, Visualization,
+        GraphsAndNetworks
 LazyLoad: yes
-
+Packaged: 2014-10-02 22:49:07 UTC; dtenenba
