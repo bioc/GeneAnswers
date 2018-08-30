@@ -58,8 +58,9 @@ Thanks for your help!
 In order to install the \Rpackage{GeneAnswers} package, the user needs to first install R, some related Bioconductor packages. You can easily install them by the following codes.
 
 \begin{Sinput} 
-source("http://bioconductor.org/biocLite.R")
-biocLite("GeneAnswers")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("GeneAnswers")
 \end{Sinput}
 
 For the users want to install the latest developing version of \Rpackage{GeneAnswers}, which can be downloaded from the developing section of Bioconductor website. Some additional packages might be required to be installed because of the update the Bioconductor. These packages can also be found from the developing section of Bioconductor website. You can also directly install the source packages from the Bioconductor website by specify the developing version number, which can be found at the Bioconductor website. Suppose the developing version is 2.5, to
