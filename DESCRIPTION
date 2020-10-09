@@ -9,7 +9,7 @@ Imports: RBGL, annotate, downloader
 Suggests: GO.db, KEGG.db, reactome.db, biomaRt, AnnotationDbi,
         org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db, graph
 Author: Lei Huang, Gang Feng, Pan Du, Tian Xia, Xishu Wang, Jing, Wen, Warren Kibbe and Simon Lin
-Maintainer: Lei Huang <lhuang7@uchicago.edu> and Gang Feng <gilbertfeng@gmail.com>
+Maintainer: Lei Huang <lhuang1998@gmail.com> and Gang Feng <gilbertfeng@gmail.com>
 Description: GeneAnswers provides an integrated tool for biological or medical interpretation of the given one or more groups of genes by means of statistical test.
 License: LGPL (>= 2)
 biocViews: Infrastructure, DataRepresentation, Visualization,
