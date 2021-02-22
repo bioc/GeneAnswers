@@ -112,7 +112,7 @@ data('humanExpr')
 x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG',  pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr)
 class(x)
 ## build a GeneAnswers instance with statistical test based on KEGG and saved example data. 
-y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+# y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 ## build a GeneAnswers instance with statistical test based on DOLite and saved example data.
 z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
 w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
@@ -139,7 +139,7 @@ Besides barplot and pie chart, \Rpackage{GeneAnswers} package can generate a net
 <<make GeneAnswers readable and generate concept-gene network,  echo=T>>=  
 ## mapping gene IDs and category IDs to gene symbols and category terms
 xx <- geneAnswersReadable(x)
-yy <- geneAnswersReadable(y, verbose=FALSE)
+# yy <- geneAnswersReadable(y, verbose=FALSE)
 zz <- geneAnswersReadable(z, verbose=FALSE)
 ww <- geneAnswersReadable(w, verbose=FALSE)
 ## before running the following codes, make sure that you can connect the internet.
@@ -293,7 +293,7 @@ Also, users can sort enrichment test information and plot it.
 <<sort GeneAnswers,  echo=T, eval=T>>=  
 ## sort enrichmentInfo dataframe by fdr adjusted p value
 xxx <- geneAnswersSort(xx, sortBy='correctedPvalue')
-yyy <- geneAnswersSort(yy, sortBy='pvalue') 
+# yyy <- geneAnswersSort(yy, sortBy='pvalue') 
 zzz <- geneAnswersSort(zz, sortBy='geneNum')
 @
 
@@ -336,13 +336,13 @@ geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
 \end{figure}    
 
 <<genrate KEGG-gene cross tabulation echo=T, eval=F>>=
-geneAnswersHeatmap(yyy)
+# geneAnswersHeatmap(yyy)
 @
 
 \begin{figure}
 \centering
 <<fig=true, width=8, height=8, quiet=F, echo=T, eval=T>>=
-geneAnswersHeatmap(yyy)
+# geneAnswersHeatmap(yyy)
 @
 \caption{KEGG-gene cross tabulation}
 \label{fig:KEGG-gene cross tabulation}
@@ -418,7 +418,7 @@ Users can also print top categories and genes on screen and save them in files b
 ## print top GO categories sorted by hypergeometric test p value
 topGOGenes(x,  orderby='pvalue')
 ## print top KEGG categories sorted by gene numbers and sort genes by fold changes 
-topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
+# topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
 ## print and save top 10 DOLites information 
 topDOLITEGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
 @
@@ -431,9 +431,9 @@ Several groups of genes are used to dynamically study biological processes by di
 ##load multigroup genes sample data
 data(sampleGroupsData)
 ##Build a GeneAnswers List
-gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.01, verbose=FALSE)
+# gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.01, verbose=FALSE)
 ##Output integrated text table
-output<- getConceptTable(gAKEGGL, items='geneNum')
+# output<- getConceptTable(gAKEGGL, items='geneNum')
 @
 
 <<multigroup genes KEGG analysis, echo=F, eval=F>>=
