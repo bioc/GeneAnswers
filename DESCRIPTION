@@ -2,17 +2,23 @@ Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
 Version: 2.33.0
-Date: 2014-10-1
-Depends: R (>= 3.0.0), igraph, RCurl, annotate, Biobase (>= 1.12.0),
+Date: 2021-02-21
+Depends: R (>= 3.0.0), igraph, KEGGREST, RCurl, annotate, Biobase (>= 1.12.0),
         methods, XML, RSQLite, MASS, Heatplus, RColorBrewer
 Imports: RBGL, annotate, downloader
-Suggests: GO.db, KEGG.db, reactome.db, biomaRt, AnnotationDbi,
+Suggests: GO.db, reactome.db, biomaRt, AnnotationDbi,
         org.Hs.eg.db, org.Rn.eg.db, org.Mm.eg.db, org.Dm.eg.db, graph
 Author: Lei Huang, Gang Feng, Pan Du, Tian Xia, Xishu Wang, Jing, Wen, Warren Kibbe and Simon Lin
-Maintainer: Lei Huang <lhuang1998@gmail.com> and Gang Feng <gilbertfeng@gmail.com>
+Maintainer: Lei Huang <lhuang1998@gmail.com> and Gang Feng <gilbert.feng@qq.com>
 Description: GeneAnswers provides an integrated tool for biological or medical interpretation of the given one or more groups of genes by means of statistical test.
 License: LGPL (>= 2)
 biocViews: Infrastructure, DataRepresentation, Visualization,
         GraphsAndNetworks
 LazyLoad: yes
-Packaged: 2014-10-02 22:49:07 UTC; dtenenba
+Packaged: 2021-02-21 00:21:40 UTC; biocbuild
+git_url: https://git.bioconductor.org/packages/GeneAnswers
+git_branch: RELEASE_3_12
+git_last_commit: a310951
+git_last_commit_date: 2021-02-21
+Date/Publication: 2021-02-21
+NeedsCompilation: no
