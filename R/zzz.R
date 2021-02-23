@@ -21,6 +21,14 @@
 	
 }
 
+
+# Mapping BIOC standard organisms to KEGG organisms
+.mappingOrganisms <- function(lib) {
+	return(switch(unlist(strsplit(lib, split='[.]'))[2], 'Hs'='hsa', 'Mm'='mmu', 'Ag'='aga', 'Dm'='dme', 'Dr'='dre', 'EcK12'='ecok', 
+		'Gg'='gga', 'Mmu'='mcc', 'Pt'='ptr', 'Rn'='rno', 'Xl'='xla', 'At'='ath', 'Sc'='sce', NULL))
+}
+
+
 .filterGOIDs <- function(GOCategory=c('ALL', 'BP', 'CC', 'MF'), level=level) {
 	require(GO.db)
 	GOCategory <- match.arg(GOCategory)

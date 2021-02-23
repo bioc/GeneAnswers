@@ -38,9 +38,19 @@ function(categoryType=c('GO', 'GO.BP', 'GO.CC', 'GO.MF', 'DOLITE', 'KEGG', 'REAC
 #			'org.Pf.plasmo.db'=390, 'org.Rn.eg.db'=3809, 'org.Sc.sgd.db'=714, NULL))
 	}
 	
+	if (categoryType == "KEGG") {
+		organism <- .mappingOrganisms(annotationLib)
+		if (!is.null(organism)) {
+			require(KEGGREST)
+			return(length(unique(keggList(organism))))
+		} else {
+			stop('the specified annotation library can not be found!!!')
+		}
+	}
+
 	return(switch(categoryType,
 		'GO' = count.mappedkeys(get(paste(libname, 'GO', sep=''))),
-		'KEGG' = count.mappedkeys(get(paste(libname, 'PATH', sep=''))),
+		#'KEGG' = count.mappedkeys(get(paste(libname, 'PATH', sep=''))),
 		'GO.BP' = length(unique(unlist(lookUp('GO:0008150', libname, paste("GO2ALL", idType, 'S', sep=''))))),
 		'GO.MF' = length(unique(unlist(lookUp('GO:0003674', libname, paste("GO2ALL", idType, 'S', sep=''))))),
 		'GO.CC' = length(unique(unlist(lookUp('GO:0005575', libname, paste("GO2ALL", idType, 'S', sep=''))))) ))
