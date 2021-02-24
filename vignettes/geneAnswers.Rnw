@@ -88,453 +88,453 @@ The figure, 'Flow chart of GeneAnswers', shows how \Rpackage{GeneAnswers} packag
 
 Besides usual barplot and pie chart of top categories, \Rpackage{GeneAnswers} also provides four types of visualization. One is concepts-genes network, which show the concepts and genes on a network layout. The second one is concepts-genes cross table that integrated gene expression profile and corresponding categories together. The third one is a concepts-network shows connections between categories only. The last one is a table, which contains all of information of categories and genes. Combining all of these presentations can be helpful to find and explain the possible linkages between genes and categories.
 
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{flowchart.png}}
-\caption{Flow chart of GeneAnswers}
-\label{conceptgeneNetwork}
-\end{figure}
-\section{Data preprocessing}
-
-First of all, load the \Rpackage{GeneAnswers} package.
-<<load library, eval=T>>=
-library(GeneAnswers)
-@
-
-\subsection{Build a GeneAnswers instance}
-The key point of \Rpackage{GeneAnswers} package is to build a GeneAnswers instance. The essential input for \Rpackage{GeneAnswers} is an Entrez gene IDs vector (a character vector). However, if users have any interested values associated with genes, these values can also be as optional inputs. In this case,  the input, geneInput, could be a matrix or a dataframe. The first column is always for Entrez gene IDs. Other columns are used to store those interested values. Rownames for the matrix or dataframe are not necessary, but colnames are recommended for further usage. We use two internal datasets, one is from human and another is from mouse, as examples to show how to implement \Rpackage{GeneAnswers} package. The human and mouse datasets coming with the \Rpackage{GeneAnswers} package are  from human and mouse Illumina beadarray experiments. Each dataset contains two dataframes. For example, humanGeneInput is a dataframe  containing Entrez gene IDs with fold changes and p values, while the data frame, humanExpr, includes two types, control and treatment, of gene expression profile of the genes in humanGeneInput.
-
-<<build GeneAnswers,  echo=T, eval=T>>=  
-data('humanGeneInput')
-data('humanExpr')
-## build a GeneAnswers instance with statistical test based on biological process of GO and saved example data.
-x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG',  pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr)
-class(x)
-## build a GeneAnswers instance with statistical test based on KEGG and saved example data. 
-# y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
-## build a GeneAnswers instance with statistical test based on DOLite and saved example data.
-z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
-w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
-@  
-
-We have four GeneAnswers objects, x, y, z and w, containing the statistical test of biological process of GO, KEGG, DOLite and GO (The first two level nodes are removed), respectively. For Gene Ontology, sometimes, users think some nodes are too general and not very relative to their interests. So we provide parameter {\it level} to determine how many top levels of GO nodes are removed. The instances have included the relationship between given genes and specified categories.
-
-\Rpackage{GeneAnswers} package also provides a function {\it searchEntrez} to retrieve Entrez genes for given keywords by Entrez XML query. National Center for Biotechnology Information (NCBI) provides many powerful online query systems. One of them is Entrez Programming Utilities (eUtils). Users can query NCBI databases by simple keywords logical operations based on XML protocol. This is very helpful to find potential or interested biological functions or pathways. Hence, the retrieved information can be considered as a customized annotation library to test whether the given genes are relative to interested keywords. Here is a case to build a customized GeneAnswers instance.
-<<build customized GeneAnswers,  echo=T, eval=T>>=  
-## before running the following codes, make sure that you can connect the internet.
-##keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
-##entrezIDList <- searchEntrez(keywordsList) 
-##q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
-##class(q)
-##getAnnLib(q)
-##getCategoryType(q)
-@
-
-Customized GeneAnswers instances have NULL at annLib slot and "User defiend" in categoryType slot.
- 
-\subsection{Visulization}
-Besides barplot and pie chart, \Rpackage{GeneAnswers} package can generate a network (concept-gene network)  show how genes are connected to specified categories as well as general barplot and piechart. Function {\it GeneAnswersConceptNet} can generate a common R canvas or tcl/tk interactive canvas to draw the network by calling  \Rpackage{igraph}. Genes are presented as red nodes, if specified values are positive, and the gene nodes are green with negative values. The category nodes are yellow nodes, the sizes are relative to user-specified values. Currently, if function {\t GeneAnswersBuilder} successfully returns a GeneAnswers instance, the genes are represented as entrez IDs and categories are also category IDs. User can map them to gene symbols and categories terms by function {\it GeneAnswersReadable}. Function {\it GeneAnswersReadable} reads slot {\it annLib} to map Entrez IDs to gene symbols, so make sure slot {\it annLib} is correct before mapping.
-
-<<make GeneAnswers readable and generate concept-gene network,  echo=T>>=  
-## mapping gene IDs and category IDs to gene symbols and category terms
-xx <- geneAnswersReadable(x)
-# yy <- geneAnswersReadable(y, verbose=FALSE)
-zz <- geneAnswersReadable(z, verbose=FALSE)
-ww <- geneAnswersReadable(w, verbose=FALSE)
-## before running the following codes, make sure that you can connect the internet.
-##q <- setAnnLib(q, 'org.Hs.eg.db')
-##qq <- geneAnswersReadable(q, catTerm=FALSE) 
-@
-
-Since function {\it geneAnswersReadable} implements mapping based on annotation database  in slot annLib, we assign 'org.Hs.eg.db' to customized GeneAnswers instance annLib slot at first for make it readable.
-
-<<plot barplot and / or piechart,  echo=T, eval=F>>= 
-## plot barplot and / or piechart
-geneAnswersChartPlots(xx, chartType='all')
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{piechart01.jpg}}
-\caption{Screen shot of pie chart of top categories}
-\label{pie chart of top categories}
-\end{figure}
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{barplot01.jpg}}
-\caption{Screen shot of barplot of top categories}
-\label{barplot of top categories}
-\end{figure}   
-
-The nodes could be represented by different colors for different specified values, like fold change. In this case, overexpressed genes are represented as red nodes while green dots stand for underexpressed genes. If the node is more red, which means its fold change is larger. It's same for green nodes, but different direction. 
-<<plot interactive  concept-gene network,  echo=T, eval=F>>= 
-## plot interactive concept-gene network
-geneAnswersConceptNet(xx, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet01a.jpg}}
-\caption{Screen shot of concept-gene network}
-\label{conceptgeneNetwork}
-\end{figure}
-
-The top 5 categories might not be very specific. Users might get a  tree view to see relative category terms by calling function geneAnswersConceptRelationif the category has an ontology structure. The size of nodes is proportional to number of genes in these GO categories. The color of nodes stand for how relative the given genes are to the GO categories. More red, more relative. The given GO categories are yellow framed dots with dark purple edges connetions.
-<<plot interactive  go structure network,  echo=T, eval=F>>= 
-## plot interactive go structure network
-geneAnswersConceptRelation(x, direction='both', netMode='connection', catTerm=TRUE, catID=TRUE, nameLength=15) 
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{gostrt.jpg}}
-\caption{Screen shot of go structure network}
-\label{conceptgeneNetwork}
-\end{figure}
-
-Also the new version GeneAnswers integrates gene or protein interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
-<<plot interactive  concept-gene network with gene interaction,  echo=T, eval=F>>= 
-## plot interactive concept-gene network
-geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', showCats=c("GO:0009611", "GO:0043933", "GO:0045622"), catTerm=TRUE, geneSymbol=TRUE, catID=TRUE)
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet07.jpg}}
-\caption{Screen shot of concept-gene network}
-\label{conceptgeneNetwork}
-\end{figure}
-
-
-This function can also be used to show how the given genes interact with each other. For example, for the given genes in the GeneAnswers instance, x, users can use the following command to show gene '444','3638', '5087' and '55835' interact with each other and other genes in the given geneInput of x.
-<<plot Gene interaction,  echo=T, eval=F>>= 
-## plot the given gene interaction
-buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1], filterLayer=2, netMode='connection')
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction01.jpg}}
-\caption{Screen shot of the given gene interaction network}
-\label{geneInteractionNetwork}
-\end{figure}
-
-In this case, large black dots with yellow frame stand for the 4 given genes. They also connect to other genes by dark-blue-purple edges. Small black dots represent the other genes from getGeneInput(x). Small white dots are genes that are not in the genes from getGeneInput(x), but interact with these genes. 
-
-If there are some certain values associate with genes in geneInput of x, like the example data, you can represent any one column by colors. For example, if users want to show how genes interaction with gene expression information, the following command can show this:
-<<plot Gene interaction with expression information,  echo=T, eval=F>>= 
-## plot the given gene interaction
-buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
-@  
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction02.jpg}}
-\caption{Screen shot of the given gene interaction network with expression information}
-\label{geneInteractionNetwork}
-\end{figure}
-
-The following one is based on expression p-values, we often use -log2 to transform p-values.
-<<plot Gene interaction with pvalues,  echo=T, eval=F>>= 
-## plot the given gene interaction
-buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=cbind(getGeneInput(x)[,1], -log2(getGeneInput(x)[,3])), filterLayer=2, netMode='connection')
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction03.jpg}}
-\caption{Screen shot of the given gene interaction network with p-value information}
-\label{geneInteractionNetwork}
-\end{figure}
-
-Users can also define customized color scheme and transfer it into 'buildNet' function by parameter 'colorMap'. Details are available in 'buildNet' manual page. If users want to have a overview for the interaction of all of the given genes from getGeneInput(x), the following command could be used:
-<<plot Gene interaction for all of given genes,  echo=T, eval=F>>= 
-## plot the given gene interaction
-buildNet(getGeneInput(x)[,1], idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
-@
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction04.jpg}}
-\caption{Screen shot of all of the given gene interaction network with expression information}
-\label{geneInteractionNetwork}
-\end{figure}
-
-
-If there are a lot of genes, the network could be very complicated. We strongly recommend to use 'interactive' mode to show the network since it's easy to manually change layout. The default setting is 'interactive', but users can change it to 'fixed' for a small or simple network.
-
-
-The following example is to show top 5 GO-gene network for the first 2 level GO nodes removal.
-<<plot Go-concept network for 2 level nodes removal,  echo=T, eval=F>>= 
-## plot Go-concept network for 2 level nodes removal
-geneAnswersConceptNet(ww, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
-@
-
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet02.jpg}}
-\caption{Screen shot of concept-gene network for top 2 GO level nodes removal}
-\label{GO-genes network}
-\end{figure}
-
-Also, users can sort enrichment test information and plot it.
-<<sort GeneAnswers,  echo=T, eval=T>>=  
-## sort enrichmentInfo dataframe by fdr adjusted p value
-xxx <- geneAnswersSort(xx, sortBy='correctedPvalue')
-# yyy <- geneAnswersSort(yy, sortBy='pvalue') 
-zzz <- geneAnswersSort(zz, sortBy='geneNum')
-@
-
-<<plot concept-gene networks,  echo=T, eval=F>>=  
-geneAnswersConceptNet(yyy, colorValueColumn='foldChange', centroidSize='geneNum', output='fixed')
-geneAnswersConceptNet(zzz, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=c(10:16))
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet03.jpg}}
-\caption{Screen shot of KEGG-gene network}
-\label{KEGG-genes network}
-\end{figure}
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet04.jpg}}
-\caption{Screen shot of DOLite-gene network}
-\label{DOLite-genes network}
-\end{figure}
-
-If users provide a gene expression profile, \Rpackage{GeneAnswers} package can generate a table or heatmap labeling relationship between genes and categories with a heatmap of these genes expression. We call this type of representation as concept-gene cross tabulation.
-
-<<generate GO-gene cross tabulation, echo=T, eval=F>>=
-## generate GO-gene cross tabulation
-geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
-@
-
-\begin{figure}
-\centering
-<<fig=true, width=8, height=8, echo=T, eval=T>>=
-## generate GO-gene cross tabulation
-geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
-@
-\caption{GO-gene cross tabulation}
-\label{fig:GO-gene cross tabulation}
-\end{figure}    
-
-<<genrate KEGG-gene cross tabulation echo=T, eval=F>>=
-# geneAnswersHeatmap(yyy)
-@
-
-\begin{figure}
-\centering
-<<fig=true, width=8, height=8, quiet=F, echo=T, eval=T>>=
-# geneAnswersHeatmap(yyy)
-@
-\caption{KEGG-gene cross tabulation}
-\label{fig:KEGG-gene cross tabulation}
-\end{figure}
-
-For cross table, there are two types of representations. One is a table, which is better for few genes, and another one is a two-color heatmap that is adopted for a lot of genes. In the latter,  the default setting is that white bar stands for that a gene in that category.
-<<generate DOLite-gene cross tabulation, echo=F, eval=F>>=
-geneAnswersHeatmap(zzz, mapType='heatmap')
-@
-
- 
-\begin{figure}
-\centering
-<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
-geneAnswersHeatmap(zzz, mapType='heatmap')
-@
-\caption{DOLite-gene cross tabulation}
-\label{fig:DOLite-gene cross tabulation}
-\end{figure}
-
-
-Besides top categories, users can also show interested categories.
-<<plot customized concept-gene cross tabulation,  echo=T, eval=T>>=  
-GOBPIDs <- c("GO:0043627", "GO:0042493", "GO:0006259", "GO:0007243")
-GOBPTerms <- c("response to estrogen stimulus", "response to drug", "protein kinase cascade", "DNA metabolic process")
-@
-
-<<generate concept-gene cross tabulation,  echo=T, eval=F>>=
-## generate concept-gene cross tabulation
-geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE) 
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet05.jpg}}
-\caption{Screen shot of customized GO-gene network}
-\label{customized GO-genes network}
-\end{figure}
-
-<<generate customized concept-gene cross tabulation, echo=T, eval=F>>=
-geneAnswersHeatmap(x, showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE)
-@
-
-
-\begin{figure}
-\centering
-<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
-geneAnswersHeatmap(x, showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE)
-@
-\caption{Customized concept-gene cross tabulation}
-\label{fig:Customized concept-gene cross tabulation}
-\end{figure}
-
-Function {\it geneAnswersConcepts} shows the linkages of specified categories. The width of edge stands for how overlapping between two categories.
-<< generate concept-gene cross tabulation,  echo=T, eval=F>>=
-## generate concept-gene cross tabulation
-geneAnswersConcepts(xxx, centroidSize='geneNum', output='fixed', showCats=GOBPTerms) 
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{concept01.jpg}}
-\caption{Screen shot of customized GO category linkage}
-\label{customized GO category linkage}
-\end{figure}
-
-
-
-Users can also print top categories and genes on screen and save them in files by specification as well as these two types of visualization. The default file names are "topCategory.txt" and "topCategoryGenes.txt" for top categories with or without corresponding genes, respectively.
-<<print top categories and genes,  echo=T, eval=T>>=  
-## print top GO categories sorted by hypergeometric test p value
-topGOGenes(x,  orderby='pvalue')
-## print top KEGG categories sorted by gene numbers and sort genes by fold changes 
-# topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
-## print and save top 10 DOLites information 
-topDOLITEGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
-@
-
-
-\subsection{Multigroup Genes Analysis}
-Several groups of genes are used to dynamically study biological processes by different treatment or time points. In this case, \Rpackage{GeneAnswers} provide a solution to integrate enrichment test information of different groups of genes. 
-
-<<multigroup gene analysis,  echo=T, eval=T>>=  
-##load multigroup genes sample data
-data(sampleGroupsData)
-##Build a GeneAnswers List
-# gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.01, verbose=FALSE)
-##Output integrated text table
-# output<- getConceptTable(gAKEGGL, items='geneNum')
-@
-
-<<multigroup genes KEGG analysis, echo=F, eval=F>>=
-drawTable(output[[1]], matrixOfHeatmap=output[[2]], mar=c(2,28,3,2), clusterTable=NULL) 
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{multi.jpg}}
-\caption{Screen shot of multigroup genes KEGG analysis}
-\label{Multigroup Genes KEGG analysis}
-\end{figure}
-
-Function groupReport can generate a html file including all information.
-
-\subsection{Homologous Gene Mapping}
-Since DOLite is developed for human, any gene from other species can not take advantage of this novel annotation database. Therefore,  \Rpackage{GeneAnswers} package provides two functions for this type of data interpretation. {\it getHomoGeneIDs} can map other species gene Entrez IDs to human homologous gene Entrez IDs at first. Then users can perform normal GeneAnswers functions. Finally, function {\it geneAnswersHomoMapping} maps back to original species gene Entrez IDs. Current version supports two types of homologous gene mapping. One is called "direct", which is simple and only works between mouse and human. Since all of human gene symbols are capitalized, while only first letter of mouse homologous gene symbols is uppercase, this method simply maps homologous genes by capitalized moues gene symbols. Another method adopts \Rpackage{biomaRt} to do mapping. \Rpackage{biomaRt} contacts its online server to mapping homologous genes. Its database include more accurate information, but it might take longer to do that, while 'direct' method can rapidly do conversation though it is possible to miss some information.
-
-<<homogene conversation,  echo=T, eval=T>>=  
- ## load mouse example data
-data('mouseExpr')
-data('mouseGeneInput') 
-mouseExpr[1:10,]
-mouseGeneInput[1:10,]
- ## only keep first one for one to more mapping
-pickHomo <- function(element, inputV) {return(names(inputV[inputV == element])[1])}
- ## mapping geneInput to homo entrez IDs.
-homoLL <- getHomoGeneIDs(mouseGeneInput[,1], species='mouse', speciesL='human', mappingMethod='direct')
-newGeneInput <- mouseGeneInput[mouseGeneInput[,1] %in% unlist(lapply(unique(homoLL), pickHomo, homoLL)),]
-dim(mouseGeneInput)
-dim(newGeneInput)
-newGeneInput[,1] <- homoLL[newGeneInput[,1]]
-## mapping geneExpr to homo entrez IDs.
-homoLLExpr <- getHomoGeneIDs(as.character(mouseExpr[,1]), species='mouse', speciesL='human', mappingMethod='direct')
-newExpr <- mouseExpr[as.character(mouseExpr[,1]) %in% unlist(lapply(unique(homoLLExpr) , pickHomo, homoLLExpr)),]
-newExpr[,1] <- homoLLExpr[as.character(newExpr[,1])]
-dim(mouseExpr)
-dim(newExpr)
-## build a GeneAnswers instance based on mapped data
-v <- geneAnswersBuilder(newGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=newExpr)
-## make the GeneAnswers instance readable, only map DOLite IDs to terms
-vv <- geneAnswersReadable(v, geneSymbol=F)
-getAnnLib(vv)
-## mapping back to mouse genes
-uu <- geneAnswersHomoMapping(vv, species='human', speciesL='mouse', mappingMethod='direct')
-getAnnLib(uu)
-## make mapped genes readable, DOLite terms are not mapped
-u <- geneAnswersReadable(uu, catTerm=FALSE)
-## sort new GeneAnswers instance
-u1 <- geneAnswersSort(u, sortBy='pvalue')
-@
-
-<<plot concept-gene network,  echo=T, eval=F>>=
-## plot concept-gene network
-geneAnswersConceptNet(u, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
-@
-
-\begin{figure}
-\centering
-\centering
-\resizebox{1\textwidth}{!}{\includegraphics{conceptNet06.jpg}}
-\caption{Screen shot of homogene DOLite-gene network}
-\label{homogene DOLite-genes network}
-\end{figure}
-
-<<generate homogene DOLite-gene cross tabulation, echo=T, eval=F>>=
-## plot homogene DOLite-gene cross tabulation
-geneAnswersHeatmap(u1)
-@
-
-\begin{figure}
-\centering
-<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
-## plot homogene DOLite-gene cross tabulation
-geneAnswersHeatmap(u1)
-@
-\caption{homogene DOLite-gene cross tabulation}
-\label{fig:homogene DOLite-gene cross tabulation}
-\end{figure}
-
-<<homogene conversation,  echo=T, eval=T>>=  
-## output top information
-topDOLITEGenes(u, geneSymbol=FALSE, catTerm=FALSE, orderby='pvalue', top=6, topGenes='ALL', genesOrderBy='pValue', file=TRUE)  
-@
-
-\section{Session Info}
-<<sessionInfo, results=tex, print=TRUE>>=
-toLatex(sessionInfo())
-@
-
-\section{Acknowledgments}
-We would like to thank the users and researchers around the world contribute to the \Rpackage{GeneAnswers} package, provide great comments and suggestions and report bugs
-
-\section{References}
-
-Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
-
-
-Feng, G., Du, P., Krett, N.L., Tessel, M., Rosen, S., Kibbe, W.A., and Lin, S.M., (submitted) 'Bioconductor Methods to Visualize Gene-list Annotations',
-
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{flowchart.png}}
+%\caption{Flow chart of GeneAnswers}
+%\label{conceptgeneNetwork}
+%\end{figure}
+%\section{Data preprocessing}
+%
+%First of all, load the \Rpackage{GeneAnswers} package.
+%<<load library, eval=T>>=
+%library(GeneAnswers)
+%@
+%
+%\subsection{Build a GeneAnswers instance}
+%The key point of \Rpackage{GeneAnswers} package is to build a GeneAnswers instance. The essential input for \Rpackage{GeneAnswers} is an Entrez gene IDs vector (a character vector). However, if users have any interested values associated with genes, these values can also be as optional inputs. In this case,  the input, geneInput, could be a matrix or a dataframe. The first column is always for Entrez gene IDs. Other columns are used to store those interested values. Rownames for the matrix or dataframe are not necessary, but colnames are recommended for further usage. We use two internal datasets, one is from human and another is from mouse, as examples to show how to implement \Rpackage{GeneAnswers} package. The human and mouse datasets coming with the \Rpackage{GeneAnswers} package are  from human and mouse Illumina beadarray experiments. Each dataset contains two dataframes. For example, humanGeneInput is a dataframe  containing Entrez gene IDs with fold changes and p values, while the data frame, humanExpr, includes two types, control and treatment, of gene expression profile of the genes in humanGeneInput.
+%
+%<<build GeneAnswers,  echo=T, eval=T>>=  
+%data('humanGeneInput')
+%data('humanExpr')
+%## build a GeneAnswers instance with statistical test based on biological process of GO and saved example data.
+%x <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG',  pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr)
+%class(x)
+%## build a GeneAnswers instance with statistical test based on KEGG and saved example data. 
+%# y <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='KEGG', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+%## build a GeneAnswers instance with statistical test based on DOLite and saved example data.
+%z <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+%w <- geneAnswersBuilder(humanGeneInput, 'org.Hs.eg.db', categoryType='GO.BP', testType='hyperG', pvalueT=0.1, FDR.correction=TRUE, geneExpressionProfile=humanExpr, level=2, verbose=FALSE) 
+%@  
+%
+%We have four GeneAnswers objects, x, y, z and w, containing the statistical test of biological process of GO, KEGG, DOLite and GO (The first two level nodes are removed), respectively. For Gene Ontology, sometimes, users think some nodes are too general and not very relative to their interests. So we provide parameter {\it level} to determine how many top levels of GO nodes are removed. The instances have included the relationship between given genes and specified categories.
+%
+%\Rpackage{GeneAnswers} package also provides a function {\it searchEntrez} to retrieve Entrez genes for given keywords by Entrez XML query. National Center for Biotechnology Information (NCBI) provides many powerful online query systems. One of them is Entrez Programming Utilities (eUtils). Users can query NCBI databases by simple keywords logical operations based on XML protocol. This is very helpful to find potential or interested biological functions or pathways. Hence, the retrieved information can be considered as a customized annotation library to test whether the given genes are relative to interested keywords. Here is a case to build a customized GeneAnswers instance.
+%<<build customized GeneAnswers,  echo=T, eval=T>>=  
+%## before running the following codes, make sure that you can connect the internet.
+%##keywordsList <- list(Apoptosis=c('apoptosis'), CellAdhesion=c('cell adhesion'))
+%##entrezIDList <- searchEntrez(keywordsList) 
+%##q <- geneAnswersBuilder(humanGeneInput, entrezIDList, testType='hyperG', totalGeneNumber = 45384, pvalueT=0.1, geneExpressionProfile=humanExpr, verbose=FALSE)
+%##class(q)
+%##getAnnLib(q)
+%##getCategoryType(q)
+%@
+%
+%Customized GeneAnswers instances have NULL at annLib slot and "User defiend" in categoryType slot.
+% 
+%\subsection{Visulization}
+%Besides barplot and pie chart, \Rpackage{GeneAnswers} package can generate a network (concept-gene network)  show how genes are connected to specified categories as well as general barplot and piechart. Function {\it GeneAnswersConceptNet} can generate a common R canvas or tcl/tk interactive canvas to draw the network by calling  \Rpackage{igraph}. Genes are presented as red nodes, if specified values are positive, and the gene nodes are green with negative values. The category nodes are yellow nodes, the sizes are relative to user-specified values. Currently, if function {\t GeneAnswersBuilder} successfully returns a GeneAnswers instance, the genes are represented as entrez IDs and categories are also category IDs. User can map them to gene symbols and categories terms by function {\it GeneAnswersReadable}. Function {\it GeneAnswersReadable} reads slot {\it annLib} to map Entrez IDs to gene symbols, so make sure slot {\it annLib} is correct before mapping.
+%
+%<<make GeneAnswers readable and generate concept-gene network,  echo=T>>=  
+%## mapping gene IDs and category IDs to gene symbols and category terms
+%xx <- geneAnswersReadable(x)
+%# yy <- geneAnswersReadable(y, verbose=FALSE)
+%zz <- geneAnswersReadable(z, verbose=FALSE)
+%ww <- geneAnswersReadable(w, verbose=FALSE)
+%## before running the following codes, make sure that you can connect the internet.
+%##q <- setAnnLib(q, 'org.Hs.eg.db')
+%##qq <- geneAnswersReadable(q, catTerm=FALSE) 
+%@
+%
+%Since function {\it geneAnswersReadable} implements mapping based on annotation database  in slot annLib, we assign 'org.Hs.eg.db' to customized GeneAnswers instance annLib slot at first for make it readable.
+%
+%<<plot barplot and / or piechart,  echo=T, eval=F>>= 
+%## plot barplot and / or piechart
+%geneAnswersChartPlots(xx, chartType='all')
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{piechart01.jpg}}
+%\caption{Screen shot of pie chart of top categories}
+%\label{pie chart of top categories}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{barplot01.jpg}}
+%\caption{Screen shot of barplot of top categories}
+%\label{barplot of top categories}
+%\end{figure}   
+%
+%The nodes could be represented by different colors for different specified values, like fold change. In this case, overexpressed genes are represented as red nodes while green dots stand for underexpressed genes. If the node is more red, which means its fold change is larger. It's same for green nodes, but different direction. 
+%<<plot interactive  concept-gene network,  echo=T, eval=F>>= 
+%## plot interactive concept-gene network
+%geneAnswersConceptNet(xx, colorValueColumn='foldChange', centroidSize='pvalue', output='interactive')
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet01a.jpg}}
+%\caption{Screen shot of concept-gene network}
+%\label{conceptgeneNetwork}
+%\end{figure}
+%
+%The top 5 categories might not be very specific. Users might get a  tree view to see relative category terms by calling function geneAnswersConceptRelationif the category has an ontology structure. The size of nodes is proportional to number of genes in these GO categories. The color of nodes stand for how relative the given genes are to the GO categories. More red, more relative. The given GO categories are yellow framed dots with dark purple edges connetions.
+%<<plot interactive  go structure network,  echo=T, eval=F>>= 
+%## plot interactive go structure network
+%geneAnswersConceptRelation(x, direction='both', netMode='connection', catTerm=TRUE, catID=TRUE, nameLength=15) 
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{gostrt.jpg}}
+%\caption{Screen shot of go structure network}
+%\label{conceptgeneNetwork}
+%\end{figure}
+%
+%Also the new version GeneAnswers integrates gene or protein interaction database from NCBI. The following case is a typical one to show interaction information could be included in basic concepts-genes network.
+%<<plot interactive  concept-gene network with gene interaction,  echo=T, eval=F>>= 
+%## plot interactive concept-gene network
+%geneAnswersConceptNet(x, color='foldChange', geneLayer=5, output='interactive', showCats=c("GO:0009611", "GO:0043933", "GO:0045622"), catTerm=TRUE, geneSymbol=TRUE, catID=TRUE)
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet07.jpg}}
+%\caption{Screen shot of concept-gene network}
+%\label{conceptgeneNetwork}
+%\end{figure}
+%
+%
+%This function can also be used to show how the given genes interact with each other. For example, for the given genes in the GeneAnswers instance, x, users can use the following command to show gene '444','3638', '5087' and '55835' interact with each other and other genes in the given geneInput of x.
+%<<plot Gene interaction,  echo=T, eval=F>>= 
+%## plot the given gene interaction
+%buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1], filterLayer=2, netMode='connection')
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction01.jpg}}
+%\caption{Screen shot of the given gene interaction network}
+%\label{geneInteractionNetwork}
+%\end{figure}
+%
+%In this case, large black dots with yellow frame stand for the 4 given genes. They also connect to other genes by dark-blue-purple edges. Small black dots represent the other genes from getGeneInput(x). Small white dots are genes that are not in the genes from getGeneInput(x), but interact with these genes. 
+%
+%If there are some certain values associate with genes in geneInput of x, like the example data, you can represent any one column by colors. For example, if users want to show how genes interaction with gene expression information, the following command can show this:
+%<<plot Gene interaction with expression information,  echo=T, eval=F>>= 
+%## plot the given gene interaction
+%buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+%@  
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction02.jpg}}
+%\caption{Screen shot of the given gene interaction network with expression information}
+%\label{geneInteractionNetwork}
+%\end{figure}
+%
+%The following one is based on expression p-values, we often use -log2 to transform p-values.
+%<<plot Gene interaction with pvalues,  echo=T, eval=F>>= 
+%## plot the given gene interaction
+%buildNet(c('444','3638', '5087','55835'), idType='GeneInteraction', layers=2, filterGraphIDs=cbind(getGeneInput(x)[,1], -log2(getGeneInput(x)[,3])), filterLayer=2, netMode='connection')
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction03.jpg}}
+%\caption{Screen shot of the given gene interaction network with p-value information}
+%\label{geneInteractionNetwork}
+%\end{figure}
+%
+%Users can also define customized color scheme and transfer it into 'buildNet' function by parameter 'colorMap'. Details are available in 'buildNet' manual page. If users want to have a overview for the interaction of all of the given genes from getGeneInput(x), the following command could be used:
+%<<plot Gene interaction for all of given genes,  echo=T, eval=F>>= 
+%## plot the given gene interaction
+%buildNet(getGeneInput(x)[,1], idType='GeneInteraction', layers=2, filterGraphIDs=getGeneInput(x)[,1:2], filterLayer=2, netMode='connection')
+%@
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{geneInteraction04.jpg}}
+%\caption{Screen shot of all of the given gene interaction network with expression information}
+%\label{geneInteractionNetwork}
+%\end{figure}
+%
+%
+%If there are a lot of genes, the network could be very complicated. We strongly recommend to use 'interactive' mode to show the network since it's easy to manually change layout. The default setting is 'interactive', but users can change it to 'fixed' for a small or simple network.
+%
+%
+%The following example is to show top 5 GO-gene network for the first 2 level GO nodes removal.
+%<<plot Go-concept network for 2 level nodes removal,  echo=T, eval=F>>= 
+%## plot Go-concept network for 2 level nodes removal
+%geneAnswersConceptNet(ww, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
+%@
+%
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet02.jpg}}
+%\caption{Screen shot of concept-gene network for top 2 GO level nodes removal}
+%\label{GO-genes network}
+%\end{figure}
+%
+%Also, users can sort enrichment test information and plot it.
+%<<sort GeneAnswers,  echo=T, eval=T>>=  
+%## sort enrichmentInfo dataframe by fdr adjusted p value
+%xxx <- geneAnswersSort(xx, sortBy='correctedPvalue')
+%# yyy <- geneAnswersSort(yy, sortBy='pvalue') 
+%zzz <- geneAnswersSort(zz, sortBy='geneNum')
+%@
+%
+%<<plot concept-gene networks,  echo=T, eval=F>>=  
+%geneAnswersConceptNet(yyy, colorValueColumn='foldChange', centroidSize='geneNum', output='fixed')
+%geneAnswersConceptNet(zzz, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=c(10:16))
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet03.jpg}}
+%\caption{Screen shot of KEGG-gene network}
+%\label{KEGG-genes network}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet04.jpg}}
+%\caption{Screen shot of DOLite-gene network}
+%\label{DOLite-genes network}
+%\end{figure}
+%
+%If users provide a gene expression profile, \Rpackage{GeneAnswers} package can generate a table or heatmap labeling relationship between genes and categories with a heatmap of these genes expression. We call this type of representation as concept-gene cross tabulation.
+%
+%<<generate GO-gene cross tabulation, echo=T, eval=F>>=
+%## generate GO-gene cross tabulation
+%geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
+%@
+%
+%\begin{figure}
+%\centering
+%<<fig=true, width=8, height=8, echo=T, eval=T>>=
+%## generate GO-gene cross tabulation
+%geneAnswersHeatmap(x, catTerm=TRUE, geneSymbol=TRUE)
+%@
+%\caption{GO-gene cross tabulation}
+%\label{fig:GO-gene cross tabulation}
+%\end{figure}    
+%
+%<<genrate KEGG-gene cross tabulation echo=T, eval=F>>=
+%# geneAnswersHeatmap(yyy)
+%@
+%
+%\begin{figure}
+%\centering
+%<<fig=true, width=8, height=8, quiet=F, echo=T, eval=T>>=
+%# geneAnswersHeatmap(yyy)
+%@
+%\caption{KEGG-gene cross tabulation}
+%\label{fig:KEGG-gene cross tabulation}
+%\end{figure}
+%
+%For cross table, there are two types of representations. One is a table, which is better for few genes, and another one is a two-color heatmap that is adopted for a lot of genes. In the latter,  the default setting is that white bar stands for that a gene in that category.
+%<<generate DOLite-gene cross tabulation, echo=F, eval=F>>=
+%geneAnswersHeatmap(zzz, mapType='heatmap')
+%@
+%
+% 
+%\begin{figure}
+%\centering
+%<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
+%geneAnswersHeatmap(zzz, mapType='heatmap')
+%@
+%\caption{DOLite-gene cross tabulation}
+%\label{fig:DOLite-gene cross tabulation}
+%\end{figure}
+
+
+%Besides top categories, users can also show interested categories.
+%<<plot customized concept-gene cross tabulation,  echo=T, eval=T>>=  
+%GOBPIDs <- c("GO:0043627", "GO:0042493", "GO:0006259", "GO:0007243")
+%GOBPTerms <- c("response to estrogen stimulus", "response to drug", "protein kinase cascade", "DNA metabolic process")
+%@
+%
+%<<generate concept-gene cross tabulation,  echo=T, eval=F>>=
+%## generate concept-gene cross tabulation
+%geneAnswersConceptNet(x, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed', showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE) 
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet05.jpg}}
+%\caption{Screen shot of customized GO-gene network}
+%\label{customized GO-genes network}
+%\end{figure}
+%
+%<<generate customized concept-gene cross tabulation, echo=T, eval=F>>=
+%geneAnswersHeatmap(x, showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE)
+%@
+%
+%
+%\begin{figure}
+%\centering
+%<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
+%geneAnswersHeatmap(x, showCats=GOBPIDs, catTerm=TRUE, geneSymbol=TRUE)
+%@
+%\caption{Customized concept-gene cross tabulation}
+%\label{fig:Customized concept-gene cross tabulation}
+%\end{figure}
+%
+%Function {\it geneAnswersConcepts} shows the linkages of specified categories. The width of edge stands for how overlapping between two categories.
+%<< generate concept-gene cross tabulation,  echo=T, eval=F>>=
+%## generate concept-gene cross tabulation
+%geneAnswersConcepts(xxx, centroidSize='geneNum', output='fixed', showCats=GOBPTerms) 
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{concept01.jpg}}
+%\caption{Screen shot of customized GO category linkage}
+%\label{customized GO category linkage}
+%\end{figure}
+%
+%
+%
+%Users can also print top categories and genes on screen and save them in files by specification as well as these two types of visualization. The default file names are "topCategory.txt" and "topCategoryGenes.txt" for top categories with or without corresponding genes, respectively.
+%<<print top categories and genes,  echo=T, eval=T>>=  
+%## print top GO categories sorted by hypergeometric test p value
+%topGOGenes(x,  orderby='pvalue')
+%## print top KEGG categories sorted by gene numbers and sort genes by fold changes 
+%# topPATHGenes(y, orderby='geneNum', top=4, topGenes=8, genesOrderBy='foldChange')
+%## print and save top 10 DOLites information 
+%topDOLITEGenes(z, orderby='pvalue', top=5, topGenes='ALL', genesOrderBy='pValue', file=TRUE)
+%@
+%
+%
+%\subsection{Multigroup Genes Analysis}
+%Several groups of genes are used to dynamically study biological processes by different treatment or time points. In this case, \Rpackage{GeneAnswers} provide a solution to integrate enrichment test information of different groups of genes. 
+%
+%<<multigroup gene analysis,  echo=T, eval=T>>=  
+%##load multigroup genes sample data
+%data(sampleGroupsData)
+%##Build a GeneAnswers List
+%# gAKEGGL <- lapply(sampleGroupsData, geneAnswersBuilder, 'org.Hs.eg.db', categoryType='KEGG', pvalueT=0.01, verbose=FALSE)
+%##Output integrated text table
+%# output<- getConceptTable(gAKEGGL, items='geneNum')
+%@
+%
+%<<multigroup genes KEGG analysis, echo=F, eval=F>>=
+%drawTable(output[[1]], matrixOfHeatmap=output[[2]], mar=c(2,28,3,2), clusterTable=NULL) 
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{multi.jpg}}
+%\caption{Screen shot of multigroup genes KEGG analysis}
+%\label{Multigroup Genes KEGG analysis}
+%\end{figure}
+%
+%Function groupReport can generate a html file including all information.
+%
+%\subsection{Homologous Gene Mapping}
+%Since DOLite is developed for human, any gene from other species can not take advantage of this novel annotation database. Therefore,  \Rpackage{GeneAnswers} package provides two functions for this type of data interpretation. {\it getHomoGeneIDs} can map other species gene Entrez IDs to human homologous gene Entrez IDs at first. Then users can perform normal GeneAnswers functions. Finally, function {\it geneAnswersHomoMapping} maps back to original species gene Entrez IDs. Current version supports two types of homologous gene mapping. One is called "direct", which is simple and only works between mouse and human. Since all of human gene symbols are capitalized, while only first letter of mouse homologous gene symbols is uppercase, this method simply maps homologous genes by capitalized moues gene symbols. Another method adopts \Rpackage{biomaRt} to do mapping. \Rpackage{biomaRt} contacts its online server to mapping homologous genes. Its database include more accurate information, but it might take longer to do that, while 'direct' method can rapidly do conversation though it is possible to miss some information.
+%
+%<<homogene conversation,  echo=T, eval=T>>=  
+% ## load mouse example data
+%data('mouseExpr')
+%data('mouseGeneInput') 
+%mouseExpr[1:10,]
+%mouseGeneInput[1:10,]
+% ## only keep first one for one to more mapping
+%pickHomo <- function(element, inputV) {return(names(inputV[inputV == element])[1])}
+% ## mapping geneInput to homo entrez IDs.
+%homoLL <- getHomoGeneIDs(mouseGeneInput[,1], species='mouse', speciesL='human', mappingMethod='direct')
+%newGeneInput <- mouseGeneInput[mouseGeneInput[,1] %in% unlist(lapply(unique(homoLL), pickHomo, homoLL)),]
+%dim(mouseGeneInput)
+%dim(newGeneInput)
+%newGeneInput[,1] <- homoLL[newGeneInput[,1]]
+%## mapping geneExpr to homo entrez IDs.
+%homoLLExpr <- getHomoGeneIDs(as.character(mouseExpr[,1]), species='mouse', speciesL='human', mappingMethod='direct')
+%newExpr <- mouseExpr[as.character(mouseExpr[,1]) %in% unlist(lapply(unique(homoLLExpr) , pickHomo, homoLLExpr)),]
+%newExpr[,1] <- homoLLExpr[as.character(newExpr[,1])]
+%dim(mouseExpr)
+%dim(newExpr)
+%## build a GeneAnswers instance based on mapped data
+%v <- geneAnswersBuilder(newGeneInput, 'org.Hs.eg.db', categoryType='DOLITE', testType='hyperG', pvalueT=0.1, FDR.correct=TRUE, geneExpressionProfile=newExpr)
+%## make the GeneAnswers instance readable, only map DOLite IDs to terms
+%vv <- geneAnswersReadable(v, geneSymbol=F)
+%getAnnLib(vv)
+%## mapping back to mouse genes
+%uu <- geneAnswersHomoMapping(vv, species='human', speciesL='mouse', mappingMethod='direct')
+%getAnnLib(uu)
+%## make mapped genes readable, DOLite terms are not mapped
+%u <- geneAnswersReadable(uu, catTerm=FALSE)
+%## sort new GeneAnswers instance
+%u1 <- geneAnswersSort(u, sortBy='pvalue')
+%@
+%
+%<<plot concept-gene network,  echo=T, eval=F>>=
+%## plot concept-gene network
+%geneAnswersConceptNet(u, colorValueColumn='foldChange', centroidSize='pvalue', output='fixed')
+%@
+%
+%\begin{figure}
+%\centering
+%\centering
+%\resizebox{1\textwidth}{!}{\includegraphics{conceptNet06.jpg}}
+%\caption{Screen shot of homogene DOLite-gene network}
+%\label{homogene DOLite-genes network}
+%\end{figure}
+%
+%<<generate homogene DOLite-gene cross tabulation, echo=T, eval=F>>=
+%## plot homogene DOLite-gene cross tabulation
+%geneAnswersHeatmap(u1)
+%@
+%
+%\begin{figure}
+%\centering
+%<<fig=true, width=8, height=8, quiet=T, echo=F, eval=T>>=
+%## plot homogene DOLite-gene cross tabulation
+%geneAnswersHeatmap(u1)
+%@
+%\caption{homogene DOLite-gene cross tabulation}
+%\label{fig:homogene DOLite-gene cross tabulation}
+%\end{figure}
+%
+%<<homogene conversation,  echo=T, eval=T>>=  
+%## output top information
+%topDOLITEGenes(u, geneSymbol=FALSE, catTerm=FALSE, orderby='pvalue', top=6, topGenes='ALL', genesOrderBy='pValue', file=TRUE)  
+%@
+%
+%\section{Session Info}
+%<<sessionInfo, results=tex, print=TRUE>>=
+%toLatex(sessionInfo())
+%@
+%
+%\section{Acknowledgments}
+%We would like to thank the users and researchers around the world contribute to the \Rpackage{GeneAnswers} package, provide great comments and suggestions and report bugs
+%
+%\section{References}
+%
+%Du, P., Feng, G., Flatow, J., Song, J., Holko, M., Kibbe, W.A. and Lin, S.M., (2009) 'From disease ontology to disease-ontology lite: statistical methods to adapt a general-purpose ontology for the test of gene-ontology associations', Bioinformatics 25(12):i63-8
+%
+%
+%Feng, G., Du, P., Krett, N.L., Tessel, M., Rosen, S., Kibbe, W.A., and Lin, S.M., (submitted) 'Bioconductor Methods to Visualize Gene-list Annotations',
+%
 %\bibliographystyle{plainnat}
 %\bibliography{GeneAnswers}
 
