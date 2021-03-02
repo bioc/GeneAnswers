@@ -27,7 +27,7 @@ getCategoryTerms(catIDs, catType, strict = FALSE, missing=c('name', 'keep', 'rem
 \references{ Feng, G., Du, P., Krett, N., Tessel, M., Rosen, S., Kibbe, W.A. and Lin, S.M., 'A collection of bioconductor methods to visualize gene-list annotations', BMC Research Notes 2010, 3:10}
 \author{ Gang Feng, Pan Du and Simon Lin }
 \examples{
-getCategoryTerms(c("04640", "05221", "05215"), catType='KEGG')
+## getCategoryTerms(c("04640", "05221", "05215"), catType='KEGG')
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
