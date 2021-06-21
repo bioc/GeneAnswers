@@ -1,7 +1,7 @@
 Package: GeneAnswers
 Type: Package
 Title: Integrated Interpretation of Genes
-Version: 2.35.0
+Version: 2.35.1
 Date: 2021-02-21
 Depends: R (>= 3.0.0), igraph, KEGGREST, RCurl, annotate, Biobase (>= 1.12.0),
         methods, XML, RSQLite, MASS, Heatplus, RColorBrewer
@@ -22,3 +22,4 @@ git_last_commit: a310951
 git_last_commit_date: 2021-02-21
 Date/Publication: 2021-02-21
 NeedsCompilation: no
+PackageStatus: Deprecated
