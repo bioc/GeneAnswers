@@ -19,7 +19,7 @@ getPATHTerms(pathIDs)
 \author{ Gang Feng, Pan Du and Simon Lin }
 \seealso{\code{\link{getCategoryTerms}}}
 \examples{
-getPATHTerms(c('04916', '05221'))
+getPATHTerms(c('hsa04916', 'hsa05221'))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
